@@ -41,7 +41,7 @@ class displayNumbers(object):
             if i + 1 < topSelect:
                 self.num[i]["style"] = "G.TLabel"
 
-    def changeExtStyle(self, numberList):
+    def changeExtStyle(self, extSelect):
 
         Style().configure("W.TLabel", foreground= "black", background="white", font="Courier 8", anchor="center")
 
@@ -49,8 +49,8 @@ class displayNumbers(object):
             self.ext[i]["style"] = "W.TLabel"
         
         for i in range(self.extLimit):
-            if i + 1 == numberList[5]:
-                self.ext[i]["style"] = style
+            if i + 1 < extSelect:
+                self.ext[i]["style"] = "G.TLabel"
 
     def positionTopDisplays(self, row, col):
 
