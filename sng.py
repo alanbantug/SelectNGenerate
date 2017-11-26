@@ -42,26 +42,10 @@ class Application(Frame):
 
         # Set Label styles
         Style().configure("FF.TLabel", background="blue", foreground="yellow", font="Courier 20 bold", anchor="center")
-        Style().configure("M.TLabel", font="Verdana 14", foreground="yellow", background="blue", height="20", anchor="center")
-        Style().configure("N.TLabel", font="Verdana 10", background="white", height=80, width=30)
         Style().configure("S.TLabel", font="Verdana 8")
-        Style().configure("T.TLabel", font="Verdana 10", foreground="black", background="white", )
-        Style().configure("G.TLabel", foreground= "white", background="green", font="Courier 8", anchor="center")
-        Style().configure("L.TLabel", foreground= "white", background="blue", font="Courier 8", anchor="center")
-        Style().configure("R.TLabel", foreground= "white", background="red", font="Courier 8", anchor="center")
-        Style().configure("Y.TLabel", foreground= "blue", background="yellow", font="Courier 8", anchor="center")
-        Style().configure("O.TLabel", foreground= "white", background="orange", font="Courier 8", anchor="center")
-        Style().configure("B.TLabel", font="Verdana 8")
-        Style().configure("SB.TLabel", font="Verdana 8", background="white")
-        Style().configure("O.TLabelframe.Label", font="Verdana 8", foreground="black")
 
         # Set button styles
         Style().configure("B.TButton", font="Verdana 8", relief="raised", width=12)
-        Style().configure("S.TButton", font="Verdana 8", relief="raised", width=10)
-
-        # Set check box and radio button styles
-        Style().configure("B.TCheckbutton", font="Verdana 8")
-        Style().configure("B.TRadiobutton", font="Verdana 8")
 
         # Set scale styles
         Style().configure("S.TScale", orient=HORIZONTAL, width=25)
