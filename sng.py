@@ -50,32 +50,40 @@ class Application(Frame):
         # Set scale styles
         Style().configure("S.TScale", orient=HORIZONTAL, width=25)
 
+        self.parentTab = ttk.Notebook(self.main_container)
+        self.selTab = ttk.Frame(self.parentTab)   # first page, which would get widgets gridded into it
+        self.genTab = ttk.Frame(self.parentTab)   # second page
+        self.parentTab.add(self.selTab, text='Select Numbers')
+        self.parentTab.add(self.genTab, text='Generate Combinations')
+        
         # Create widgets
-        self.h_sep_a = Separator(self.main_container, orient=HORIZONTAL)
-        self.h_sep_b = Separator(self.main_container, orient=HORIZONTAL)
-        self.h_sep_c = Separator(self.main_container, orient=HORIZONTAL)
-        self.h_sep_d = Separator(self.main_container, orient=HORIZONTAL)
-        self.h_sep_e = Separator(self.main_container, orient=HORIZONTAL)
-        self.h_sep_f = Separator(self.main_container, orient=HORIZONTAL)
-        self.h_sep_g = Separator(self.main_container, orient=HORIZONTAL)
+        self.h_sep_a = Separator(self.selTab, orient=HORIZONTAL)
+        self.h_sep_b = Separator(self.selTab, orient=HORIZONTAL)
+        self.h_sep_c = Separator(self.selTab, orient=HORIZONTAL)
+        self.h_sep_d = Separator(self.selTab, orient=HORIZONTAL)
+        self.h_sep_e = Separator(self.selTab, orient=HORIZONTAL)
+        self.h_sep_f = Separator(self.selTab, orient=HORIZONTAL)
+        self.h_sep_g = Separator(self.selTab, orient=HORIZONTAL)
 
         self.dA = []
         
-        self.dA.append(ds.displayNumbers(self.main_container, 75, 30))
-            
-        self.mainLabel = Label(self.main_container, text="SELECT SCALE", style="FF.TLabel" )
-        self.subLabelA = Label(self.main_container, text="Select the numbers to use for generating", style="S.TLabel" )
-        self.subLabelB = Label(self.main_container, text="combinations by using the scale selector. ", style="S.TLabel" )
-        
-        self.topScale = Scale(self.main_container, from_=0, to=75, command=self.showTopValue, orient=HORIZONTAL)
-        self.extScale = Scale(self.main_container, from_=0, to=30, command=self.showExtValue, orient=HORIZONTAL)
+        self.dA.append(ds.displayNumbers(self.selTab, 75, 30))
 
-        self.selectScale = Button(self.main_container, text="SELECT", style="B.TButton", command=self.setScale)
-        self.resetScale = Button(self.main_container, text="RESET", style="B.TButton", command=self.resetScale)
+        self.mainLabel = Label(self.main_container, text="SELECT AND GENERATE", style="FF.TLabel" )
+            
+        self.selLabel = Label(self.selTab, text="SELECT SCALE", style="FF.TLabel" )
+        self.subLabelA = Label(self.selTab, text="Select the numbers to use for generating", style="S.TLabel" )
+        self.subLabelB = Label(self.selTab, text="combinations by using the scale selector. ", style="S.TLabel" )
+        
+        self.topScale = Scale(self.selTab, from_=0, to=75, command=self.showTopValue, orient=HORIZONTAL)
+        self.extScale = Scale(self.selTab, from_=0, to=30, command=self.showExtValue, orient=HORIZONTAL)
+
+        self.selectScale = Button(self.selTab, text="SELECT", style="B.TButton", command=self.setScale)
+        self.resetScale = Button(self.selTab, text="RESET", style="B.TButton", command=self.resetScale)
         self.exit = Button(self.main_container, text="EXIT", style="B.TButton", command=root.destroy)
 
         # Position widgets        
-        self.mainLabel.grid(row=0, column=0, padx=5, pady=5, sticky='NSEW')
+        self.selLabel.grid(row=0, column=0, padx=5, pady=5, sticky='NSEW')
         self.subLabelA.grid(row=1, column=0, padx=5, pady=0, sticky='NSEW')
         self.subLabelB.grid(row=2, column=0, padx=5, pady=0, sticky='NSEW')
         
@@ -93,9 +101,10 @@ class Application(Frame):
 
         self.selectScale.grid(row=15, column=0, padx=5, pady=5, sticky='W')
         self.resetScale.grid(row=15, column=0, padx=(110,5), pady=5, sticky='W')
-        self.exit.grid(row=15, column=0, padx=(215,5), pady=5, sticky='W')
-        
-        self.h_sep_d.grid(row=16, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')
+                
+        self.mainLabel.grid(row=0, column=0, padx=5, pady=5, sticky='NSEW')
+        self.parentTab.grid(row=1, column=0, padx=5, pady=5, sticky='NSEW')
+        self.exit.grid(row=2, column=0, padx=5, pady=5, sticky='NSEW')
 
     def showTopValue(self, value=None):
 
@@ -134,8 +143,8 @@ class Application(Frame):
 
         
 root = Tk()
-root.title("SELECT SCALE")
-root.minsize(300, 200)
+root.title("SELECT AN GENERATE")
+root.minsize(400, 300)
 
 app = Application(root)
 
