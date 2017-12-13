@@ -11,10 +11,10 @@ from ttk import *
 
 class displayNumbers(object):
 
-    def __init__(self, container, topLimit, extLimit):
+    def __init__(self, container, topLimit):
 
         self.topLimit = topLimit
-        self.extLimit = extLimit
+        #self.extLimit = extLimit
         self.num = []
         self.ext = []
 
@@ -24,10 +24,12 @@ class displayNumbers(object):
         for i in range(self.topLimit):
             idx = "{0:02}".format(i + 1)
             self.num.append(Label(container, text=idx, style="W.TLabel"))
-            
+        
+        '''    
         for i in range(self.extLimit):
             idx = "{0:02}".format(i + 1)
             self.ext.append(Label(container, text=idx, style="W.TLabel"))
+        '''
 
        
     def changeTopStyle(self, topSelect):
@@ -41,6 +43,7 @@ class displayNumbers(object):
             if i + 1 < topSelect:
                 self.num[i]["style"] = "G.TLabel"
 
+    '''
     def changeExtStyle(self, extSelect):
 
         Style().configure("W.TLabel", foreground= "black", background="white", font="Courier 8", anchor="center")
@@ -51,6 +54,7 @@ class displayNumbers(object):
         for i in range(self.extLimit):
             if i + 1 < extSelect:
                 self.ext[i]["style"] = "G.TLabel"
+    '''
 
     def positionTopDisplays(self, row, col):
 
@@ -61,7 +65,7 @@ class displayNumbers(object):
         for i in range(self.topLimit):
             self.num[i].grid(row=row_ctr, column=col, padx=(x_position,10), pady=1, sticky='W')
             col_ctr += 1
-            if col_ctr > 15:
+            if col_ctr > 4:
                 col_ctr = 1
                 row_ctr += 1
                 x_position = 9
@@ -70,7 +74,7 @@ class displayNumbers(object):
 
         row_ctr += 1
         
-
+    '''
     def positionExtDisplays(self, row, col):
 
         x_position = 9
@@ -80,13 +84,13 @@ class displayNumbers(object):
         for i in range(self.extLimit):
             self.ext[i].grid(row=row_ctr, column=col, padx=(x_position,10), pady=1, sticky='W')
             col_ctr += 1
-            if col_ctr > 15:
+            if col_ctr > 10:
                 col_ctr = 1
                 row_ctr += 1
                 x_position = 9
             else:    
                 x_position += 20 
-
+    '''
         
 
         

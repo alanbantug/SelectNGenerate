@@ -41,7 +41,7 @@ class Application(Frame):
         self.main_container.grid(column=0, row=0, sticky=(N,S,E,W))
 
         # Set Label styles
-        Style().configure("FF.TLabel", background="blue", foreground="yellow", font="Courier 20 bold", anchor="center")
+        Style().configure("FF.TLabel", font="Courier 20 bold", anchor="center")
         Style().configure("S.TLabel", font="Verdana 8")
 
         # Set button styles
@@ -53,7 +53,7 @@ class Application(Frame):
         self.parentTab = ttk.Notebook(self.main_container)
         self.selTab = ttk.Frame(self.parentTab)   # first page, which would get widgets gridded into it
         self.genTab = ttk.Frame(self.parentTab)   # second page
-        self.parentTab.add(self.selTab, text='Select Numbers')
+        self.parentTab.add(self.selTab, text='   Select Numbers    ')
         self.parentTab.add(self.genTab, text='Generate Combinations')
         
         # Create widgets
@@ -67,7 +67,8 @@ class Application(Frame):
 
         self.dA = []
         
-        self.dA.append(ds.displayNumbers(self.selTab, 75, 30))
+        for i in range(5):
+            self.dA.append(ds.displayNumbers(self.selTab, 39))
 
         self.mainLabel = Label(self.main_container, text="SELECT AND GENERATE", style="FF.TLabel" )
             
@@ -83,28 +84,30 @@ class Application(Frame):
         self.exit = Button(self.main_container, text="EXIT", style="B.TButton", command=root.destroy)
 
         # Position widgets        
-        self.selLabel.grid(row=0, column=0, padx=5, pady=5, sticky='NSEW')
-        self.subLabelA.grid(row=1, column=0, padx=5, pady=0, sticky='NSEW')
-        self.subLabelB.grid(row=2, column=0, padx=5, pady=0, sticky='NSEW')
+        self.selLabel.grid(row=0, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+        self.subLabelA.grid(row=1, column=0, columnspan=5, padx=5, pady=0, sticky='NSEW')
+        self.subLabelB.grid(row=2, column=0, columnspan=5, padx=5, pady=0, sticky='NSEW')
         
-        self.h_sep_a.grid(row=3, column=0, padx=5, pady=5, sticky='NSEW')
+        self.h_sep_a.grid(row=3, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
-        self.dA[0].positionTopDisplays(4, 0)
-        self.topScale.grid(row=9, column=0, padx=5, pady=5, sticky='NSEW')
+        for i in range(5):
+            self.dA[i].positionTopDisplays(4, i)
+        #self.topScale.grid(row=9, column=0, padx=5, pady=5, sticky='NSEW')
         
-        self.h_sep_b.grid(row=10, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')        
+        self.h_sep_b.grid(row=14, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')        
         
-        self.dA[0].positionExtDisplays(11, 0)
-        self.extScale.grid(row=13, column=0, padx=5, pady=5, sticky='NSEW')
+        #self.dA[0].positionExtDisplays(11, 0)
+        #self.extScale.grid(row=13, column=0, padx=5, pady=5, sticky='NSEW')
            
-        self.h_sep_c.grid(row=14, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')
+        #self.h_sep_c.grid(row=14, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')
 
-        self.selectScale.grid(row=15, column=0, padx=5, pady=5, sticky='W')
-        self.resetScale.grid(row=15, column=0, padx=(110,5), pady=5, sticky='W')
+        self.selectScale.grid(row=15, column=0, columnspan=3, padx=5, pady=5, sticky='W')
+        self.resetScale.grid(row=15, column=4, columnspan=2, padx=(110,5), pady=5, sticky='W')
                 
         self.mainLabel.grid(row=0, column=0, padx=5, pady=5, sticky='NSEW')
         self.parentTab.grid(row=1, column=0, padx=5, pady=5, sticky='NSEW')
         self.exit.grid(row=2, column=0, padx=5, pady=5, sticky='NSEW')
+
 
     def showTopValue(self, value=None):
 
@@ -143,7 +146,7 @@ class Application(Frame):
 
         
 root = Tk()
-root.title("SELECT AN GENERATE")
+root.title("SELECT AND GENERATE")
 root.minsize(400, 300)
 
 app = Application(root)
