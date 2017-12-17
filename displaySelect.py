@@ -14,27 +14,19 @@ class displayNumbers(object):
     def __init__(self, container, topLimit):
 
         self.topLimit = topLimit
-        #self.extLimit = extLimit
         self.num = []
-        self.ext = []
 
-        Style().configure("W.TLabel", foreground= "black", background="white", font="Courier 8", anchor="center")
-        Style().configure("G.TLabel", foreground= "black", background="green", font="Courier 8", anchor="center")
+        Style().configure("W.TLabel", foreground= "black", background="white", font="Courier 12", anchor="center")
+        Style().configure("G.TLabel", foreground= "black", background="green", font="Courier 12", anchor="center")
         
         for i in range(self.topLimit):
             idx = "{0:02}".format(i + 1)
-            self.num.append(Label(container, text=idx, style="W.TLabel"))
+            self.num.append(Label(container, text=idx, style="W.TLabel", width=3))
         
-        '''    
-        for i in range(self.extLimit):
-            idx = "{0:02}".format(i + 1)
-            self.ext.append(Label(container, text=idx, style="W.TLabel"))
-        '''
-
        
     def changeTopStyle(self, topSelect):
 
-        Style().configure("W.TLabel", foreground= "black", background="white", font="Courier 8", anchor="center")
+        Style().configure("W.TLabel", foreground= "black", background="white", font="Courier 12", anchor="center")
 
         for i in range(self.topLimit):
             self.num[i]["style"] = "W.TLabel"
@@ -43,54 +35,24 @@ class displayNumbers(object):
             if i + 1 < topSelect:
                 self.num[i]["style"] = "G.TLabel"
 
-    '''
-    def changeExtStyle(self, extSelect):
-
-        Style().configure("W.TLabel", foreground= "black", background="white", font="Courier 8", anchor="center")
-
-        for i in range(self.extLimit):
-            self.ext[i]["style"] = "W.TLabel"
-        
-        for i in range(self.extLimit):
-            if i + 1 < extSelect:
-                self.ext[i]["style"] = "G.TLabel"
-    '''
 
     def positionTopDisplays(self, row, col):
 
-        x_position = 9
+        x_position = 10
         col_ctr = 1
         row_ctr = row
 
         for i in range(self.topLimit):
             self.num[i].grid(row=row_ctr, column=col, padx=(x_position,10), pady=1, sticky='W')
             col_ctr += 1
-            if col_ctr > 4:
+            if col_ctr > 13:
                 col_ctr = 1
                 row_ctr += 1
-                x_position = 9
+                x_position = 10
             else:    
-                x_position += 20 
+                x_position += 30 
 
         row_ctr += 1
-        
-    '''
-    def positionExtDisplays(self, row, col):
-
-        x_position = 9
-        col_ctr = 1
-        row_ctr = row
-
-        for i in range(self.extLimit):
-            self.ext[i].grid(row=row_ctr, column=col, padx=(x_position,10), pady=1, sticky='W')
-            col_ctr += 1
-            if col_ctr > 10:
-                col_ctr = 1
-                row_ctr += 1
-                x_position = 9
-            else:    
-                x_position += 20 
-    '''
         
 
         
