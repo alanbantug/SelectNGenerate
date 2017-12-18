@@ -29,8 +29,12 @@ class Application(Frame):
         self.master = master
         self.main_container = Frame(self.master)
 
-        self.use_numbers = IntVar()
-        self.use_numbers.set(1)
+        self.prior = IntVar()
+        self.consec = IntVar()
+        self.anypat = IntVar()
+        self.prior.set(0)
+        self.consec.set(0)
+        self.anypat.set(0)
 
         # Set images. Note that the line below is needed to change the working directory of the batch file to point to where the script files, including image files are
         # It has to be commented out in the testing library
@@ -55,6 +59,7 @@ class Application(Frame):
         Style().configure("T.TLabel", font="Verdana 12 bold")
         Style().configure("S.TLabel", font="Verdana 10")
         Style().configure("B.TLabel", font="Verdana 8")
+        Style().configure("SB.TLabel", font="Verdana 8", background="white")
 
         # Set button styles
         Style().configure("B.TButton", font="Verdana 8", relief="raised")
@@ -91,41 +96,49 @@ class Application(Frame):
 
         self.dSel = []
 
-        self.dSel.append(ds.displayNumbers(self.selTab, 39))
+        self.numberGroup = LabelFrame(self.selTab, text=' Number Selection ', style="O.TLabelframe")
+        self.dSel.append(ds.displayNumbers(self.numberGroup, 39))
 
         self.selSet = Button(self.selTab, text="SELECT", style="B.TButton", command=self.selectSet)
         self.chkSet = Button(self.selTab, text="CHECK", style="B.TButton", command=self.checkSet)
         self.clearSet = Button(self.selTab, text="CLEAR", style="B.TButton", command=self.clearSelSet)
 
         self.useGroup = LabelFrame(self.selTab, text=' Number Use Options ', style="O.TLabelframe")
-        self.useSel = Radiobutton(self.useGroup, text="Select Numbers", style="B.TRadiobutton", variable=self.use_numbers, value=1)
-        self.useOth = Radiobutton(self.useGroup, text="Other Numbers", style="B.TRadiobutton", variable=self.use_numbers, value=2)
-        self.useMix = Radiobutton(self.useGroup, text="Mixed Numbers", style="B.TRadiobutton", variable=self.use_numbers, value=3)
+        self.usePrior = Checkbutton(self.useGroup, text="Use Last Winner", style="B.TCheckbutton", variable=self.prior)
+        self.allowConsec = Checkbutton(self.useGroup, text="Allow Consecutives", style="B.TCheckbutton", variable=self.consec)
+        self.anyPattern = Checkbutton(self.useGroup, text="Any Pattern", style="B.TCheckbutton", variable=self.anypat)
+
+        self.sourceLabel = Label(self.selTab, text="None", style="SB.TLabel" )
+        self.selectSource = Button(self.selTab, text="SET DATA FILE", style="B.TButton", command=self.setDataFile)
 
         # Position widgets on the Select tab
 
-        self.selLabel.grid(row=0, column=0, columnspan=5, padx=5, pady=(10,5), sticky='NSEW')
-        
-        self.h_sep_sa.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
-
+        self.selLabel.grid(row=0, column=0, columnspan=5, padx=5, pady=(10,10), sticky='NSEW')
         self.selLabelA.grid(row=2, column=0, columnspan=5, padx=5, pady=0, sticky='NSEW')
         
-        self.h_sep_sb.grid(row=3, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+        self.h_sep_sa.grid(row=3, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
-        self.dSel[0].positionTopDisplays(4, 0)
+        self.dSel[0].positionTopDisplays(0, 0)
+        self.numberGroup.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
-        self.h_sep_sc.grid(row=7, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+        self.h_sep_sb.grid(row=7, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
-        self.selSet.grid(row=8, column=0, padx=(195,5), pady=5, sticky='W')
-        self.chkSet.grid(row=8, column=0, padx=(290,5), pady=5, sticky='W')
-        self.clearSet.grid(row=8, column=0, padx=(385,5), pady=5, sticky='W')
+        self.selSet.grid(row=8, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
+        self.chkSet.grid(row=8, column=3, padx=5, pady=5, sticky='NSEW')
+        self.clearSet.grid(row=8, column=4, padx=5, pady=5, sticky='NSEW')
 
-        self.h_sep_sd.grid(row=9, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+        self.h_sep_sc.grid(row=9, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
-        self.useSel.grid(row=0, column=0, padx=10, pady=10, sticky='W')
-        self.useOth.grid(row=0, column=0, padx=(140,50), pady=10, sticky='W')
-        self.useMix.grid(row=0, column=0, padx=(270,20), pady=10, sticky='W')
-        self.useGroup.grid(row=10, column=0, columnspan=3, padx=10, pady=(0,5), sticky='W')
+        self.usePrior.grid(row=0, column=0, padx=10, pady=10, sticky='W')
+        self.allowConsec.grid(row=0, column=0, padx=(160,20), pady=10, sticky='W')
+        self.anyPattern.grid(row=0, column=0, padx=(320,20), pady=10, sticky='W')
+        self.useGroup.grid(row=10, column=0, columnspan=5, padx=5, pady=(0,5), sticky='NSEW')
+
+        self.h_sep_sd.grid(row=11, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+
+        self.sourceLabel.grid(row=12, column=0, columnspan=4, padx=5, pady=5, sticky='NSEW')
+        self.selectSource.grid(row=12, column=4, columnspan=1, padx=5, pady=5, sticky='NSEW')
+        #self.dataGroup.grid(row=12, column=0, columnspan=5, padx=10, pady=(0,5), sticky='NSEW')
 
         # Create widgets for the Generate Tab
 
@@ -154,19 +167,16 @@ class Application(Frame):
         
         # Position widgets on the generate tab
 
-        self.genLabel.grid(row=0, column=0, columnspan=5, padx=5, pady=(10,5), sticky='NSEW')
-
-        self.h_sep_ga.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
-
+        self.genLabel.grid(row=0, column=0, columnspan=5, padx=5, pady=(10,10), sticky='NSEW')
         self.genLabelA.grid(row=2, column=0, columnspan=5, padx=5, pady=0, sticky='NSEW')
         self.genLabelB.grid(row=3, column=0, columnspan=5, padx=5, pady=0, sticky='NSEW')
         
-        self.h_sep_gb.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+        self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
         for i in range(5):
             self.dGen[i].positionTopDisplays(5, i)
                 
-        self.h_sep_gc.grid(row=15, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')        
+        self.h_sep_gb.grid(row=15, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')        
         
         self.genSet.grid(row=16, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
         self.clearSet.grid(row=16, column=3, columnspan=2, padx=5, pady=5, sticky='NSEW')
@@ -202,27 +212,21 @@ class Application(Frame):
 
         # Position widgets in About tab
 
-        self.aboutText.grid(row=0, column=0, columnspan=5, padx=5, pady=(10,5), sticky='W')
-
-        self.h_sep_aa.grid(row=1, columnspan=5, column=0, padx=5, pady=5, sticky='NSEW')
-
+        self.aboutText.grid(row=0, column=0, columnspan=5, padx=5, pady=(10,10), sticky='W')
         self.aboutTextA.grid(row=2, column=0, padx=10, pady=0, sticky='W')
         self.aboutTextB.grid(row=3, column=0, padx=10, pady=0, sticky='W')
-        self.aboutTextC.grid(row=4, column=0, padx=10, pady=0, sticky='W')
-
-        self.h_sep_ab.grid(row=6, columnspan=5, column=0, padx=5, pady=5, sticky='NSEW')
-
+        self.aboutTextC.grid(row=4, column=0, padx=10, pady=(0,10), sticky='W')
         self.aboutTextD.grid(row=7, column=0, padx=10, pady=0, sticky='W')
         self.aboutTextE.grid(row=8, column=0, padx=10, pady=0, sticky='W')
         self.aboutTextF.grid(row=9, column=0, padx=10, pady=0, sticky='W')
 
-        self.h_sep_ac.grid(row=10, columnspan=5, column=0, padx=5, pady=5, sticky='NSEW')
+        self.h_sep_aa.grid(row=10, columnspan=5, column=0, padx=5, pady=5, sticky='NSEW')
 
         self.aboutTextG.grid(row=11, column=0, padx=5, pady=5, sticky='W')
         self.aboutTextH.grid(row=12, column=0, padx=10, pady=0, sticky='W')
         self.aboutTextI.grid(row=13, column=0, padx=10, pady=0, sticky='W')
 
-        self.h_sep_ad.grid(row=14, columnspan=5, column=0, padx=5, pady=5, sticky='NSEW')
+        self.h_sep_ab.grid(row=14, columnspan=5, column=0, padx=5, pady=5, sticky='NSEW')
 
         self.legendBest.grid(row=15, column=0, padx=10, pady=5, sticky='W')
         self.bestText.grid(row=15, column=0, padx=(40,10), pady=5, sticky='W')
@@ -255,6 +259,10 @@ class Application(Frame):
         pass
 
     def clearSelSet(self):
+
+        pass
+
+    def setDataFile(self):
 
         pass
 
