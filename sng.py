@@ -77,7 +77,7 @@ class Application(Frame):
         
         # Create widgets for the main screen
 
-        self.mainLabel = Label(self.main_container, text="SELECT AND GENERATE", style="M.TLabel" )
+        self.mainLabel = Label(self.main_container, text="Select and Generate", style="M.TLabel" )
         self.exit = Button(self.main_container, text="EXIT", style="B.TButton", command=root.destroy)
 
         # Create widgets for the Select Tab
@@ -241,6 +241,7 @@ class Application(Frame):
         self.parentTab.grid(row=1, column=0, padx=5, pady=5, sticky='NSEW')
         self.exit.grid(row=2, column=0, padx=5, pady=(5,10), sticky='NSEW')
 
+        self.displayDataFile()
 
     def generateSet(self):
 
@@ -264,7 +265,59 @@ class Application(Frame):
 
     def setDataFile(self):
 
-        pass
+        ''' This function will check if the selected file is valid and display information from the file
+        '''
+
+        filename = askopenfilename()
+
+        if os.path.isfile(filename):
+            datafile = open(filename)
+
+            # Read the first record on file
+            d_line = datafile.readline()
+            d_list = d_line.split()
+
+            datafile.close()
+        
+            if "FANTASY" in d_list:
+                configFile = open("config.txt", "w")
+
+                configFile.write(filename)
+                self.data_file = filename
+                self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
+                
+                # Create an instance of number source each time a new file is selected
+                # self.number_source = nc.number_counter(self.data_file)
+
+                configFile.close()
+
+            else:
+                self.displayDataFile()
+
+    def displayDataFile(self):
+
+        ''' This function will display the data file name
+        '''
+
+        if os.path.exists("config.txt"):
+
+            configFile = open("config.txt", "r")
+
+            filename = configFile.readline()
+
+            if os.path.exists(filename):
+
+                self.data_file = filename
+                self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
+
+                #self.number_source = nc.number_counter(self.data_file)
+
+            else:
+                self.sourceLabel["text"] = "None"
+                    
+            configFile.close()
+        else:
+            self.sourceLabel["text"] = "None"
 
     def showTopValue(self, value=None):
 
