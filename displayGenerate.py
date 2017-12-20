@@ -38,7 +38,7 @@ class displayNumbers(object):
                 self.num[i]["style"] = "G.TLabel"
 
 
-    def positionTopDisplays(self, row, col):
+    def positionTopsDisplays(self, row, col):
 
         x_position = 9
         col_ctr = 1

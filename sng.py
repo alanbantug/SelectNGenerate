@@ -15,6 +15,7 @@ import tkMessageBox
 #import numberSelection as ns
 import displayGenerate as dg
 import displaySelect as ds
+import numberSelect as ns
 import os
 import pdb
 import copy
@@ -118,7 +119,7 @@ class Application(Frame):
         
         self.h_sep_sa.grid(row=3, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
-        self.dSel[0].positionTopDisplays(0, 0)
+        self.dSel[0].positionDisplays(0, 0)
         self.numberGroup.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
         self.h_sep_sb.grid(row=7, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
@@ -174,7 +175,7 @@ class Application(Frame):
         self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
         for i in range(5):
-            self.dGen[i].positionTopDisplays(5, i)
+            self.dGen[i].positionTopsDisplays(5, i)
                 
         self.h_sep_gb.grid(row=15, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')        
         
@@ -253,7 +254,11 @@ class Application(Frame):
 
     def selectSet(self):
 
-        pass
+        if self.sourceLabel["text"] == "None":
+            tkMessageBox.showerror('Select Error', 'Please select data file before proceeding.')
+        else:
+            self.dSel[0].changeStyle(self.numberSource.setSelectNumbers())
+
 
     def checkSet(self):
 
@@ -261,7 +266,11 @@ class Application(Frame):
 
     def clearSelSet(self):
 
-        pass
+        if self.sourceLabel["text"] == "None":
+            tkMessageBox.showerror('Clear Error', 'Please select data file before proceeding.')
+        else:
+            self.dSel[0].changeStyle(self.numberSource.clearSelectNumbers())
+
 
     def setDataFile(self):
 
@@ -283,11 +292,11 @@ class Application(Frame):
                 configFile = open("config.txt", "w")
 
                 configFile.write(filename)
-                self.data_file = filename
+                self.dataFile = filename
                 self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
                 
                 # Create an instance of number source each time a new file is selected
-                # self.number_source = nc.number_counter(self.data_file)
+                self.numberSource = ns.numberSelect(self.dataFile)
 
                 configFile.close()
 
@@ -307,10 +316,10 @@ class Application(Frame):
 
             if os.path.exists(filename):
 
-                self.data_file = filename
+                self.dataFile = filename
                 self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
 
-                #self.number_source = nc.number_counter(self.data_file)
+                self.numberSource = ns.numberSelect(self.dataFile)
 
             else:
                 self.sourceLabel["text"] = "None"
