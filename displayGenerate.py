@@ -14,7 +14,7 @@ class displayNumbers(object):
     def __init__(self, container, topLimit):
 
         self.topLimit = topLimit
-        #self.extLimit = extLimit
+
         self.num = []
         self.ext = []
 

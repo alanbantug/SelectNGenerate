@@ -262,7 +262,9 @@ class Application(Frame):
 
     def checkSet(self):
 
-        pass
+        self.numberSource.analyzeData()
+        self.showStats()
+
 
     def clearSelSet(self):
 
@@ -320,6 +322,7 @@ class Application(Frame):
                 self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
 
                 self.numberSource = ns.numberSelect(self.dataFile)
+                self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
 
             else:
                 self.sourceLabel["text"] = "None"
@@ -327,6 +330,58 @@ class Application(Frame):
             configFile.close()
         else:
             self.sourceLabel["text"] = "None"
+
+    def markSelected(self):
+
+        ''' This function will mark the selected numbers if a selection the last time
+        '''
+
+        self.dSel[0].changeStyle(self.numberSource.setSelectNumbers())
+
+    def showStats(self):
+
+        ''' This function will build the options and other information
+        '''
+
+        self.popStats = Toplevel(self.main_container)
+        self.popStats.title("Number Stats")
+        self.popStats.maxsize(430, 550)
+        self.popStats.minsize(430, 550)
+
+        self.osep_a = Separator(self.popStats, orient=HORIZONTAL)
+        self.osep_b = Separator(self.popStats, orient=HORIZONTAL)
+        self.osep_c = Separator(self.popStats, orient=HORIZONTAL)
+        
+        self.optLastMatch = Label(self.popStats, text="", style="B.TLabel" )
+        self.optExactMatch = Label(self.popStats, text="", style="B.TLabel" )
+        self.optMaxGap = Label(self.popStats, text="", style="B.TLabel" )
+        self.optMinGap = Label(self.popStats, text="", style="B.TLabel" )
+        self.optLastMatchDays = Label(self.popStats, text="", style="B.TLabel" )
+
+        self.closeStats = Button(self.popStats, text="CLOSE", style="B.TButton", command=self.popStats.destroy)
+
+        # Position widgets
+
+        self.osep_a.grid(row=0, columnspan=3, column=0, padx=5, pady=5, sticky='NSEW')
+
+        self.optLastMatch.grid(row=1, column=0, padx=10, pady=0, sticky='W')
+        self.optExactMatch.grid(row=2, column=0, padx=10, pady=0, sticky='W')
+        self.optLastMatchDays.grid(row=3, column=0, padx=10, pady=0, sticky='W')
+        self.optMaxGap.grid(row=4, column=0, padx=10, pady=0, sticky='W')
+        self.optMinGap.grid(row=5, column=0, padx=10, pady=0, sticky='W')
+        
+        self.osep_b.grid(row=6, columnspan=3, column=0, padx=5, pady=5, sticky='NSEW')
+
+        self.closeStats.grid(row=7, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
+
+        last_match, first_match, last_match_days, max_gap, min_gap, exact_match = self.numberSource.getStats()
+
+        self.optLastMatch['text'] = "The last winner from select numbers occured on %s." %last_match
+        self.optLastMatchDays ['text']= "It has been %s days since the last winner from select numbers." %last_match_days
+        self.optExactMatch ['text'] = "The total exact matches from this set is %s since %s." %(exact_match, first_match)
+        self.optMaxGap ['text'] = "The maximum gap between incidents is %s." %max_gap
+        self.optMinGap ['text'] = "The minimum gap between incidents is %s." %min_gap
+
 
     def showTopValue(self, value=None):
 

@@ -23,7 +23,7 @@ class numberSelect(object):
 		self.otherNumbers = []
 		self.allNumbers = self.createList(1, 39)
 
-		self.reformat_file()
+		self.reformatFile()
 		self.loadSelectNumbers()
 		
 
@@ -78,7 +78,6 @@ class numberSelect(object):
 				self.otherNumbers.append(i)
 
 		# Perform analysis on file after loading the randomly selected numbers
-		# self.crunch_data()
 
 
 	def setSelectNumbers(self, select_count=20):
@@ -166,8 +165,7 @@ class numberSelect(object):
 		selectFile.close()
 
 		return self.selectedNumbers
-		# Perform analysis on file after loading the randomly selected numbers
-		# self.crunch_data()
+
 
 	def clearSelectNumbers(self):
 
@@ -179,7 +177,8 @@ class numberSelect(object):
 
 		return self.selectedNumbers
 
-	def reformat_file(self):
+
+	def reformatFile(self):
 
 		''' This function will create the CSV file to build the dataframe
 		'''
@@ -222,7 +221,7 @@ class numberSelect(object):
 		myOutput.close()
 
 
-	def crunch_data(self):
+	def analyzeData(self):
 
 		''' This function will do several things:
 
@@ -236,12 +235,12 @@ class numberSelect(object):
 		fantasy_file = pd.read_csv('csv_data.csv', header=None)
 		fantasy_file.columns = ['Draw', 'Date', 'A', 'B', 'C', 'D', 'E']
 
-		fantasy_file['MS'] = fantasy_file[['Draw', 'A', 'B', 'C', 'D', 'E']].apply(self.match_select, axis=1)
+		fantasy_file['MS'] = fantasy_file[['Draw', 'A', 'B', 'C', 'D', 'E']].apply(self.matchSelect, axis=1)
 		
 		fantasy_select = copy.copy(fantasy_file[fantasy_file['MS'] == 5])
 		fantasy_select.to_csv('select.csv')
 
-		fantasy_select['GAP'] = fantasy_select[['Draw']].apply(self.get_gaps, axis=1)
+		fantasy_select['GAP'] = fantasy_select[['Draw']].apply(self.getGaps, axis=1)
 		fantasy_select.to_csv('select.csv')
 
 		self.first_match = fantasy_select['Date'].min()
@@ -257,8 +256,9 @@ class numberSelect(object):
 		self.max_gap = fantasy_select['GAP'].max()
 		self.min_gap = fantasy_select[fantasy_select['GAP'] > 0]['GAP'].min()
 
-
-	def match_select(self, data):
+		return self.last_match, self.first_match, self.last_match_days.days, self.max_gap, self.min_gap, self.exact_match
+		
+	def matchSelect(self, data):
 
 		draw, numa, numb, numc, numd, nume = data
 
@@ -267,12 +267,12 @@ class numberSelect(object):
 		match_count = 0
 
 		for n in draw_set:
-			match_count += self.select_numbers.count(int(n))
+			match_count += self.selectedNumbers.count(int(n))
 
 		return match_count
 
 
-	def get_gaps(self, draw):
+	def getGaps(self, draw):
 
 		''' This function will get the gaps between the 
 		'''
@@ -317,7 +317,7 @@ class numberSelect(object):
 		return self.selectedNumbers
 
 
-	def get_stats(self):
+	def getStats(self):
 
 		return self.last_match, self.first_match, self.last_match_days.days, self.max_gap, self.min_gap, self.exact_match
 
