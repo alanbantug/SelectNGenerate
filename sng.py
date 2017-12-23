@@ -299,6 +299,7 @@ class Application(Frame):
                 
                 # Create an instance of number source each time a new file is selected
                 self.numberSource = ns.numberSelect(self.dataFile)
+                self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
 
                 configFile.close()
 
@@ -337,6 +338,7 @@ class Application(Frame):
         '''
 
         self.dSel[0].changeStyle(self.numberSource.setSelectNumbers())
+        
 
     def showStats(self):
 
@@ -422,7 +424,27 @@ class Application(Frame):
         
 root = Tk()
 root.title("SELECT AND GENERATE")
-root.minsize(400, 300)
+
+# Set size
+
+wh = 450
+ww = 500
+
+#root.resizable(height=False, width=False)
+
+root.minsize(ww, wh)
+root.maxsize(ww, wh)
+
+# Position in center screen
+
+ws = root.winfo_screenwidth() 
+hs = root.winfo_screenheight() 
+
+# calculate x and y coordinates for the Tk root window
+x = (ws/2) - (ww/2)
+y = (hs/2) - (wh/2)
+
+root.geometry('%dx%d+%d+%d' % (ww, wh, x, y))
 
 app = Application(root)
 

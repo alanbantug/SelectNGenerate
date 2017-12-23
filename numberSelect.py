@@ -67,8 +67,7 @@ class numberSelect(object):
 
 		else:
 
-			for i in range(20):
-				self.selectedNumbers.append(i + 1)
+			self.selectedNumbers = self.createList(1, 39)
 
 
 		for i in range(1, 40):
@@ -174,6 +173,9 @@ class numberSelect(object):
 
 		self.selectedNumbers = self.createList(1, 39)
 		self.otherNumbers = []
+
+		if os.path.exists("selected.txt"):
+			os.remove("selected.txt")
 
 		return self.selectedNumbers
 
