@@ -1,13 +1,9 @@
 #! python3
 
-#from tkinter import *
-#from tkinter.ttk import *
+import tkinter
+from tkinter import *
 
-import Tkinter
-from Tkinter import *
-
-import ttk
-from ttk import *
+from tkinter.ttk import *
 
 class displayNumbers(object):
 
@@ -17,7 +13,7 @@ class displayNumbers(object):
         self.num = []
 
         Style().configure("W.TLabel", foreground= "black", background="white", font="Courier 8", anchor="center")
-        Style().configure("G.TLabel", foreground= "black", background="green", font="Courier 8", anchor="center")
+        Style().configure("G.TLabel", foreground= "white", background="green", font="Courier 8", anchor="center")
         
         for i in range(self.topLimit):
             idx = "{0:02}".format(i + 1)
@@ -27,6 +23,7 @@ class displayNumbers(object):
     def changeStyle(self, topSelect):
 
         Style().configure("W.TLabel", foreground= "black", background="white", font="Courier 8", anchor="center")
+        Style().configure("G.TLabel", foreground= "white", background="green", font="Courier 8", anchor="center")
 
         for i in range(self.topLimit):
             self.num[i]["style"] = "W.TLabel"

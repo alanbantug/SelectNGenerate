@@ -21,6 +21,7 @@ class numberSelect(object):
 
 		self.selectedNumbers = []
 		self.otherNumbers = []
+		self.lastWinner = []
 		self.allNumbers = self.createList(1, 39)
 
 		self.reformatFile()
@@ -217,7 +218,9 @@ class numberSelect(object):
 
 							if rec_ctr < 1:
 								for n in fields[5:10]:
-									last_winner.append(int(n))
+									self.lastWinner.append(int(n))
+
+							rec_ctr += 1
 
 		myInput.close()
 		myOutput.close()

@@ -3,11 +3,10 @@
 #from tkinter import *
 #from tkinter.ttk import *
 
-import Tkinter
-from Tkinter import *
+import tkinter
+from tkinter import *
 
-import ttk
-from ttk import *
+from tkinter.ttk import *
 
 class displayNumbers(object):
 
@@ -19,7 +18,7 @@ class displayNumbers(object):
         self.ext = []
 
         Style().configure("W.TLabel", foreground= "black", background="white", font="Courier 8", anchor="center")
-        Style().configure("G.TLabel", foreground= "black", background="green", font="Courier 8", anchor="center")
+        Style().configure("G.TLabel", foreground= "white", background="green", font="Courier 8", anchor="center")
         
         for i in range(self.topLimit):
             idx = "{0:02}".format(i + 1)
@@ -34,7 +33,7 @@ class displayNumbers(object):
             self.num[i]["style"] = "W.TLabel"
 
         for i in range(self.topLimit):
-            if i + 1 < topSelect:
+            if i + 1 in topSelect:
                 self.num[i]["style"] = "G.TLabel"
 
 

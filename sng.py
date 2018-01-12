@@ -1,19 +1,17 @@
 #! python3
 
-import Tkinter
-from Tkinter import *
+import tkinter
+from tkinter import *
 
-import ttk
-from ttk import *
+from tkinter.ttk import *
+from tkinter import messagebox
 
-from tkFileDialog import askdirectory
-from tkFileDialog import askopenfilename
-
-import tkMessageBox
-# import the dataloader
+from tkinter.filedialog import askdirectory
+from tkinter.filedialog import askopenfilename
 
 #import numberSelection as ns
 import displayGenerate as dg
+import setGenerate as sg
 import displaySelect as ds
 import numberSelect as ns
 import os
@@ -52,7 +50,7 @@ class Application(Frame):
         # Set Label styles
         Style().configure("M.TLabel", font="Verdana 20 bold", anchor="center")
 
-        Style().configure("G.TLabel", foreground= "black", background="green", font="Courier 8", anchor="center")
+        Style().configure("G.TLabel", foreground= "white", background="green", font="Courier 8", anchor="center")
         Style().configure("L.TLabel", foreground= "white", background="blue", font="Courier 8", anchor="center")
         Style().configure("R.TLabel", foreground= "white", background="red", font="Courier 8", anchor="center")
         Style().configure("Y.TLabel", foreground= "black", background="yellow", font="Courier 8", anchor="center")
@@ -68,10 +66,10 @@ class Application(Frame):
         # Set scale styles
         Style().configure("S.TScale", orient=HORIZONTAL, width=25)
 
-        self.parentTab = ttk.Notebook(self.main_container)
-        self.selTab = ttk.Frame(self.parentTab)   # first page, which would get widgets gridded into it
-        self.genTab = ttk.Frame(self.parentTab)   # second page
-        self.abtTab = ttk.Frame(self.parentTab)   # second page
+        self.parentTab = Notebook(self.main_container)
+        self.selTab = Frame(self.parentTab)   # first page, which would get widgets gridded into it
+        self.genTab = Frame(self.parentTab)   # second page
+        self.abtTab = Frame(self.parentTab)   # second page
         self.parentTab.add(self.selTab, text='    Select  ')
         self.parentTab.add(self.genTab, text='   Generate ')
         self.parentTab.add(self.abtTab, text='    About ')
@@ -115,7 +113,7 @@ class Application(Frame):
         # Position widgets on the Select tab
 
         self.selLabel.grid(row=0, column=0, columnspan=5, padx=5, pady=(10,10), sticky='NSEW')
-        self.selLabelA.grid(row=2, column=0, columnspan=5, padx=5, pady=0, sticky='NSEW')
+        self.selLabelA.grid(row=2, column=0, columnspan=5, padx=5, pady=(0, 5), sticky='NSEW')
         
         self.h_sep_sa.grid(row=3, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
@@ -139,8 +137,7 @@ class Application(Frame):
 
         self.sourceLabel.grid(row=12, column=0, columnspan=4, padx=5, pady=5, sticky='NSEW')
         self.selectSource.grid(row=12, column=4, columnspan=1, padx=5, pady=5, sticky='NSEW')
-        #self.dataGroup.grid(row=12, column=0, columnspan=5, padx=10, pady=(0,5), sticky='NSEW')
-
+        
         # Create widgets for the Generate Tab
 
         self.h_sep_ga = Separator(self.genTab, orient=HORIZONTAL)
@@ -246,8 +243,14 @@ class Application(Frame):
 
     def generateSet(self):
 
-        pass
+        self.sGen = sg.getCombinations(self.numberSource.getSelectNumbers())
+        
+        selection = self.sGen.randomSelection()
 
+        for i in range(5):
+            self.dGen[i].changeTopStyle(selection[i])
+
+        
     def clearGenSet(self):
 
         pass
@@ -305,6 +308,7 @@ class Application(Frame):
 
             else:
                 self.displayDataFile()
+                
 
     def displayDataFile(self):
 
@@ -384,6 +388,26 @@ class Application(Frame):
         self.optMaxGap ['text'] = "The maximum gap between incidents is %s." %max_gap
         self.optMinGap ['text'] = "The minimum gap between incidents is %s." %min_gap
 
+        # Set size
+
+        wh = 150
+        ww = 400
+
+        #root.resizable(height=False, width=False)
+
+        self.popStats.minsize(ww, wh)
+        self.popStats.maxsize(ww, wh)
+
+        # Position in center screen
+
+        ws = self.popStats.winfo_screenwidth() 
+        hs = self.popStats.winfo_screenheight() 
+
+        # calculate x and y coordinates for the Tk root window
+        x = (ws/2) - (ww/2)
+        y = (hs/2) - (wh/2)
+
+        self.popStats.geometry('%dx%d+%d+%d' % (ww, wh, x, y))
 
     def showTopValue(self, value=None):
 
