@@ -38,19 +38,19 @@ class displayNumbers(object):
 
     def positionDisplays(self, row, col):
 
-        x_position = 15
+        x_position = 10
         col_ctr = 1
         row_ctr = row
 
         for i in range(self.topLimit):
-            self.num[i].grid(row=row_ctr, column=col, padx=(x_position,10), pady=1, sticky='W')
+            self.num[i].grid(row=row_ctr, column=col, padx=(x_position,10), pady=3, sticky='W')
             col_ctr += 1
             if col_ctr > 13:
                 col_ctr = 1
                 row_ctr += 1
-                x_position = 15
+                x_position = 10
             else:    
-                x_position += 35
+                x_position += 25
 
         row_ctr += 1
         

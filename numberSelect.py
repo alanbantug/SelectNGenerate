@@ -12,6 +12,7 @@ import copy
 import os
 
 from time import time
+import math
 
 class numberSelect(object):
 
@@ -88,10 +89,12 @@ class numberSelect(object):
 		self.selectedNumbers = []
 		self.otherNumbers = []
 
-		# get 5 even numbers from numbers under 20
+		limit = math.floor(select_count / 2)
+
+		# get even numbers  
 		while (True):
 
-			selected = random.choice(self.createList(1, 20))
+			selected = random.choice(self.createList(1, 39))
 
 			if selected in self.selectedNumbers:
 				pass
@@ -99,27 +102,13 @@ class numberSelect(object):
 				if selected % 2 == 0:
 					self.selectedNumbers.append(selected)
 
-			if len(self.selectedNumbers) == 5:
+			if len(self.selectedNumbers) == limit:
 				break
 
-		# get 5 even numbers from numbers above 20
+		# get odd numbers
 		while (True):
 
-			selected = random.choice(self.createList(21, 39))
-
-			if selected in self.selectedNumbers:
-				pass
-			else:
-				if selected % 2 == 0:
-					self.selectedNumbers.append(selected)
-
-			if len(self.selectedNumbers) == 10:
-				break
-
-		# get 5 odd numbers from numbers below 20
-		while (True):
-
-			selected = random.choice(self.createList(1, 20))
+			selected = random.choice(self.createList(1, 39))
 
 			if selected in self.selectedNumbers:
 				pass
@@ -127,22 +116,36 @@ class numberSelect(object):
 				if selected % 2 == 1:
 					self.selectedNumbers.append(selected)
 
-			if len(self.selectedNumbers) == 15:
+			if len(self.selectedNumbers) == select_count:
 				break
 
-		# get 5 odd numbers from numbers above 20
-		while (True):
+		# # get 5 odd numbers from numbers below 20
+		# while (True):
 
-			selected = random.choice(self.createList(21, 39))
+		# 	selected = random.choice(self.createList(1, 20))
 
-			if selected in self.selectedNumbers:
-				pass
-			else:
-				if selected % 2 == 1:
-					self.selectedNumbers.append(selected)
+		# 	if selected in self.selectedNumbers:
+		# 		pass
+		# 	else:
+		# 		if selected % 2 == 1:
+		# 			self.selectedNumbers.append(selected)
 
-			if len(self.selectedNumbers) == 20:
-				break
+		# 	if len(self.selectedNumbers) == 15:
+		# 		break
+
+		# # get 5 odd numbers from numbers above 20
+		# while (True):
+
+		# 	selected = random.choice(self.createList(21, 39))
+
+		# 	if selected in self.selectedNumbers:
+		# 		pass
+		# 	else:
+		# 		if selected % 2 == 1:
+		# 			self.selectedNumbers.append(selected)
+
+		# 	if len(self.selectedNumbers) == 20:
+		# 		break
 
 		for i in range(1, 40):
 			if i in self.selectedNumbers:
@@ -153,7 +156,7 @@ class numberSelect(object):
 		selectFile = open("selected.txt", "w")
 		sel_num = []
 
-		for i in range(20):
+		for i in range(select_count):
 
 			sel_num.append("{0:02}".format(self.selectedNumbers[i]))
 
@@ -327,248 +330,37 @@ class numberSelect(object):
 		return self.last_match, self.first_match, self.last_match_days.days, self.max_gap, self.min_gap, self.exact_match
 
 
-	def get_suggestions(self, use_numbers):
+	# def get_suggestions(self, use_numbers):
 
-		''' This function will call get_combinations to obtain a set of combinations
-			A starting point will be generated randomly from 1 to 5000. From there, the program logic will step thru the 
-			different combinations and get the first 5 combinations that will qualify
-		'''
+	# 	''' This function will call get_combinations to obtain a set of combinations
+	# 		A starting point will be generated randomly from 1 to 5000. From there, the program logic will step thru the 
+	# 		different combinations and get the first 5 combinations that will qualify
+	# 	'''
 
-		select_sets = []
+	# 	select_sets = []
 
-		while (True):
+	# 	while (True):
 
-			if use_numbers == 1:
+	# 		if use_numbers == 1:
 
-				hi_limit = 15504
-				c_index = random.randint(1, hi_limit)
-				select_sets = self.get_select_sets(c_index, self.select_numbers, hi_limit, 20, 5)
+	# 			hi_limit = 15504
+	# 			c_index = random.randint(1, hi_limit)
+	# 			select_sets = self.get_select_sets(c_index, self.select_numbers, hi_limit, 20, 5)
 
-			elif use_numbers == 2:
+	# 		elif use_numbers == 2:
 			
-				hi_limit = 11628
-				c_index = random.randint(1, hi_limit)
-				select_sets = self.get_select_sets(c_index, self.other_numbers, hi_limit, 19, 6)
+	# 			hi_limit = 11628
+	# 			c_index = random.randint(1, hi_limit)
+	# 			select_sets = self.get_select_sets(c_index, self.other_numbers, hi_limit, 19, 6)
 
-			elif use_numbers == 3:
+	# 		elif use_numbers == 3:
 			
-				c_index = random.randint(1, 92055)
-				select_sets = self.get_mixed_sets(c_index, self.select_numbers, self.other_numbers, 20, 39, 0)
+	# 			c_index = random.randint(1, 92055)
+	# 			select_sets = self.get_mixed_sets(c_index, self.select_numbers, self.other_numbers, 20, 39, 0)
 
-			if len(select_sets) == 5:		
-				break
+	# 		if len(select_sets) == 5:		
+	# 			break
 
-		return select_sets
-
-
-	def get_select_sets(self, c_index, source, hi_limit, top_limit, dup_limit):
-
-		''' The loop will iterate thru all possible combinations of the selected numbers. Once the iteration matches one of the 
-		    iteration numbers passed, the combination will be checked for consecutive numbers and the number of counts the numbers
-		    occured (usage). If the combination passes criteria, then it is added to the select_sets
-
-		'''
-		
-		select_sets = []
-		set_ctr = 0
-		
-		num_src = copy.copy(source)
-		
-		random.shuffle(num_src)
-
-		com_ctr = 0
-
-		id_a = 0
-		while (id_a < top_limit - 4):
-			id_b = id_a + 1
-
-			while (id_b < top_limit - 3):
-				id_c = id_b + 1
-
-				while (id_c < top_limit - 2):
-					id_d = id_c + 1
-
-					while (id_d < top_limit - 1):
-						id_e = id_d + 1
-
-						while (id_e < top_limit):
-
-							com_ctr += 1
-
-							if com_ctr == c_index:
-
-								if set_ctr < 5:
-
-									n_set = sorted([num_src[id_a], num_src[id_b], num_src[id_c], num_src[id_d], num_src[id_e]])
-									
-									exceeded_limit = self.check_limits(n_set, select_sets, dup_limit)
-
-									if exceeded_limit:
-										pass
-									else:
-										select_sets.append(n_set)
-
-										set_ctr += 1
-
-										if set_ctr == 5:
-											return select_sets
-
-								c_index += random.randint(1, 100)
-
-								if c_index > hi_limit:
-									break
-
-							id_e += 1
-					
-						id_d += 1
-					
-					id_c += 1
-					
-				id_b += 1
-
-			id_a += 1
-
-		return select_sets
-	
-
-	def get_mixed_sets(self, c_index, source_a, source_b, select_limit, top_limit, dup_limit):
-
-		''' The loop will iterate thru all possible combinations of the selected numbers. Once the iteration matches one of the 
-		    iteration numbers passed, the combination will be checked for consecutive numbers and the number of counts the numbers
-		    occured (usage). If the combination passes criteria, then it is added to the select_sets
-
-		'''
-		
-		select_sets = []
-		set_ctr = 0
-		
-		num_src_a = copy.copy(source_a)
-		num_src_b = copy.copy(source_b)
-		
-		random.shuffle(num_src_a)
-		random.shuffle(num_src_b)
-
-		com_ctr = 0
-
-		id_a = 0
-		while (id_a < select_limit - 3):
-			id_b = id_a + 1
-
-			while (id_b < select_limit - 2):
-				id_c = id_b + 1
-
-				while (id_c < select_limit - 1):
-					id_d = 0
-
-					while (id_d < select_limit):
-						id_e = id_d + 1
-
-						while (id_e < top_limit - select_limit):
-
-							com_ctr += 1
-
-							if com_ctr == c_index:
-
-								if set_ctr < 5:
-
-									n_set = sorted([num_src_a[id_a], num_src_a[id_b], num_src_a[id_c], num_src_a[id_d], num_src_b[id_e]])
-									
-									exceeded_limit = self.check_limits(n_set, select_sets, dup_limit)
-
-									if exceeded_limit:
-										pass
-									else:
-										select_sets.append(n_set)
-
-										set_ctr += 1
-
-										if set_ctr == 5:
-											return select_sets
-
-								c_index += random.randint(1, 1000)
-								
-								if c_index > 92055:
-									break
-
-							id_e += 1
-					
-						id_d += 1
-					
-					id_c += 1
-					
-				id_b += 1
-
-			id_a += 1
-
-		return select_sets
-	
-	
-	def check_consecutives(self, data):
-    
-		# This function checks if a combination has consecutive numbers. If there are consecutive numbers, return 1
-    	
-		numa, numb, numc, numd, nume = data
-
-		con_ctr = 0
-
-		if numa + 1 == numb:
-			con_ctr += 1
-		if numb + 1 == numc:
-			con_ctr += 1
-		if numc + 1 == numd:
-			con_ctr += 1
-		if numd + 1 == nume:
-			con_ctr += 1
-		
-		return con_ctr
+	# 	return select_sets
 
 
-	def check_limits(self, data, select_sets, dup_limit):
-
-		# This function will check how many times a number is used in the set returned, and how many of the numbers exceeded the limit. The limit is two
-
-		used_numbers = defaultdict(int)
-
-		# count the numbers in the selected sets. note that it includes the super, so only the first 5 is counted
-		for sets in select_sets:
-			for s in sets:
-				used_numbers[s] += 1
-		
-		# count the numbers in the new set
-		for d in data:
-			used_numbers[d] += 1
-
-		dup_ctr = 0
-
-		for v in used_numbers.itervalues():
-			if v > 1:
-				dup_ctr += 1
-
-			if v > 2:
-				return True
-				
-			if dup_ctr > dup_limit:
-				return True
-
-		con_ctr = self.check_consecutives(data)
-
-		if con_ctr > 0:
-			return True
-
-		# check if numbers in a set are similar to other sets at least by two numbers
-
-		for i in range(len(select_sets[:-1])):
-
-			match_ctr = 0
-			
-			for j in range(5):
-
-				for k in range(5):
-
-					if select_sets[i][j] == select_sets[i+1][k]:
-						match_ctr += 1
-
-			if match_ctr > 3:
-				return True
-
-		return False

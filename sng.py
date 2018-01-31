@@ -31,6 +31,7 @@ class Application(Frame):
         self.prior = IntVar()
         self.consec = IntVar()
         self.anypat = IntVar()
+        self.selectionCount = IntVar()
         self.prior.set(0)
         self.consec.set(0)
         self.anypat.set(0)
@@ -62,6 +63,7 @@ class Application(Frame):
 
         # Set button styles
         Style().configure("B.TButton", font="Verdana 8", relief="raised")
+        Style().configure("B.TRadiobutton", font="Verdana 8")
 
         # Set scale styles
         Style().configure("S.TScale", orient=HORIZONTAL, width=25)
@@ -95,17 +97,22 @@ class Application(Frame):
 
         self.dSel = []
 
-        self.numberGroup = LabelFrame(self.selTab, text=' Number Selection ', style="O.TLabelframe")
+        self.numberGroup = LabelFrame(self.selTab, text=' Selection ', style="O.TLabelframe")
         self.dSel.append(ds.displayNumbers(self.numberGroup, 39))
 
         self.selSet = Button(self.selTab, text="SELECT", style="B.TButton", command=self.selectSet)
         self.chkSet = Button(self.selTab, text="CHECK", style="B.TButton", command=self.checkSet)
         self.clearSet = Button(self.selTab, text="CLEAR", style="B.TButton", command=self.clearSelSet)
 
-        self.useGroup = LabelFrame(self.selTab, text=' Number Use Options ', style="O.TLabelframe")
-        self.usePrior = Checkbutton(self.useGroup, text="Use Last Winner", style="B.TCheckbutton", variable=self.prior)
-        self.allowConsec = Checkbutton(self.useGroup, text="Allow Consecutives", style="B.TCheckbutton", variable=self.consec)
-        self.anyPattern = Checkbutton(self.useGroup, text="Any Pattern", style="B.TCheckbutton", variable=self.anypat)
+        self.selectGroup = LabelFrame(self.selTab, text=' Select Counts ', style="O.TLabelframe")
+        self.selectionA = Radiobutton(self.selectGroup, text="15", style="B.TRadiobutton", variable=self.selectionCount, value=15)
+        self.selectionB = Radiobutton(self.selectGroup, text="20", style="B.TRadiobutton", variable=self.selectionCount, value=20)
+        self.selectionC = Radiobutton(self.selectGroup, text="25", style="B.TRadiobutton", variable=self.selectionCount, value=25)
+        
+        self.genGroup = LabelFrame(self.selTab, text=' Generate Options ', style="O.TLabelframe")
+        self.usePrior = Checkbutton(self.genGroup, text="Use Last Winner", style="B.TCheckbutton", variable=self.prior)
+        self.limitConsec = Checkbutton(self.genGroup, text="Limit Consecutives", style="B.TCheckbutton", variable=self.consec)
+        self.anyPattern = Checkbutton(self.genGroup, text="Any Pattern", style="B.TCheckbutton", variable=self.anypat)
 
         self.sourceLabel = Label(self.selTab, text="None", style="SB.TLabel" )
         self.selectSource = Button(self.selTab, text="SET DATA FILE", style="B.TButton", command=self.setDataFile)
@@ -118,22 +125,27 @@ class Application(Frame):
         self.h_sep_sa.grid(row=3, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
         self.dSel[0].positionDisplays(0, 0)
-        self.numberGroup.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+        self.numberGroup.grid(row=4, column=0, columnspan=4, padx=(10,5), pady=(0,5), sticky='NSEW')
+
+        self.selectionA.grid(row=0, column=0, padx=10, pady=3, sticky='W')
+        self.selectionB.grid(row=1, column=0, padx=10, pady=3, sticky='W')
+        self.selectionC.grid(row=2, column=0, padx=10, pady=3, sticky='W')
+        self.selectGroup.grid(row=4, column=4, columnspan=1, padx=(5,10), pady=(0,5), sticky='NSEW')
 
         self.h_sep_sb.grid(row=7, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
-        self.selSet.grid(row=8, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
-        self.chkSet.grid(row=8, column=3, padx=5, pady=5, sticky='NSEW')
+        self.selSet.grid(row=8, column=0, columnspan=2, padx=5, pady=5, sticky='NSEW')
+        self.chkSet.grid(row=8, column=2, columnspan=2, padx=5, pady=5, sticky='NSEW')
         self.clearSet.grid(row=8, column=4, padx=5, pady=5, sticky='NSEW')
 
         self.h_sep_sc.grid(row=9, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
-        self.usePrior.grid(row=0, column=0, padx=10, pady=10, sticky='W')
-        self.allowConsec.grid(row=0, column=0, padx=(160,20), pady=10, sticky='W')
-        self.anyPattern.grid(row=0, column=0, padx=(320,20), pady=10, sticky='W')
-        self.useGroup.grid(row=10, column=0, columnspan=5, padx=5, pady=(0,5), sticky='NSEW')
+        # self.selectionA.grid(row=0, column=0, padx=10, pady=3, sticky='W')
+        # self.selectionB.grid(row=1, column=0, padx=10, pady=3, sticky='W')
+        # self.selectionC.grid(row=2, column=0, padx=10, pady=3, sticky='W')
+        # self.genGroup.grid(row=4, column=4, columnspan=1, padx=(5,10), pady=(0,5), sticky='NSEW')
 
-        self.h_sep_sd.grid(row=11, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+        # self.h_sep_sd.grid(row=11, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
         self.sourceLabel.grid(row=12, column=0, columnspan=4, padx=5, pady=5, sticky='NSEW')
         self.selectSource.grid(row=12, column=4, columnspan=1, padx=5, pady=5, sticky='NSEW')
@@ -211,18 +223,18 @@ class Application(Frame):
         # Position widgets in About tab
 
         self.aboutText.grid(row=0, column=0, columnspan=5, padx=5, pady=(10,10), sticky='W')
-        self.aboutTextA.grid(row=2, column=0, padx=10, pady=0, sticky='W')
-        self.aboutTextB.grid(row=3, column=0, padx=10, pady=0, sticky='W')
-        self.aboutTextC.grid(row=4, column=0, padx=10, pady=(0,10), sticky='W')
-        self.aboutTextD.grid(row=7, column=0, padx=10, pady=0, sticky='W')
-        self.aboutTextE.grid(row=8, column=0, padx=10, pady=0, sticky='W')
-        self.aboutTextF.grid(row=9, column=0, padx=10, pady=0, sticky='W')
+        self.aboutTextA.grid(row=2, column=0, padx=5, pady=0, sticky='W')
+        self.aboutTextB.grid(row=3, column=0, padx=5, pady=0, sticky='W')
+        self.aboutTextC.grid(row=4, column=0, padx=5, pady=(0,10), sticky='W')
+        self.aboutTextD.grid(row=7, column=0, padx=5, pady=0, sticky='W')
+        self.aboutTextE.grid(row=8, column=0, padx=5, pady=0, sticky='W')
+        self.aboutTextF.grid(row=9, column=0, padx=5, pady=0, sticky='W')
 
         self.h_sep_aa.grid(row=10, columnspan=5, column=0, padx=5, pady=5, sticky='NSEW')
 
         self.aboutTextG.grid(row=11, column=0, padx=5, pady=5, sticky='W')
-        self.aboutTextH.grid(row=12, column=0, padx=10, pady=0, sticky='W')
-        self.aboutTextI.grid(row=13, column=0, padx=10, pady=0, sticky='W')
+        self.aboutTextH.grid(row=12, column=0, padx=5, pady=0, sticky='W')
+        self.aboutTextI.grid(row=13, column=0, padx=5, pady=0, sticky='W')
 
         self.h_sep_ab.grid(row=14, columnspan=5, column=0, padx=5, pady=5, sticky='NSEW')
 
@@ -240,6 +252,9 @@ class Application(Frame):
         self.exit.grid(row=2, column=0, padx=5, pady=(5,10), sticky='NSEW')
 
         self.displayDataFile()
+
+        # set the selection count to default to 15
+        # self.selectionCount.set(15)
 
     def generateSet(self):
 
@@ -260,7 +275,7 @@ class Application(Frame):
         if self.sourceLabel["text"] == "None":
             tkMessageBox.showerror('Select Error', 'Please select data file before proceeding.')
         else:
-            self.dSel[0].changeStyle(self.numberSource.setSelectNumbers())
+            self.dSel[0].changeStyle(self.numberSource.setSelectNumbers(self.selectionCount.get()))
 
 
     def checkSet(self):
@@ -328,7 +343,7 @@ class Application(Frame):
 
                 self.numberSource = ns.numberSelect(self.dataFile)
                 self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
-
+                self.selectionCount.set(len(self.numberSource.getSelectNumbers()))
             else:
                 self.sourceLabel["text"] = "None"
                     
@@ -336,12 +351,13 @@ class Application(Frame):
         else:
             self.sourceLabel["text"] = "None"
 
-    def markSelected(self):
 
-        ''' This function will mark the selected numbers if a selection the last time
-        '''
+    # def markSelected(self):
 
-        self.dSel[0].changeStyle(self.numberSource.setSelectNumbers())
+    #     ''' This function will mark the selected numbers if a selection the last time
+    #     '''
+
+    #     self.dSel[0].changeStyle(self.numberSource.setSelectNumbers())
         
 
     def showStats(self):
