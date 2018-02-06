@@ -20,7 +20,9 @@ import copy
 import random
 import shutil
 import subprocess as sp
-        
+
+import threading
+
 class Application(Frame):
     
     def __init__(self, master):
@@ -258,9 +260,17 @@ class Application(Frame):
 
     def generateSet(self):
 
+        t = threading.Thread(None, self.genSetThread, ())
+        t.start()
+
+    def genSetThread(self):
+
+        self.showProgress()
+
         self.sGen = sg.getCombinations(self.numberSource.getSelectNumbers())
-        
         selection = self.sGen.randomSelection()
+
+        self.popProgress.destroy()
 
         for i in range(5):
             self.dGen[i].changeTopStyle(selection[i])
@@ -280,7 +290,18 @@ class Application(Frame):
 
     def checkSet(self):
 
+        if self.sourceLabel["text"] == "None":
+            tkMessageBox.showerror('Select Error', 'Please select data file before proceeding.')
+        else:
+
+            t = threading.Thread(None, self.checkSetThread, ())
+            t.start()
+
+    def checkSetThread(self):
+
+        self.showProgress()
         self.numberSource.analyzeData()
+        self.popProgress.destroy()
         self.showStats()
 
 
@@ -440,26 +461,60 @@ class Application(Frame):
         self.dA[0].changeExtStyle(self.extValue + 1)
 
 
-    def clearGen(self):
+    def showProgress(self):
 
-        response = tkMessageBox.askquestion('Clear', 'Clear the generated combinations?')
+        Style().configure("P.TLabel", font="Verdana 12 bold", anchor="center")
+        Style().configure("B.TProgressbar", foreground="blue", background="blue")
 
-        if response == 'yes':
-            self.topScale.set(0)
-            self.extScale.set(0)
+        self.popProgress = Toplevel(self.main_container)
+        self.popProgress.title("Processing")
 
-
-    def setScale(self):
+        self.progressMessage = Label(self.popProgress, text="Processing, please wait...", style="P.TLabel" )
+        self.progressBar = Progressbar(self.popProgress, orient="horizontal", mode="indeterminate", length=280)
         
-        self.topScale.set(self.topValue)
-        self.extScale.set(self.extValue)
+        self.progressMessage.grid(row=0, column=0, columnspan=5, padx=10 , pady=5, sticky='NSEW')
+        self.progressBar.grid(row=1, column=0, columnspan=5, padx=10 , pady=5, sticky='NSEW')
 
-        selectionMessage = "You selected {0:02} main numbers".format(self.topValue)
+        wh = 70
+        ww = 300
 
-        if self.extValue > 0:
-            selectionMessage += " and {0:02} additional numbers".format(self.extValue)
+        self.popProgress.minsize(ww, wh)
+        self.popProgress.maxsize(ww, wh)
 
-        tkMessageBox.showinfo('Selection Made!', selectionMessage)
+        # Position in center screen
+
+        ws = self.popProgress.winfo_screenwidth() 
+        hs = self.popProgress.winfo_screenheight() 
+
+        # calculate x and y coordinates for the Tk root window
+        x = (ws/2) - (ww/2)
+        y = (hs/2) - (wh/2)
+
+        self.popProgress.geometry('%dx%d+%d+%d' % (ww, wh, x, y))
+
+        self.progressBar.start()
+
+
+    # def clearGen(self):
+
+    #     response = tkMessageBox.askquestion('Clear', 'Clear the generated combinations?')
+
+    #     if response == 'yes':
+    #         self.topScale.set(0)
+    #         self.extScale.set(0)
+
+
+    # def setScale(self):
+        
+    #     self.topScale.set(self.topValue)
+    #     self.extScale.set(self.extValue)
+
+    #     selectionMessage = "You selected {0:02} main numbers".format(self.topValue)
+
+    #     if self.extValue > 0:
+    #         selectionMessage += " and {0:02} additional numbers".format(self.extValue)
+
+    #     tkMessageBox.showinfo('Selection Made!', selectionMessage)
 
         
 root = Tk()
