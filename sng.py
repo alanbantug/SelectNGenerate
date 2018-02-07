@@ -112,10 +112,10 @@ class Application(Frame):
         self.selectionC = Radiobutton(self.selectGroup, text="25", style="B.TRadiobutton", variable=self.selectionCount, value=25)
 
         self.typeGroup = LabelFrame(self.selTab, text=' Type Options ', style="O.TLabelframe")
-        self.typeA = Radiobutton(self.typeGroup, text="Fantasy", style="B.TRadiobutton", variable=self.type, value=1)
-        self.typeB = Radiobutton(self.typeGroup, text="Super", style="B.TRadiobutton", variable=self.type, value=2)
-        self.typeC = Radiobutton(self.typeGroup, text="Not Used", style="B.TRadiobutton", variable=self.type, value=3)
-        self.typeD = Radiobutton(self.typeGroup, text="Not Used", style="B.TRadiobutton", variable=self.type, value=4)
+        self.typeA = Radiobutton(self.typeGroup, text="Fantasy", style="B.TRadiobutton", command=self.displayDataFile, variable=self.type, value=1)
+        self.typeB = Radiobutton(self.typeGroup, text="Super", style="B.TRadiobutton", command=self.displayDataFile, variable=self.type, value=2)
+        self.typeC = Radiobutton(self.typeGroup, text="Not Used", style="B.TRadiobutton", command=self.displayDataFile, variable=self.type, value=3)
+        self.typeD = Radiobutton(self.typeGroup, text="Not Used", style="B.TRadiobutton", command=self.displayDataFile, variable=self.type, value=4)
 
         # self.genGroup = LabelFrame(self.selTab, text=' Generate Options ', style="O.TLabelframe")
         # self.usePrior = Checkbutton(self.genGroup, text="Use Last Winner", style="B.TCheckbutton", variable=self.prior)
@@ -140,10 +140,10 @@ class Application(Frame):
         self.selectionC.grid(row=2, column=0, padx=10, pady=5, sticky='W')
         self.selectGroup.grid(row=4, column=4, columnspan=1, padx=5, pady=5, sticky='NSEW')
 
-        self.typeA.grid(row=0, column=0, padx=20, pady=5, sticky='W')
-        self.typeB.grid(row=0, column=1, padx=20, pady=5, sticky='W')
-        self.typeC.grid(row=0, column=2, padx=20, pady=5, sticky='W')
-        self.typeD.grid(row=0, column=3, padx=20, pady=5, sticky='W')
+        self.typeA.grid(row=0, column=0, padx=20, pady=(5, 10), sticky='W')
+        self.typeB.grid(row=0, column=1, padx=20, pady=(5, 10), sticky='W')
+        self.typeC.grid(row=0, column=2, padx=20, pady=(5, 10), sticky='W')
+        self.typeD.grid(row=0, column=3, padx=20, pady=(5, 10), sticky='W')
         self.typeGroup.grid(row=5, column=0, columnspan=5, padx=5, pady=(0,5), sticky='NSEW')
 
         self.h_sep_sb.grid(row=7, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
@@ -228,10 +228,10 @@ class Application(Frame):
         self.parentTab.grid(row=1, column=0, padx=5, pady=5, sticky='NSEW')
         self.exit.grid(row=3, column=0, padx=5, pady=(2,5), sticky='NSEW')
 
-        self.displayDataFile()
-
         # set the type selection to Fantasy Five
         self.type.set(1)
+
+        self.displayDataFile()
 
     def generateSet(self):
 
@@ -249,8 +249,6 @@ class Application(Frame):
         
         for i in range(5):
             self.dGen[i].changeTopStyle(selection[i])
-
-
        
     def clearGenSet(self):
 
@@ -305,18 +303,41 @@ class Application(Frame):
 
             datafile.close()
         
-            if "FANTASY" in d_list:
-                configFile = open("config.txt", "w")
+            if self.type.get() == 1:
 
-                configFile.write(filename)
-                self.dataFile = filename
-                self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
+                if "FANTASY" in d_list:
+                    configFile = open("cf.txt", "w")
+
+                    configFile.write(filename)
+                    self.dataFile = filename
+                    self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
                 
-                # Create an instance of number source each time a new file is selected
-                self.numberSource = ns.numberSelect(self.dataFile)
-                self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
+                    # Create an instance of number source each time a new file is selected
+                    self.numberSource = ns.numberSelect(self.dataFile)
+                    self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
+                    self.selectionCount.set(len(self.numberSource.getSelectNumbers()))
 
-                configFile.close()
+                    configFile.close()
+                else:
+                    messagebox.showerror('Invalid File', 'File selected is not a valid Fantasy Five data file.')
+
+            elif self.type.get() == 2:
+
+                if "SUPERLOTTO" in d_list:
+                    configFile = open("cs.txt", "w")
+
+                    configFile.write(filename)
+                    self.dataFile = filename
+                    self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
+                
+                    # Create an instance of number source each time a new file is selected
+                    self.numberSource = ns.numberSelect(self.dataFile)
+                    self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
+                    self.selectionCount.set(len(self.numberSource.getSelectNumbers()))
+
+                    configFile.close()
+                else:
+                    messagebox.showerror('Invalid File', 'File selected is not a valid SuperLotto data file.')
 
             else:
                 self.displayDataFile()
@@ -327,24 +348,53 @@ class Application(Frame):
         ''' This function will display the data file name
         '''
 
-        if os.path.exists("config.txt"):
+        type = self.type.get()
 
-            configFile = open("config.txt", "r")
+        if type == 1:
 
-            filename = configFile.readline()
+            if os.path.exists("cf.txt"):
 
-            if os.path.exists(filename):
+                configFile = open("cf.txt", "r")
 
-                self.dataFile = filename
-                self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
+                filename = configFile.readline()
 
-                self.numberSource = ns.numberSelect(self.dataFile)
-                self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
-                self.selectionCount.set(len(self.numberSource.getSelectNumbers()))
+                if os.path.exists(filename):
+
+                    self.dataFile = filename
+                    self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
+
+                    self.numberSource = ns.numberSelect(self.dataFile)
+                    self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
+                    self.selectionCount.set(len(self.numberSource.getSelectNumbers()))
+                else:
+                    self.sourceLabel["text"] = "None"
+                    
+                configFile.close()
             else:
                 self.sourceLabel["text"] = "None"
+
+        elif type == 2:
+
+            if os.path.exists("cs.txt"):
+
+                configFile = open("cs.txt", "r")
+
+                filename = configFile.readline()
+
+                if os.path.exists(filename):
+
+                    self.dataFile = filename
+                    self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
+
+                    self.numberSource = ns.numberSelect(self.dataFile)
+                    self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
+                    self.selectionCount.set(len(self.numberSource.getSelectNumbers()))
+                else:
+                    self.sourceLabel["text"] = "None"
                     
-            configFile.close()
+                configFile.close()
+            else:
+                self.sourceLabel["text"] = "None"
         else:
             self.sourceLabel["text"] = "None"
 
