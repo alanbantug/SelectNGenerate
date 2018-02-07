@@ -16,14 +16,20 @@ import math
 
 class numberSelect(object):
 
-	def __init__(self, infile):
+	def __init__(self, infile, ltype):
 
 		self.infile = infile
+		self.ltype = ltype
+
+		if ltype == 1:
+			self.topLimit = 39
+		else:
+			self.topLimit = 47
 
 		self.selectedNumbers = []
 		self.otherNumbers = []
 		self.lastWinner = []
-		self.allNumbers = self.createList(1, 39)
+		self.allNumbers, self.extNumbers = self.createList(1, self.topLimit)
 
 		self.reformatFile()
 		self.loadSelectNumbers()
@@ -37,6 +43,7 @@ class numberSelect(object):
 		add_one = lambda x: x + 1
 
 		out_list = []
+		ext_list = []
 
 		for i in range(top_limit):
 
@@ -45,7 +52,11 @@ class numberSelect(object):
 			if num >= start:
 				out_list.append(add_one(i))
 
-		return out_list
+		if top_limit == 47:
+			for i in range(27):
+				ext_list.append(add_one(i))
+
+		return out_list, ext_list
 
 
 	def loadSelectNumbers(self):
@@ -56,23 +67,38 @@ class numberSelect(object):
 		self.selectedNumbers = []
 		self.otherNumbers = []
 
-		if os.path.exists("selected.txt"):
+		if self.ltype == 1:
 
-			with open('selected.txt', 'r') as selectFile:
+			if os.path.exists("sf.txt"):
 
-				for data in selectFile:
+				with open('sf.txt', 'r') as selectFile:
 
-					numb_list = data.split(' - ')
+					for data in selectFile:
 
-			for numb in numb_list:
-				self.selectedNumbers.append(int(numb))
+						numb_list = data.split(' - ')
+
+				for numb in numb_list:
+					self.selectedNumbers.append(int(numb))
+
+		elif self.ltype == 2:
+			
+			if os.path.exists("ss.txt"):
+
+				with open('ss.txt', 'r') as selectFile:
+
+					for data in selectFile:
+
+						numb_list = data.split(' - ')
+
+				for numb in numb_list:
+					self.selectedNumbers.append(int(numb))
 
 		else:
 
-			self.selectedNumbers = self.createList(1, 39)
+			self.selectedNumbers = self.createList(1, self.topLimit)
 
 
-		for i in range(1, 40):
+		for i in range(1, self.topLimit + 1):
 			if i in self.selectedNumbers:
 				pass
 			else:
@@ -94,7 +120,7 @@ class numberSelect(object):
 		# get even numbers  
 		while (True):
 
-			selected = random.choice(self.createList(1, 39))
+			selected = random.choice(self.allNumbers)
 
 			if selected in self.selectedNumbers:
 				pass
@@ -108,7 +134,7 @@ class numberSelect(object):
 		# get odd numbers
 		while (True):
 
-			selected = random.choice(self.createList(1, 39))
+			selected = random.choice(self.allNumbers)
 
 			if selected in self.selectedNumbers:
 				pass
@@ -119,41 +145,17 @@ class numberSelect(object):
 			if len(self.selectedNumbers) == select_count:
 				break
 
-		# # get 5 odd numbers from numbers below 20
-		# while (True):
-
-		# 	selected = random.choice(self.createList(1, 20))
-
-		# 	if selected in self.selectedNumbers:
-		# 		pass
-		# 	else:
-		# 		if selected % 2 == 1:
-		# 			self.selectedNumbers.append(selected)
-
-		# 	if len(self.selectedNumbers) == 15:
-		# 		break
-
-		# # get 5 odd numbers from numbers above 20
-		# while (True):
-
-		# 	selected = random.choice(self.createList(21, 39))
-
-		# 	if selected in self.selectedNumbers:
-		# 		pass
-		# 	else:
-		# 		if selected % 2 == 1:
-		# 			self.selectedNumbers.append(selected)
-
-		# 	if len(self.selectedNumbers) == 20:
-		# 		break
-
-		for i in range(1, 40):
+		for i in range(1, self.topLimit + 1):
 			if i in self.selectedNumbers:
 				pass
 			else:
 				self.otherNumbers.append(i)
 
-		selectFile = open("selected.txt", "w")
+		if self.ltype == 1:
+			selectFile = open("sf.txt", "w")
+		elif self.ltype == 2:
+			selectFile = open("ss.txt", "w")
+
 		sel_num = []
 
 		for i in range(select_count):
@@ -175,11 +177,15 @@ class numberSelect(object):
 		''' This function will select all possible numbers as selected
 		'''
 
-		self.selectedNumbers = self.createList(1, 39)
+		self.selectedNumbers = self.createList(1, self.topLimit)
 		self.otherNumbers = []
 
-		if os.path.exists("selected.txt"):
-			os.remove("selected.txt")
+		if self.ltype == 1:
+			if os.path.exists("sf.txt"):
+				os.remove("sf.txt")
+		elif self.ltype == 2:
+			if os.path.exists("ss.txt"):
+				os.remove("ss.txt")
 
 		return self.selectedNumbers
 
@@ -189,10 +195,16 @@ class numberSelect(object):
 		''' This function will create the CSV file to build the dataframe
 		'''
 
-		last_winner = []
+		if self.ltype == 1:
+			self.reformatFantasy()
+		elif self.ltype == 2:
+			self.reformatSuper()
+
+	def reformatFantasy(self):
+
 		rec_ctr = 0
 
-		with open('csv_data.csv', 'w') as myOutput:
+		with open('cf_data.csv', 'w') as myOutput:
 			with open(self.infile, 'r') as myInput:
 
 				for dataLine in myInput:
@@ -219,11 +231,46 @@ class numberSelect(object):
 							myOutput.write(winner)
 							myOutput.write("\n")
 
-							if rec_ctr < 1:
-								for n in fields[5:10]:
-									self.lastWinner.append(int(n))
-
 							rec_ctr += 1
+
+		myInput.close()
+		myOutput.close()
+
+	def reformatSuper(self):
+
+		''' This function will count the occurences and get the top 25
+		'''
+
+		rec_ctr = 0
+
+		with open('cs_data.csv', 'w') as myOutput:
+			with open(self.infile, 'r') as myInput:
+
+				for dataLine in myInput:
+			
+					fields = dataLine.split()
+				
+					if len(fields) > 0:
+					
+						if fields[0].isdigit():
+
+							# build the data to write to csv_data
+							data = []
+
+							in_date = fields[2] + ' ' + fields[3] + ' ' + fields[4]
+							draw_date = datetime.datetime.strptime(in_date, '%b %d, %Y').date()
+
+							data.append(fields[0])
+							data.append(str(draw_date))
+
+							for n in fields[5:10]:
+								data.append(n)
+
+							data.append(fields[10])
+
+							winner = ",".join(data)
+							myOutput.write(winner)
+							myOutput.write("\n")
 
 		myInput.close()
 		myOutput.close()
@@ -328,39 +375,4 @@ class numberSelect(object):
 	def getStats(self):
 
 		return self.last_match, self.first_match, self.last_match_days.days, self.max_gap, self.min_gap, self.exact_match
-
-
-	# def get_suggestions(self, use_numbers):
-
-	# 	''' This function will call get_combinations to obtain a set of combinations
-	# 		A starting point will be generated randomly from 1 to 5000. From there, the program logic will step thru the 
-	# 		different combinations and get the first 5 combinations that will qualify
-	# 	'''
-
-	# 	select_sets = []
-
-	# 	while (True):
-
-	# 		if use_numbers == 1:
-
-	# 			hi_limit = 15504
-	# 			c_index = random.randint(1, hi_limit)
-	# 			select_sets = self.get_select_sets(c_index, self.select_numbers, hi_limit, 20, 5)
-
-	# 		elif use_numbers == 2:
-			
-	# 			hi_limit = 11628
-	# 			c_index = random.randint(1, hi_limit)
-	# 			select_sets = self.get_select_sets(c_index, self.other_numbers, hi_limit, 19, 6)
-
-	# 		elif use_numbers == 3:
-			
-	# 			c_index = random.randint(1, 92055)
-	# 			select_sets = self.get_mixed_sets(c_index, self.select_numbers, self.other_numbers, 20, 39, 0)
-
-	# 		if len(select_sets) == 5:		
-	# 			break
-
-	# 	return select_sets
-
 

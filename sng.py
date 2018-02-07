@@ -30,14 +30,8 @@ class Application(Frame):
         self.master = master
         self.main_container = Frame(self.master)
 
-        # self.prior = IntVar()
-        # self.consec = IntVar()
-        # self.anypat = IntVar()
         self.selectionCount = IntVar()
         self.type = IntVar()
-        # self.prior.set(0)
-        # self.consec.set(0)
-        # self.anypat.set(0)
 
         # Set images. Note that the line below is needed to change the working directory of the batch file to point to where the script files, including image files are
         # It has to be commented out in the testing library
@@ -348,9 +342,9 @@ class Application(Frame):
         ''' This function will display the data file name
         '''
 
-        type = self.type.get()
+        ltype = self.type.get()
 
-        if type == 1:
+        if ltype == 1:
 
             if os.path.exists("cf.txt"):
 
@@ -363,7 +357,7 @@ class Application(Frame):
                     self.dataFile = filename
                     self.sourceLabel["text"] = os.path.dirname(filename)[:20] + ".../" + os.path.basename(filename)
 
-                    self.numberSource = ns.numberSelect(self.dataFile)
+                    self.numberSource = ns.numberSelect(self.dataFile, ltype)
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
                     self.selectionCount.set(len(self.numberSource.getSelectNumbers()))
                 else:
@@ -373,7 +367,7 @@ class Application(Frame):
             else:
                 self.sourceLabel["text"] = "None"
 
-        elif type == 2:
+        elif ltype == 2:
 
             if os.path.exists("cs.txt"):
 
@@ -386,7 +380,7 @@ class Application(Frame):
                     self.dataFile = filename
                     self.sourceLabel["text"] = os.path.dirname(filename)[:20] + ".../" + os.path.basename(filename)
 
-                    self.numberSource = ns.numberSelect(self.dataFile)
+                    self.numberSource = ns.numberSelect(self.dataFile, ltype)
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
                     self.selectionCount.set(len(self.numberSource.getSelectNumbers()))
                 else:
@@ -397,15 +391,6 @@ class Application(Frame):
                 self.sourceLabel["text"] = "None"
         else:
             self.sourceLabel["text"] = "None"
-
-
-    # def markSelected(self):
-
-    #     ''' This function will mark the selected numbers if a selection the last time
-    #     '''
-
-    #     self.dSel[0].changeStyle(self.numberSource.setSelectNumbers())
-        
 
     def showStats(self):
 
@@ -487,8 +472,15 @@ class Application(Frame):
 
     def showGenerate(self):
 
+        if self.type.get() == 1:
+            self.showFantasy()
+        elif self.type.get() == 2:
+            self.showSuper()
+
+    def showFantasy(self):
+
         self.popGen = Toplevel(self.main_container)
-        self.popGen.title("Generated")
+        self.popGen.title("Fantasy Five")
 
         self.h_sep_ga = Separator(self.popGen, orient=HORIZONTAL)
         self.h_sep_gb = Separator(self.popGen, orient=HORIZONTAL)
@@ -503,21 +495,8 @@ class Application(Frame):
         for i in range(5):
             self.dGen.append(dg.displayNumbers(self.popGen, 39))
                     
-        self.genLabel = Label(self.popGen, text="Generate Combinations", style="T.TLabel" )
-        self.genLabelA = Label(self.popGen, text="Generate the combinations using the numbers and options selected. ", style="B.TLabel" )
-        self.genLabelB = Label(self.popGen, text="Combinations will be color-coded to indicate probability of winning. ", style="B.TLabel" )
-        
-        self.topScale = Scale(self.popGen, from_=0, to=75, command=self.showTopValue, orient=HORIZONTAL)
-        self.extScale = Scale(self.popGen, from_=0, to=30, command=self.showExtValue, orient=HORIZONTAL)
-
         self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
         self.exitGen = Button(self.popGen, text="EXIT", style="B.TButton", command=self.popGen.destroy)
-        
-        # Position widgets on the generate tab
-
-        #self.genLabel.grid(row=0, column=0, columnspan=5, padx=5, pady=(10,10), sticky='NSEW')
-        #self.genLabelA.grid(row=2, column=0, columnspan=5, padx=5, pady=0, sticky='NSEW')
-        #self.genLabelB.grid(row=3, column=0, columnspan=5, padx=5, pady=0, sticky='NSEW')
         
         self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
@@ -545,6 +524,55 @@ class Application(Frame):
         y = (hs/2) - (wh/2)
 
         self.popGen.geometry('%dx%d+%d+%d' % (ww, wh, x, y))
+
+    def showSuper(self):
+
+        self.popGen = Toplevel(self.main_container)
+        self.popGen.title("SuperLotto")
+
+        self.h_sep_ga = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gb = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gc = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gd = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_ge = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gf = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gg = Separator(self.popGen, orient=HORIZONTAL)
+
+        self.dGen = []
+        
+        for i in range(5):
+            self.dGen.append(dg.displayNumbers(self.popGen, 47))
+                    
+        self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
+        self.exitGen = Button(self.popGen, text="EXIT", style="B.TButton", command=self.popGen.destroy)
+        
+        self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+
+        for i in range(5):
+            self.dGen[i].positionTopsDisplays(5, i)
+                
+        self.h_sep_gb.grid(row=15, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')        
+        
+        self.genSet.grid(row=16, column=0, columnspan=5, padx=5, pady=(5, 2), sticky='NSEW')
+        self.exitGen.grid(row=17, column=0, columnspan=5, padx=5, pady=(2, 5), sticky='NSEW')
+
+        wh = 290
+        ww = 490
+
+        self.popGen.minsize(ww, wh)
+        self.popGen.maxsize(ww, wh)
+
+        # Position in center screen
+
+        ws = self.popGen.winfo_screenwidth() 
+        hs = self.popGen.winfo_screenheight() 
+
+        # calculate x and y coordinates for the Tk root window
+        x = (ws/2) - (ww/2)
+        y = (hs/2) - (wh/2)
+
+        self.popGen.geometry('%dx%d+%d+%d' % (ww, wh, x, y))
+
 
     def showProgress(self):
 
