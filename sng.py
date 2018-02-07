@@ -30,13 +30,14 @@ class Application(Frame):
         self.master = master
         self.main_container = Frame(self.master)
 
-        self.prior = IntVar()
-        self.consec = IntVar()
-        self.anypat = IntVar()
+        # self.prior = IntVar()
+        # self.consec = IntVar()
+        # self.anypat = IntVar()
         self.selectionCount = IntVar()
-        self.prior.set(0)
-        self.consec.set(0)
-        self.anypat.set(0)
+        self.type = IntVar()
+        # self.prior.set(0)
+        # self.consec.set(0)
+        # self.anypat.set(0)
 
         # Set images. Note that the line below is needed to change the working directory of the batch file to point to where the script files, including image files are
         # It has to be commented out in the testing library
@@ -72,10 +73,8 @@ class Application(Frame):
 
         self.parentTab = Notebook(self.main_container)
         self.selTab = Frame(self.parentTab)   # first page, which would get widgets gridded into it
-        self.genTab = Frame(self.parentTab)   # second page
         self.abtTab = Frame(self.parentTab)   # second page
         self.parentTab.add(self.selTab, text='    Select  ')
-        self.parentTab.add(self.genTab, text='   Generate ')
         self.parentTab.add(self.abtTab, text='    About ')
         
         # Create widgets for the main screen
@@ -100,21 +99,28 @@ class Application(Frame):
         self.dSel = []
 
         self.numberGroup = LabelFrame(self.selTab, text=' Selection ', style="O.TLabelframe")
-        self.dSel.append(ds.displayNumbers(self.numberGroup, 39))
+        self.dSel.append(ds.displayNumbers(self.numberGroup, 47))
 
         self.selSet = Button(self.selTab, text="SELECT", style="B.TButton", command=self.selectSet)
         self.chkSet = Button(self.selTab, text="CHECK", style="B.TButton", command=self.checkSet)
         self.clearSet = Button(self.selTab, text="CLEAR", style="B.TButton", command=self.clearSelSet)
-
+        self.showGen = Button(self.selTab, text="SHOW GENERATE PANEL", style="B.TButton", command=self.showGenerate)
+        
         self.selectGroup = LabelFrame(self.selTab, text=' Select Counts ', style="O.TLabelframe")
         self.selectionA = Radiobutton(self.selectGroup, text="15", style="B.TRadiobutton", variable=self.selectionCount, value=15)
         self.selectionB = Radiobutton(self.selectGroup, text="20", style="B.TRadiobutton", variable=self.selectionCount, value=20)
         self.selectionC = Radiobutton(self.selectGroup, text="25", style="B.TRadiobutton", variable=self.selectionCount, value=25)
-        
-        self.genGroup = LabelFrame(self.selTab, text=' Generate Options ', style="O.TLabelframe")
-        self.usePrior = Checkbutton(self.genGroup, text="Use Last Winner", style="B.TCheckbutton", variable=self.prior)
-        self.limitConsec = Checkbutton(self.genGroup, text="Limit Consecutives", style="B.TCheckbutton", variable=self.consec)
-        self.anyPattern = Checkbutton(self.genGroup, text="Any Pattern", style="B.TCheckbutton", variable=self.anypat)
+
+        self.typeGroup = LabelFrame(self.selTab, text=' Type Options ', style="O.TLabelframe")
+        self.typeA = Radiobutton(self.typeGroup, text="Fantasy", style="B.TRadiobutton", variable=self.type, value=1)
+        self.typeB = Radiobutton(self.typeGroup, text="Super", style="B.TRadiobutton", variable=self.type, value=2)
+        self.typeC = Radiobutton(self.typeGroup, text="Not Used", style="B.TRadiobutton", variable=self.type, value=3)
+        self.typeD = Radiobutton(self.typeGroup, text="Not Used", style="B.TRadiobutton", variable=self.type, value=4)
+
+        # self.genGroup = LabelFrame(self.selTab, text=' Generate Options ', style="O.TLabelframe")
+        # self.usePrior = Checkbutton(self.genGroup, text="Use Last Winner", style="B.TCheckbutton", variable=self.prior)
+        # self.limitConsec = Checkbutton(self.genGroup, text="Limit Consecutives", style="B.TCheckbutton", variable=self.consec)
+        # self.anyPattern = Checkbutton(self.genGroup, text="Any Pattern", style="B.TCheckbutton", variable=self.anypat)
 
         self.sourceLabel = Label(self.selTab, text="None", style="SB.TLabel" )
         self.selectSource = Button(self.selTab, text="SET DATA FILE", style="B.TButton", command=self.setDataFile)
@@ -127,18 +133,24 @@ class Application(Frame):
         self.h_sep_sa.grid(row=3, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
         self.dSel[0].positionDisplays(0, 0)
-        self.numberGroup.grid(row=4, column=0, columnspan=4, padx=(10,5), pady=(0,5), sticky='NSEW')
+        self.numberGroup.grid(row=4, column=0, columnspan=4, padx=5, pady=5, sticky='NSEW')
 
-        self.selectionA.grid(row=0, column=0, padx=10, pady=3, sticky='W')
-        self.selectionB.grid(row=1, column=0, padx=10, pady=3, sticky='W')
-        self.selectionC.grid(row=2, column=0, padx=10, pady=3, sticky='W')
-        self.selectGroup.grid(row=4, column=4, columnspan=1, padx=(5,10), pady=(0,5), sticky='NSEW')
+        self.selectionA.grid(row=0, column=0, padx=10, pady=5, sticky='W')
+        self.selectionB.grid(row=1, column=0, padx=10, pady=5, sticky='W')
+        self.selectionC.grid(row=2, column=0, padx=10, pady=5, sticky='W')
+        self.selectGroup.grid(row=4, column=4, columnspan=1, padx=5, pady=5, sticky='NSEW')
+
+        self.typeA.grid(row=0, column=0, padx=20, pady=5, sticky='W')
+        self.typeB.grid(row=0, column=1, padx=20, pady=5, sticky='W')
+        self.typeC.grid(row=0, column=2, padx=20, pady=5, sticky='W')
+        self.typeD.grid(row=0, column=3, padx=20, pady=5, sticky='W')
+        self.typeGroup.grid(row=5, column=0, columnspan=5, padx=5, pady=(0,5), sticky='NSEW')
 
         self.h_sep_sb.grid(row=7, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
         self.selSet.grid(row=8, column=0, columnspan=2, padx=5, pady=5, sticky='NSEW')
         self.chkSet.grid(row=8, column=2, columnspan=2, padx=5, pady=5, sticky='NSEW')
-        self.clearSet.grid(row=8, column=4, padx=5, pady=5, sticky='NSEW')
+        self.clearSet.grid(row=8, column=4, columnspan=1, padx=5, pady=5, sticky='NSEW')
 
         self.h_sep_sc.grid(row=9, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
@@ -151,47 +163,10 @@ class Application(Frame):
 
         self.sourceLabel.grid(row=12, column=0, columnspan=4, padx=5, pady=5, sticky='NSEW')
         self.selectSource.grid(row=12, column=4, columnspan=1, padx=5, pady=5, sticky='NSEW')
-        
-        # Create widgets for the Generate Tab
 
-        self.h_sep_ga = Separator(self.genTab, orient=HORIZONTAL)
-        self.h_sep_gb = Separator(self.genTab, orient=HORIZONTAL)
-        self.h_sep_gc = Separator(self.genTab, orient=HORIZONTAL)
-        self.h_sep_gd = Separator(self.genTab, orient=HORIZONTAL)
-        self.h_sep_ge = Separator(self.genTab, orient=HORIZONTAL)
-        self.h_sep_gf = Separator(self.genTab, orient=HORIZONTAL)
-        self.h_sep_gg = Separator(self.genTab, orient=HORIZONTAL)
-
-        self.dGen = []
+        self.h_sep_sd.grid(row=13, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
         
-        for i in range(5):
-            self.dGen.append(dg.displayNumbers(self.genTab, 39))
-                    
-        self.genLabel = Label(self.genTab, text="Generate Combinations", style="T.TLabel" )
-        self.genLabelA = Label(self.genTab, text="Generate the combinations using the numbers and options selected. ", style="B.TLabel" )
-        self.genLabelB = Label(self.genTab, text="Combinations will be color-coded to indicate probability of winning. ", style="B.TLabel" )
-        
-        self.topScale = Scale(self.genTab, from_=0, to=75, command=self.showTopValue, orient=HORIZONTAL)
-        self.extScale = Scale(self.genTab, from_=0, to=30, command=self.showExtValue, orient=HORIZONTAL)
-
-        self.genSet = Button(self.genTab, text="GENERATE", style="B.TButton", command=self.generateSet)
-        self.clearSet = Button(self.genTab, text="CLEAR", style="B.TButton", command=self.clearGenSet)
-        
-        # Position widgets on the generate tab
-
-        self.genLabel.grid(row=0, column=0, columnspan=5, padx=5, pady=(10,10), sticky='NSEW')
-        self.genLabelA.grid(row=2, column=0, columnspan=5, padx=5, pady=0, sticky='NSEW')
-        self.genLabelB.grid(row=3, column=0, columnspan=5, padx=5, pady=0, sticky='NSEW')
-        
-        self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
-
-        for i in range(5):
-            self.dGen[i].positionTopsDisplays(5, i)
-                
-        self.h_sep_gb.grid(row=15, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')        
-        
-        self.genSet.grid(row=16, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
-        self.clearSet.grid(row=16, column=3, columnspan=2, padx=5, pady=5, sticky='NSEW')
+        self.showGen.grid(row=14, column=0, columnspan=5, padx=5, pady=(2,5), sticky='NSEW')        
 
         # Create widgets for About tab
 
@@ -251,12 +226,12 @@ class Application(Frame):
 
         self.mainLabel.grid(row=0, column=0, padx=5, pady=5, sticky='NSEW')
         self.parentTab.grid(row=1, column=0, padx=5, pady=5, sticky='NSEW')
-        self.exit.grid(row=2, column=0, padx=5, pady=(5,10), sticky='NSEW')
+        self.exit.grid(row=3, column=0, padx=5, pady=(2,5), sticky='NSEW')
 
         self.displayDataFile()
 
-        # set the selection count to default to 15
-        # self.selectionCount.set(15)
+        # set the type selection to Fantasy Five
+        self.type.set(1)
 
     def generateSet(self):
 
@@ -271,11 +246,12 @@ class Application(Frame):
         selection = self.sGen.randomSelection()
 
         self.popProgress.destroy()
-
+        
         for i in range(5):
             self.dGen[i].changeTopStyle(selection[i])
 
-        
+
+       
     def clearGenSet(self):
 
         pass
@@ -446,20 +422,79 @@ class Application(Frame):
 
         self.popStats.geometry('%dx%d+%d+%d' % (ww, wh, x, y))
 
+
     def showTopValue(self, value=None):
 
         self.topValue = int(self.topScale.get())
-
-        
         self.dA[0].changeTopStyle(self.topValue + 1)
 
 
     def showExtValue(self, value=None):
 
         self.extValue = int(self.extScale.get())
-
         self.dA[0].changeExtStyle(self.extValue + 1)
 
+
+    def showGenerate(self):
+
+        self.popGen = Toplevel(self.main_container)
+        self.popGen.title("Generated")
+
+        self.h_sep_ga = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gb = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gc = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gd = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_ge = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gf = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gg = Separator(self.popGen, orient=HORIZONTAL)
+
+        self.dGen = []
+        
+        for i in range(5):
+            self.dGen.append(dg.displayNumbers(self.popGen, 39))
+                    
+        self.genLabel = Label(self.popGen, text="Generate Combinations", style="T.TLabel" )
+        self.genLabelA = Label(self.popGen, text="Generate the combinations using the numbers and options selected. ", style="B.TLabel" )
+        self.genLabelB = Label(self.popGen, text="Combinations will be color-coded to indicate probability of winning. ", style="B.TLabel" )
+        
+        self.topScale = Scale(self.popGen, from_=0, to=75, command=self.showTopValue, orient=HORIZONTAL)
+        self.extScale = Scale(self.popGen, from_=0, to=30, command=self.showExtValue, orient=HORIZONTAL)
+
+        self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
+        self.exitGen = Button(self.popGen, text="EXIT", style="B.TButton", command=self.popGen.destroy)
+        
+        # Position widgets on the generate tab
+
+        #self.genLabel.grid(row=0, column=0, columnspan=5, padx=5, pady=(10,10), sticky='NSEW')
+        #self.genLabelA.grid(row=2, column=0, columnspan=5, padx=5, pady=0, sticky='NSEW')
+        #self.genLabelB.grid(row=3, column=0, columnspan=5, padx=5, pady=0, sticky='NSEW')
+        
+        self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+
+        for i in range(5):
+            self.dGen[i].positionTopsDisplays(5, i)
+                
+        self.h_sep_gb.grid(row=15, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')        
+        
+        self.genSet.grid(row=16, column=0, columnspan=5, padx=5, pady=(5, 2), sticky='NSEW')
+        self.exitGen.grid(row=17, column=0, columnspan=5, padx=5, pady=(2, 5), sticky='NSEW')
+
+        wh = 290
+        ww = 490
+
+        self.popGen.minsize(ww, wh)
+        self.popGen.maxsize(ww, wh)
+
+        # Position in center screen
+
+        ws = self.popGen.winfo_screenwidth() 
+        hs = self.popGen.winfo_screenheight() 
+
+        # calculate x and y coordinates for the Tk root window
+        x = (ws/2) - (ww/2)
+        y = (hs/2) - (wh/2)
+
+        self.popGen.geometry('%dx%d+%d+%d' % (ww, wh, x, y))
 
     def showProgress(self):
 
@@ -522,8 +557,8 @@ root.title("SELECT AND GENERATE")
 
 # Set size
 
-wh = 450
-ww = 500
+wh = 500
+ww = 490
 
 #root.resizable(height=False, width=False)
 
