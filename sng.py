@@ -361,7 +361,7 @@ class Application(Frame):
                 if os.path.exists(filename):
 
                     self.dataFile = filename
-                    self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
+                    self.sourceLabel["text"] = os.path.dirname(filename)[:20] + ".../" + os.path.basename(filename)
 
                     self.numberSource = ns.numberSelect(self.dataFile)
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
@@ -384,7 +384,7 @@ class Application(Frame):
                 if os.path.exists(filename):
 
                     self.dataFile = filename
-                    self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
+                    self.sourceLabel["text"] = os.path.dirname(filename)[:20] + ".../" + os.path.basename(filename)
 
                     self.numberSource = ns.numberSelect(self.dataFile)
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
@@ -608,7 +608,7 @@ root.title("SELECT AND GENERATE")
 # Set size
 
 wh = 500
-ww = 490
+ww = 480
 
 #root.resizable(height=False, width=False)
 
