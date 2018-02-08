@@ -493,7 +493,7 @@ class Application(Frame):
         self.dGen = []
         
         for i in range(5):
-            self.dGen.append(dg.displayNumbers(self.popGen, 39))
+            self.dGen.append(dg.displayNumbers(self.popGen, self.type.get()))
                     
         self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
         self.exitGen = Button(self.popGen, text="EXIT", style="B.TButton", command=self.popGen.destroy)
@@ -501,7 +501,7 @@ class Application(Frame):
         self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
         for i in range(5):
-            self.dGen[i].positionTopsDisplays(5, i)
+            self.dGen[i].positionDisplays(5, i)
                 
         self.h_sep_gb.grid(row=15, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')        
         
@@ -541,7 +541,7 @@ class Application(Frame):
         self.dGen = []
         
         for i in range(5):
-            self.dGen.append(dg.displayNumbers(self.popGen, 47))
+            self.dGen.append(dg.displayNumbers(self.popGen, self.type.get()))
                     
         self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
         self.exitGen = Button(self.popGen, text="EXIT", style="B.TButton", command=self.popGen.destroy)
@@ -549,15 +549,15 @@ class Application(Frame):
         self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
         for i in range(5):
-            self.dGen[i].positionTopsDisplays(5, i)
+            self.dGen[i].positionDisplays(5, i)
                 
-        self.h_sep_gb.grid(row=15, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')        
+        self.h_sep_gb.grid(row=20, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')        
         
-        self.genSet.grid(row=16, column=0, columnspan=5, padx=5, pady=(5, 2), sticky='NSEW')
-        self.exitGen.grid(row=17, column=0, columnspan=5, padx=5, pady=(2, 5), sticky='NSEW')
+        self.genSet.grid(row=21, column=0, columnspan=5, padx=5, pady=(5, 2), sticky='NSEW')
+        self.exitGen.grid(row=22, column=0, columnspan=5, padx=5, pady=(2, 5), sticky='NSEW')
 
-        wh = 290
-        ww = 490
+        wh = 380
+        ww = 640
 
         self.popGen.minsize(ww, wh)
         self.popGen.maxsize(ww, wh)
