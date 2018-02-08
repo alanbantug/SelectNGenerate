@@ -8,9 +8,17 @@ import os
 
 class displayNumbers(object):
 
-    def __init__(self, container, topLimit):
+    def __init__(self, container, ltype):
 
-        self.topLimit = topLimit
+        
+        self.ltype = ltype
+
+        if self.ltype == 1:
+            self.topLimit = 39
+            self.extLimit = 0
+        elif self.ltype == 2:
+            self.topLimit = 47
+            self.extLimit = 27
 
         self.num = []
         self.ext = []
@@ -24,8 +32,13 @@ class displayNumbers(object):
         for i in range(self.topLimit):
             idx = "{0:02}".format(i + 1)
             self.num.append(Label(container, text=idx, style="W.TLabel"))
-        
+
+        for i in range(self.extLimit):
+            idx = "{0:02}".format(i + 1)
+            self.ext.append(Label(container, text=idx, style="W.TLabel"))
        
+        self.h_sep_a = Separator(container, orient=HORIZONTAL)
+
     def changeTopStyle(self, topSelect):
 
         Style().configure("W.TLabel", foreground= "black", background="white", font="Courier 8", anchor="center")
@@ -44,7 +57,14 @@ class displayNumbers(object):
                     self.num[i]["style"] = sty
 
 
-    def positionTopsDisplays(self, row, col):
+    def positionDisplays(self, row, col):
+
+        if self.ltype == 1:
+            self.positionFantasy(row, col)
+        elif self.ltype == 2:
+            self.positionSuper(row, col)
+
+    def positionFantasy(self, row, col):
 
         x_position = 9
         col_ctr = 1
@@ -61,7 +81,41 @@ class displayNumbers(object):
                 x_position += 20 
 
         row_ctr += 1
+
+    def positionSuper(self, row, col):
+
+        x_position = 9
+        col_ctr = 1
+        row_ctr = row
+
+        for i in range(self.topLimit):
+            self.num[i].grid(row=row_ctr, column=col, padx=(x_position,10), pady=1, sticky='W')
+            col_ctr += 1
+            if col_ctr > 6:
+                col_ctr = 1
+                row_ctr += 1
+                x_position = 9
+            else:    
+                x_position += 18 
+
+        row_ctr += 1
         
+        self.h_sep_a.grid(row=row_ctr, column=col, padx=5, pady=5, sticky='NSEW')
+
+        x_position = 9
+        col_ctr = 1
+        row_ctr += 1
+
+        for i in range(self.extLimit):
+            self.ext[i].grid(row=row_ctr, column=col, padx=(x_position,10), pady=1, sticky='W')
+            col_ctr += 1
+            if col_ctr > 5:
+                col_ctr = 1
+                row_ctr += 1
+                x_position = 9
+            else:    
+                x_position += 18         
+
     def checkPattern(self, num_set):
 
         odd_ctr = 0

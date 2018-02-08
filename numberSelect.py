@@ -286,17 +286,25 @@ class numberSelect(object):
 			   and longest dates in between the occurences
 		'''
 
+		if self.ltype == 1:
+			self.analyzeFantasyFile()
+
+		elif self.ltype == 2:
+			self.analyzeSuperFile()
+
+	def analyzeFantasyFile(self):
+
 		# Load the csv_data file into a dataframe
-		fantasy_file = pd.read_csv('csv_data.csv', header=None)
+		fantasy_file = pd.read_csv('cf_data.csv', header=None)
 		fantasy_file.columns = ['Draw', 'Date', 'A', 'B', 'C', 'D', 'E']
 
 		fantasy_file['MS'] = fantasy_file[['Draw', 'A', 'B', 'C', 'D', 'E']].apply(self.matchSelect, axis=1)
 		
 		fantasy_select = copy.copy(fantasy_file[fantasy_file['MS'] == 5])
-		fantasy_select.to_csv('select.csv')
+		fantasy_select.to_csv('cf_select.csv')
 
 		fantasy_select['GAP'] = fantasy_select[['Draw']].apply(self.getGaps, axis=1)
-		fantasy_select.to_csv('select.csv')
+		fantasy_select.to_csv('cf_select.csv')
 
 		self.first_match = fantasy_select['Date'].min()
 		self.last_match = fantasy_select['Date'].max()
@@ -311,8 +319,36 @@ class numberSelect(object):
 		self.max_gap = fantasy_select['GAP'].max()
 		self.min_gap = fantasy_select[fantasy_select['GAP'] > 0]['GAP'].min()
 
-		return self.last_match, self.first_match, self.last_match_days.days, self.max_gap, self.min_gap, self.exact_match
+		#return self.last_match, self.first_match, self.last_match_days.days, self.max_gap, self.min_gap, self.exact_match
+
+	def analyzeSuperFile(self):
+
+		# Load the csv_data file into a dataframe
+		superlotto_file = pd.read_csv('cs_data.csv', header=None)
+		superlotto_file.columns = ['Draw', 'Date', 'A', 'B', 'C', 'D', 'E', 'S']
+
+		superlotto_file['MS'] = superlotto_file[['Draw', 'A', 'B', 'C', 'D', 'E']].apply(self.matchSelect, axis=1)
 		
+		superlotto_select = copy.copy(superlotto_file[superlotto_file['MS'] == 5])
+		superlotto_select.to_csv('cs_select.csv')
+
+		superlotto_select['GAP'] = superlotto_select[['Draw']].apply(self.getGaps, axis=1)
+		superlotto_select.to_csv('cs_select.csv')
+
+		self.first_match = superlotto_select['Date'].min()
+		self.last_match = superlotto_select['Date'].max()
+		last_match_split = self.last_match.split('-')
+
+		date_a = datetime.datetime(int(last_match_split[0]), int(last_match_split[1]), int(last_match_split[2]))
+		curr_date  = datetime.datetime.now()
+
+		self.last_match_days = curr_date - date_a
+
+		self.exact_match = superlotto_select['MS'].count()
+		self.max_gap = superlotto_select['GAP'].max()
+		self.min_gap = superlotto_select[superlotto_select['GAP'] > 0]['GAP'].min()
+
+
 	def matchSelect(self, data):
 
 		draw, numa, numb, numc, numd, nume = data
@@ -332,9 +368,17 @@ class numberSelect(object):
 		''' This function will get the gaps between the 
 		'''
 
+		if self.ltype == 1:
+			csv_file = 'cf_select.csv'
+		elif self.ltype == 2:
+			csv_file = 'cs_select.csv'
+
+		elif self.ltype == 2:
+			self.analyzeSuperFile()
+
 		date_diff = datetime.timedelta(0)
 
-		with open('select.csv', 'r') as inFile:
+		with open(csv_file, 'r') as inFile:
 
 			for dataLine in inFile:
 				fields = dataLine.split(',')
