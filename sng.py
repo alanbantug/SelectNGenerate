@@ -111,11 +111,6 @@ class Application(Frame):
         self.typeC = Radiobutton(self.typeGroup, text="Not Used", style="B.TRadiobutton", command=self.displayDataFile, variable=self.type, value=3)
         self.typeD = Radiobutton(self.typeGroup, text="Not Used", style="B.TRadiobutton", command=self.displayDataFile, variable=self.type, value=4)
 
-        # self.genGroup = LabelFrame(self.selTab, text=' Generate Options ', style="O.TLabelframe")
-        # self.usePrior = Checkbutton(self.genGroup, text="Use Last Winner", style="B.TCheckbutton", variable=self.prior)
-        # self.limitConsec = Checkbutton(self.genGroup, text="Limit Consecutives", style="B.TCheckbutton", variable=self.consec)
-        # self.anyPattern = Checkbutton(self.genGroup, text="Any Pattern", style="B.TCheckbutton", variable=self.anypat)
-
         self.sourceLabel = Label(self.selTab, text="None", style="SB.TLabel" )
         self.selectSource = Button(self.selTab, text="SET DATA FILE", style="B.TButton", command=self.setDataFile)
 
@@ -147,13 +142,6 @@ class Application(Frame):
         self.clearSet.grid(row=8, column=4, columnspan=1, padx=5, pady=5, sticky='NSEW')
 
         self.h_sep_sc.grid(row=9, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
-
-        # self.selectionA.grid(row=0, column=0, padx=10, pady=3, sticky='W')
-        # self.selectionB.grid(row=1, column=0, padx=10, pady=3, sticky='W')
-        # self.selectionC.grid(row=2, column=0, padx=10, pady=3, sticky='W')
-        # self.genGroup.grid(row=4, column=4, columnspan=1, padx=(5,10), pady=(0,5), sticky='NSEW')
-
-        # self.h_sep_sd.grid(row=11, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
         self.sourceLabel.grid(row=12, column=0, columnspan=4, padx=5, pady=5, sticky='NSEW')
         self.selectSource.grid(row=12, column=4, columnspan=1, padx=5, pady=5, sticky='NSEW')
@@ -236,7 +224,7 @@ class Application(Frame):
 
         self.showProgress()
 
-        self.sGen = sg.getCombinations(self.numberSource.getSelectNumbers())
+        self.sGen = sg.getCombinations(self.numberSource.getSelectNumbers(), self.type.get())
         selection = self.sGen.randomSelection()
 
         self.popProgress.destroy()
@@ -307,7 +295,7 @@ class Application(Frame):
                     self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
                 
                     # Create an instance of number source each time a new file is selected
-                    self.numberSource = ns.numberSelect(self.dataFile)
+                    self.numberSource = ns.numberSelect(self.dataFile, self.type.get())
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
                     self.selectionCount.set(len(self.numberSource.getSelectNumbers()))
 
@@ -325,7 +313,7 @@ class Application(Frame):
                     self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
                 
                     # Create an instance of number source each time a new file is selected
-                    self.numberSource = ns.numberSelect(self.dataFile)
+                    self.numberSource = ns.numberSelect(self.dataFile, self.type.get())
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
                     self.selectionCount.set(len(self.numberSource.getSelectNumbers()))
 

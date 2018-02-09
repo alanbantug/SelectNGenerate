@@ -16,6 +16,7 @@ class displayNumbers(object):
         if self.ltype == 1:
             self.topLimit = 39
             self.extLimit = 0
+
         elif self.ltype == 2:
             self.topLimit = 47
             self.extLimit = 27
@@ -45,17 +46,22 @@ class displayNumbers(object):
 
         sty = self.checkPattern(topSelect)
         win = self.checkIfWinner(topSelect)
+        if win:
+            sty = "R.TLabel"
 
         for i in range(self.topLimit):
             self.num[i]["style"] = "W.TLabel"
 
-        for i in range(self.topLimit):
-            if i + 1 in topSelect:
-                if win:
-                    self.num[i]["style"] = "R.TLabel"
-                else:
-                    self.num[i]["style"] = sty
+        for i in range(self.extLimit):
+            self.ext[i]["style"] = "W.TLabel"
 
+        if self.ltype == 1:
+            for i in range(len(topSelect)):
+                self.num[topSelect[i] - 1]["style"] = sty
+        elif self.ltype == 2:
+            for i in range(len(topSelect) - 1):
+                self.num[topSelect[i] - 1]["style"] = sty
+            self.ext[topSelect[5] - 1]["style"] = sty
 
     def positionDisplays(self, row, col):
 
@@ -142,7 +148,11 @@ class displayNumbers(object):
         else:
             return False
         
-        configFile = open("config.txt", "r")
+        if self.ltype == 1:
+            configFile = open("cf.txt", "r")
+        elif self.ltype == 2:
+            configFile = open("cs.txt", "r")
+
         filename = configFile.readline()
         configFile.close()
 
