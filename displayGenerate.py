@@ -149,9 +149,9 @@ class displayNumbers(object):
             return False
         
         if self.ltype == 1:
-            configFile = open("cf.txt", "r")
+            configFile = open("data\\cf.txt", "r")
         elif self.ltype == 2:
-            configFile = open("cs.txt", "r")
+            configFile = open("data\\cs.txt", "r")
 
         filename = configFile.readline()
         configFile.close()

@@ -69,9 +69,9 @@ class numberSelect(object):
 
 		if self.ltype == 1:
 
-			if os.path.exists("sf.txt"):
+			if os.path.exists("data\\sf.txt"):
 
-				with open('sf.txt', 'r') as selectFile:
+				with open('data\\sf.txt', 'r') as selectFile:
 
 					for data in selectFile:
 
@@ -82,9 +82,9 @@ class numberSelect(object):
 
 		elif self.ltype == 2:
 			
-			if os.path.exists("ss.txt"):
+			if os.path.exists("data\\ss.txt"):
 
-				with open('ss.txt', 'r') as selectFile:
+				with open('data\\ss.txt', 'r') as selectFile:
 
 					for data in selectFile:
 
@@ -152,9 +152,9 @@ class numberSelect(object):
 				self.otherNumbers.append(i)
 
 		if self.ltype == 1:
-			selectFile = open("sf.txt", "w")
+			selectFile = open("data\\sf.txt", "w")
 		elif self.ltype == 2:
-			selectFile = open("ss.txt", "w")
+			selectFile = open("data\\ss.txt", "w")
 
 		sel_num = []
 
@@ -204,7 +204,7 @@ class numberSelect(object):
 
 		rec_ctr = 0
 
-		with open('cf_data.csv', 'w') as myOutput:
+		with open('data\\cf_data.csv', 'w') as myOutput:
 			with open(self.infile, 'r') as myInput:
 
 				for dataLine in myInput:
@@ -243,7 +243,7 @@ class numberSelect(object):
 
 		rec_ctr = 0
 
-		with open('cs_data.csv', 'w') as myOutput:
+		with open('data\\cs_data.csv', 'w') as myOutput:
 			with open(self.infile, 'r') as myInput:
 
 				for dataLine in myInput:
@@ -369,9 +369,9 @@ class numberSelect(object):
 		'''
 
 		if self.ltype == 1:
-			csv_file = 'cf_select.csv'
+			csv_file = 'data\\cf_select.csv'
 		elif self.ltype == 2:
-			csv_file = 'cs_select.csv'
+			csv_file = 'data\\cs_select.csv'
 
 		elif self.ltype == 2:
 			self.analyzeSuperFile()

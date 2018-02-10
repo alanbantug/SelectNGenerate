@@ -239,7 +239,7 @@ class Application(Frame):
     def selectSet(self):
 
         if self.sourceLabel["text"] == "None":
-            tkMessageBox.showerror('Select Error', 'Please select data file before proceeding.')
+            messagebox.showerror('Select Error', 'Please select data file before proceeding.')
         else:
             self.dSel[0].changeStyle(self.numberSource.setSelectNumbers(self.selectionCount.get()))
 
@@ -247,7 +247,7 @@ class Application(Frame):
     def checkSet(self):
 
         if self.sourceLabel["text"] == "None":
-            tkMessageBox.showerror('Select Error', 'Please select data file before proceeding.')
+            messagebox.showerror('Select Error', 'Please select data file before proceeding.')
         else:
 
             t = threading.Thread(None, self.checkSetThread, ())
@@ -264,7 +264,7 @@ class Application(Frame):
     def clearSelSet(self):
 
         if self.sourceLabel["text"] == "None":
-            tkMessageBox.showerror('Clear Error', 'Please select data file before proceeding.')
+            messagebox.showerror('Clear Error', 'Please select data file before proceeding.')
         else:
             self.dSel[0].changeStyle(self.numberSource.clearSelectNumbers())
 
@@ -288,7 +288,7 @@ class Application(Frame):
             if self.type.get() == 1:
 
                 if "FANTASY" in d_list:
-                    configFile = open("cf.txt", "w")
+                    configFile = open("data\\cf.txt", "w")
 
                     configFile.write(filename)
                     self.dataFile = filename
@@ -306,7 +306,7 @@ class Application(Frame):
             elif self.type.get() == 2:
 
                 if "SUPERLOTTO" in d_list:
-                    configFile = open("cs.txt", "w")
+                    configFile = open("data\\cs.txt", "w")
 
                     configFile.write(filename)
                     self.dataFile = filename
@@ -334,9 +334,9 @@ class Application(Frame):
 
         if ltype == 1:
 
-            if os.path.exists("cf.txt"):
+            if os.path.exists("data\\cf.txt"):
 
-                configFile = open("cf.txt", "r")
+                configFile = open("data\\cf.txt", "r")
 
                 filename = configFile.readline()
 
@@ -357,9 +357,9 @@ class Application(Frame):
 
         elif ltype == 2:
 
-            if os.path.exists("cs.txt"):
+            if os.path.exists("data\\cs.txt"):
 
-                configFile = open("cs.txt", "r")
+                configFile = open("data\\cs.txt", "r")
 
                 filename = configFile.readline()
 
