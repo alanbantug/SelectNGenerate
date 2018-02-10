@@ -126,7 +126,7 @@ class displayNumbers(object):
 
         odd_ctr = 0
 
-        for num in num_set:
+        for num in num_set[:5]:
             if num % 2 != 0:
                 odd_ctr += 1
 
