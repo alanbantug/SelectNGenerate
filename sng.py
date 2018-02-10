@@ -288,7 +288,11 @@ class Application(Frame):
             if self.type.get() == 1:
 
                 if "FANTASY" in d_list:
-                    configFile = open("data\\cf.txt", "w")
+                    try:
+                        configFile = open("data\\cf.txt", "w")
+                    except:
+                        os.makedirs("data")
+                        configFile = open("data\\cf.txt", "w")
 
                     configFile.write(filename)
                     self.dataFile = filename
@@ -306,7 +310,11 @@ class Application(Frame):
             elif self.type.get() == 2:
 
                 if "SUPERLOTTO" in d_list:
-                    configFile = open("data\\cs.txt", "w")
+                    try:
+                        configFile = open("data\\cs.txt", "w")
+                    except:
+                        os.makedirs("data")
+                        configFile = open("data\\cs.txt", "w")
 
                     configFile.write(filename)
                     self.dataFile = filename
