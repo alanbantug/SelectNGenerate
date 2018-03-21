@@ -295,16 +295,16 @@ class numberSelect(object):
 	def analyzeFantasyFile(self):
 
 		# Load the csv_data file into a dataframe
-		fantasy_file = pd.read_csv('cf_data.csv', header=None)
+		fantasy_file = pd.read_csv('data\\cf_data.csv', header=None)
 		fantasy_file.columns = ['Draw', 'Date', 'A', 'B', 'C', 'D', 'E']
 
 		fantasy_file['MS'] = fantasy_file[['Draw', 'A', 'B', 'C', 'D', 'E']].apply(self.matchSelect, axis=1)
 		
 		fantasy_select = copy.copy(fantasy_file[fantasy_file['MS'] == 5])
-		fantasy_select.to_csv('cf_select.csv')
+		fantasy_select.to_csv('data\\cf_select.csv')
 
 		fantasy_select['GAP'] = fantasy_select[['Draw']].apply(self.getGaps, axis=1)
-		fantasy_select.to_csv('cf_select.csv')
+		fantasy_select.to_csv('data\\cf_select.csv')
 
 		self.first_match = fantasy_select['Date'].min()
 		self.last_match = fantasy_select['Date'].max()
@@ -324,16 +324,16 @@ class numberSelect(object):
 	def analyzeSuperFile(self):
 
 		# Load the csv_data file into a dataframe
-		superlotto_file = pd.read_csv('cs_data.csv', header=None)
+		superlotto_file = pd.read_csv('data\\cs_data.csv', header=None)
 		superlotto_file.columns = ['Draw', 'Date', 'A', 'B', 'C', 'D', 'E', 'S']
 
 		superlotto_file['MS'] = superlotto_file[['Draw', 'A', 'B', 'C', 'D', 'E']].apply(self.matchSelect, axis=1)
 		
 		superlotto_select = copy.copy(superlotto_file[superlotto_file['MS'] == 5])
-		superlotto_select.to_csv('cs_select.csv')
+		superlotto_select.to_csv('data\\cs_select.csv')
 
 		superlotto_select['GAP'] = superlotto_select[['Draw']].apply(self.getGaps, axis=1)
-		superlotto_select.to_csv('cs_select.csv')
+		superlotto_select.to_csv('data\\cs_select.csv')
 
 		self.first_match = superlotto_select['Date'].min()
 		self.last_match = superlotto_select['Date'].max()

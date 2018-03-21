@@ -241,7 +241,11 @@ class Application(Frame):
         if self.sourceLabel["text"] == "None":
             messagebox.showerror('Select Error', 'Please select data file before proceeding.')
         else:
-            self.dSel[0].changeStyle(self.numberSource.setSelectNumbers(self.selectionCount.get()))
+
+            response = messagebox.askquestion('Select Numbers', 'Current selected numbers will be replaced. Continue?')
+
+            if response == 'yes':
+                self.dSel[0].changeStyle(self.numberSource.setSelectNumbers(self.selectionCount.get()))
 
 
     def checkSet(self):
@@ -604,28 +608,6 @@ class Application(Frame):
         self.progressBar.start()
 
 
-    # def clearGen(self):
-
-    #     response = tkMessageBox.askquestion('Clear', 'Clear the generated combinations?')
-
-    #     if response == 'yes':
-    #         self.topScale.set(0)
-    #         self.extScale.set(0)
-
-
-    # def setScale(self):
-        
-    #     self.topScale.set(self.topValue)
-    #     self.extScale.set(self.extValue)
-
-    #     selectionMessage = "You selected {0:02} main numbers".format(self.topValue)
-
-    #     if self.extValue > 0:
-    #         selectionMessage += " and {0:02} additional numbers".format(self.extValue)
-
-    #     tkMessageBox.showinfo('Selection Made!', selectionMessage)
-
-        
 root = Tk()
 root.title("SELECT AND GENERATE")
 
