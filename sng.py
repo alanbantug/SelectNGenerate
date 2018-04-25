@@ -9,8 +9,8 @@ from tkinter import messagebox
 from tkinter.filedialog import askdirectory
 from tkinter.filedialog import askopenfilename
 
-#import numberSelection as ns
-import displayGenerate as dg
+import threading
+
 import setGenerate as sg
 import displaySelect as ds
 import numberSelect as ns
@@ -20,8 +20,7 @@ import copy
 import random
 import shutil
 import subprocess as sp
-
-import threading
+import displayGenerate as dg
 
 class Application(Frame):
     
@@ -48,10 +47,10 @@ class Application(Frame):
         # Set Label styles
         Style().configure("M.TLabel", font="Verdana 20 bold", anchor="center")
 
-        Style().configure("G.TLabel", foreground= "white", background="green", font="Courier 8", anchor="center")
-        Style().configure("L.TLabel", foreground= "white", background="blue", font="Courier 8", anchor="center")
-        Style().configure("R.TLabel", foreground= "white", background="red", font="Courier 8", anchor="center")
-        Style().configure("Y.TLabel", foreground= "black", background="yellow", font="Courier 8", anchor="center")
+        Style().configure("G.TLabel", foreground="white", background="green", font="Courier 8", anchor="center")
+        Style().configure("L.TLabel", foreground="white", background="blue", font="Courier 8", anchor="center")
+        Style().configure("R.TLabel", foreground="white", background="red", font="Courier 8", anchor="center")
+        Style().configure("Y.TLabel", foreground="black", background="yellow", font="Courier 8", anchor="center")
         Style().configure("O.TLabelframe.Label", font="Verdana 8", foreground="black")
         Style().configure("T.TLabel", font="Verdana 12 bold")
         Style().configure("S.TLabel", font="Verdana 10")
@@ -225,13 +224,17 @@ class Application(Frame):
         self.showProgress()
 
         self.sGen = sg.getCombinations(self.numberSource.getSelectNumbers(), self.type.get())
-        selection = self.sGen.randomSelection()
+        selection = self.sGen.randomSelect()
 
         self.popProgress.destroy()
-        
-        for i in range(5):
-            self.dGen[i].changeTopStyle(selection[i])
-       
+
+        if len(selection) == 5:
+            for i in range(5):
+                self.dGen[i].changeTopStyle(selection[i])
+        else:
+            messagebox.showerror('Generate Error', 'Generation taking too long. Retry.')
+
+
     def clearGenSet(self):
 
         pass

@@ -14,6 +14,9 @@ import os
 import math
 from time import time
 
+import itertools
+from itertools import combinations
+
 # the next two lines are required to create the classifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
@@ -61,6 +64,73 @@ class getCombinations(object):
 		self.comboCount = math.factorial(self.numberCount) / (math.factorial(self.numberCount - self.divCount) * math.factorial(self.divCount))
 		self.duplCount = 25 - self.numberCount
 
+	def randomSelect(self):
+
+		selection = []
+
+		loop_count = 0
+		comb_count = 0
+
+		n_set = self.initIterator()
+
+		while True:
+        
+			try:
+				num_list = sorted(next(n_set))
+				
+				if self.checkQualified(num_list, selection):
+
+					if self.divCount == 5:
+						pass
+
+					elif self.divCount == 4:
+						num_list = self.getMore(num_list, 1)
+						num_list = sorted(num_list)
+
+					else:
+						num_list = self.getMore(num_list, 2)
+						num_list = sorted(num_list)
+
+					if self.ltype == 2:
+						num_list.append(self.extNumbers[random.randint(0, self.extlimit - 1)])
+
+					selection.append(num_list)
+					comb_count += 1
+
+				if comb_count == 5:
+					break
+                
+			except:
+				loop_count += 1
+
+				if loop_count < 100:
+
+					n_set = self.initIterator()
+					selection = []
+					comb_count = 0
+
+				else:
+					print(loop_count)
+					break
+
+		return selection
+
+	def initIterator(self):
+
+		num_chk = copy.copy(self.selectedNumbers)
+		random.shuffle(num_chk)
+					
+		if self.divCount == 5:
+			n_set = itertools.combinations(num_chk, 5)
+		elif self.divCount == 4:
+			n_set = itertools.combinations(num_chk, 4)
+		else:
+			n_set = itertools.combinations(num_chk, 3)
+                
+		for i in range(random.randint(1, self.comboCount)):
+			next(n_set)
+
+		return n_set
 
 	def randomSelection(self):
 
