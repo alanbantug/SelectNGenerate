@@ -5,7 +5,7 @@ import pandas as pd
 from pandas import Series, DataFrame
 
 from collections import defaultdict
-import datetime	
+import datetime
 import operator
 import random
 import copy
@@ -66,31 +66,41 @@ class getCombinations(object):
 
 	def randomSelect(self):
 
+		''' This function will generate the combinations using itertools instead of manually going thru
+		    the combinations which is done in the old function. The generation will be limited to 100 loops.
+		'''
+
 		selection = []
 
 		loop_count = 0
 		comb_count = 0
 
+		# initialize the generator
 		n_set = self.initIterator()
 
 		while True:
-        
+
 			try:
 				num_list = sorted(next(n_set))
-				
+
+				# check if the generated combination satisfies the criteria
 				if self.checkQualified(num_list, selection):
 
 					if self.divCount == 5:
 						pass
 
 					elif self.divCount == 4:
+
+						# get one more number from the unselected numbers to complete 5 numbers
 						num_list = self.getMore(num_list, 1)
 						num_list = sorted(num_list)
 
 					else:
+						# get two more number from the unselected numbers to complete 5 numbers
 						num_list = self.getMore(num_list, 2)
 						num_list = sorted(num_list)
 
+					# select a Super number if the lotto game selected is SuperLotto
 					if self.ltype == 2:
 						num_list.append(self.extNumbers[random.randint(0, self.extlimit - 1)])
 
@@ -99,10 +109,11 @@ class getCombinations(object):
 
 				if comb_count == 5:
 					break
-                
+
 			except:
 				loop_count += 1
 
+				# limit the count to 100 loops
 				if loop_count < 100:
 
 					n_set = self.initIterator()
@@ -117,16 +128,19 @@ class getCombinations(object):
 
 	def initIterator(self):
 
+		''' This function will be called to initialize the combination generator
+		'''
+
 		num_chk = copy.copy(self.selectedNumbers)
 		random.shuffle(num_chk)
-					
+
 		if self.divCount == 5:
 			n_set = itertools.combinations(num_chk, 5)
 		elif self.divCount == 4:
 			n_set = itertools.combinations(num_chk, 4)
 		else:
 			n_set = itertools.combinations(num_chk, 3)
-                
+
 		for i in range(random.randint(1, self.comboCount)):
 			next(n_set)
 
@@ -134,20 +148,20 @@ class getCombinations(object):
 
 	def randomSelection(self):
 
-		''' This function will: 
-		    1. Randomly select a combination  
+		''' This function will:
+		    1. Randomly select a combination
 		    2. Get the next combination from the qualified combinations making sure that the numbers in the combination have not been used yet
 		'''
 
 		selection = []
-		
+
 		num_chk = copy.copy(self.selectedNumbers)
 		random.shuffle(num_chk)
 
 		while (True):
 
 			start_id = random.randint(1, self.comboCount)
-			
+
 			if self.divCount == 5:
 				selection = self.generateFive(start_id)
 			elif self.divCount == 4:
@@ -208,11 +222,11 @@ class getCombinations(object):
 								start_id += random.randint(1, 100)
 
 							id_e += 1
-					
+
 						id_d += 1
-					
+
 					id_c += 1
-					
+
 				id_b += 1
 
 			id_a += 1
@@ -266,9 +280,9 @@ class getCombinations(object):
 							start_id += random.randint(1, 100)
 
 						id_d += 1
-					
+
 					id_c += 1
-					
+
 				id_b += 1
 
 			id_a += 1
@@ -309,7 +323,7 @@ class getCombinations(object):
 
 								# Get two more numbers
 								n_set = self.getMore(n_set, 2)
-								n_set = sorted(n_set)								
+								n_set = sorted(n_set)
 
 								if self.ltype == 2:
 									n_set.append(self.extNumbers[random.randint(0, self.extlimit - 1)])
@@ -320,7 +334,7 @@ class getCombinations(object):
 							start_id += random.randint(1, 100)
 
 					id_c += 1
-					
+
 				id_b += 1
 
 			id_a += 1
@@ -346,9 +360,9 @@ class getCombinations(object):
 		return qual
 
 	def checkConsecutives(self, data):
-    
+
 		# This function checks if a combination has consecutive numbers. If there are consecutive numbers, return 1
-    	
+
 		conctr = 0
 
 		for i in range(len(data) - 1):
@@ -367,7 +381,7 @@ class getCombinations(object):
 			for sel in selection:
 				if n in sel:
 					unique = False
-					
+
 		return unique
 
 	def getMore(self, n_set, count):
@@ -376,4 +390,3 @@ class getCombinations(object):
 			n_set.append(random.choice(self.othNumbers))
 
 		return n_set
-

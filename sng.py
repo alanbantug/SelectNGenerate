@@ -23,9 +23,9 @@ import subprocess as sp
 import displayGenerate as dg
 
 class Application(Frame):
-    
+
     def __init__(self, master):
-        
+
         self.master = master
         self.main_container = Frame(self.master)
 
@@ -34,13 +34,13 @@ class Application(Frame):
 
         # Set images. Note that the line below is needed to change the working directory of the batch file to point to where the script files, including image files are
         # It has to be commented out in the testing library
-        
+
         # os.chdir("c:\\users\\alan\\mypythonscripts\\scripts")
 
         self.topValue = 0
         self.extValue = 0
         self.workDirectory = os.getcwd()
-        
+
         # Create main frame
         self.main_container.grid(column=0, row=0, sticky=(N,S,E,W))
 
@@ -69,7 +69,7 @@ class Application(Frame):
         self.abtTab = Frame(self.parentTab)   # second page
         self.parentTab.add(self.selTab, text='    Select  ')
         self.parentTab.add(self.abtTab, text='    About ')
-        
+
         # Create widgets for the main screen
 
         self.mainLabel = Label(self.main_container, text="Select and Generate", style="M.TLabel" )
@@ -98,7 +98,7 @@ class Application(Frame):
         self.chkSet = Button(self.selTab, text="CHECK", style="B.TButton", command=self.checkSet)
         self.clearSet = Button(self.selTab, text="CLEAR", style="B.TButton", command=self.clearSelSet)
         self.showGen = Button(self.selTab, text="SHOW GENERATE PANEL", style="B.TButton", command=self.showGenerate)
-        
+
         self.selectGroup = LabelFrame(self.selTab, text=' Select Counts ', style="O.TLabelframe")
         self.selectionA = Radiobutton(self.selectGroup, text="15", style="B.TRadiobutton", variable=self.selectionCount, value=15)
         self.selectionB = Radiobutton(self.selectGroup, text="20", style="B.TRadiobutton", variable=self.selectionCount, value=20)
@@ -117,7 +117,7 @@ class Application(Frame):
 
         self.selLabel.grid(row=0, column=0, columnspan=5, padx=5, pady=(10,10), sticky='NSEW')
         self.selLabelA.grid(row=2, column=0, columnspan=5, padx=5, pady=(0, 5), sticky='NSEW')
-        
+
         self.h_sep_sa.grid(row=3, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
         self.dSel[0].positionDisplays(0, 0)
@@ -146,8 +146,8 @@ class Application(Frame):
         self.selectSource.grid(row=12, column=4, columnspan=1, padx=5, pady=5, sticky='NSEW')
 
         self.h_sep_sd.grid(row=13, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
-        
-        self.showGen.grid(row=14, column=0, columnspan=5, padx=5, pady=(2,5), sticky='NSEW')        
+
+        self.showGen.grid(row=14, column=0, columnspan=5, padx=5, pady=(2,5), sticky='NSEW')
 
         # Create widgets for About tab
 
@@ -228,6 +228,8 @@ class Application(Frame):
 
         self.popProgress.destroy()
 
+        # check the selection limit before showing it. this is needed since the looping limit for generating
+        # may be reached without completely generating 5 combinations
         if len(selection) == 5:
             for i in range(5):
                 self.dGen[i].changeTopStyle(selection[i])
@@ -291,7 +293,7 @@ class Application(Frame):
             d_list = d_line.split()
 
             datafile.close()
-        
+
             if self.type.get() == 1:
 
                 if "FANTASY" in d_list:
@@ -304,7 +306,7 @@ class Application(Frame):
                     configFile.write(filename)
                     self.dataFile = filename
                     self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
-                
+
                     # Create an instance of number source each time a new file is selected
                     self.numberSource = ns.numberSelect(self.dataFile, self.type.get())
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
@@ -326,7 +328,7 @@ class Application(Frame):
                     configFile.write(filename)
                     self.dataFile = filename
                     self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
-                
+
                     # Create an instance of number source each time a new file is selected
                     self.numberSource = ns.numberSelect(self.dataFile, self.type.get())
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
@@ -338,7 +340,7 @@ class Application(Frame):
 
             else:
                 self.displayDataFile()
-                
+
 
     def displayDataFile(self):
 
@@ -365,7 +367,7 @@ class Application(Frame):
                     self.selectionCount.set(len(self.numberSource.getSelectNumbers()))
                 else:
                     self.sourceLabel["text"] = "None"
-                    
+
                 configFile.close()
             else:
                 self.sourceLabel["text"] = "None"
@@ -388,7 +390,7 @@ class Application(Frame):
                     self.selectionCount.set(len(self.numberSource.getSelectNumbers()))
                 else:
                     self.sourceLabel["text"] = "None"
-                    
+
                 configFile.close()
             else:
                 self.sourceLabel["text"] = "None"
@@ -408,7 +410,7 @@ class Application(Frame):
         self.osep_a = Separator(self.popStats, orient=HORIZONTAL)
         self.osep_b = Separator(self.popStats, orient=HORIZONTAL)
         self.osep_c = Separator(self.popStats, orient=HORIZONTAL)
-        
+
         self.optLastMatch = Label(self.popStats, text="", style="B.TLabel" )
         self.optExactMatch = Label(self.popStats, text="", style="B.TLabel" )
         self.optMaxGap = Label(self.popStats, text="", style="B.TLabel" )
@@ -426,7 +428,7 @@ class Application(Frame):
         self.optLastMatchDays.grid(row=3, column=0, padx=10, pady=0, sticky='W')
         self.optMaxGap.grid(row=4, column=0, padx=10, pady=0, sticky='W')
         self.optMinGap.grid(row=5, column=0, padx=10, pady=0, sticky='W')
-        
+
         self.osep_b.grid(row=6, columnspan=3, column=0, padx=5, pady=5, sticky='NSEW')
 
         self.closeStats.grid(row=7, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
@@ -451,8 +453,8 @@ class Application(Frame):
 
         # Position in center screen
 
-        ws = self.popStats.winfo_screenwidth() 
-        hs = self.popStats.winfo_screenheight() 
+        ws = self.popStats.winfo_screenwidth()
+        hs = self.popStats.winfo_screenheight()
 
         # calculate x and y coordinates for the Tk root window
         x = (ws/2) - (ww/2)
@@ -494,20 +496,20 @@ class Application(Frame):
         self.h_sep_gg = Separator(self.popGen, orient=HORIZONTAL)
 
         self.dGen = []
-        
+
         for i in range(5):
             self.dGen.append(dg.displayNumbers(self.popGen, self.type.get()))
-                    
+
         self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
         self.exitGen = Button(self.popGen, text="EXIT", style="B.TButton", command=self.popGen.destroy)
-        
+
         self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
         for i in range(5):
             self.dGen[i].positionDisplays(5, i)
-                
-        self.h_sep_gb.grid(row=15, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')        
-        
+
+        self.h_sep_gb.grid(row=15, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')
+
         self.genSet.grid(row=16, column=0, columnspan=5, padx=5, pady=(5, 2), sticky='NSEW')
         self.exitGen.grid(row=17, column=0, columnspan=5, padx=5, pady=(2, 5), sticky='NSEW')
 
@@ -519,8 +521,8 @@ class Application(Frame):
 
         # Position in center screen
 
-        ws = self.popGen.winfo_screenwidth() 
-        hs = self.popGen.winfo_screenheight() 
+        ws = self.popGen.winfo_screenwidth()
+        hs = self.popGen.winfo_screenheight()
 
         # calculate x and y coordinates for the Tk root window
         x = (ws/2) - (ww/2)
@@ -542,20 +544,20 @@ class Application(Frame):
         self.h_sep_gg = Separator(self.popGen, orient=HORIZONTAL)
 
         self.dGen = []
-        
+
         for i in range(5):
             self.dGen.append(dg.displayNumbers(self.popGen, self.type.get()))
-                    
+
         self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
         self.exitGen = Button(self.popGen, text="EXIT", style="B.TButton", command=self.popGen.destroy)
-        
+
         self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
         for i in range(5):
             self.dGen[i].positionDisplays(5, i)
-                
-        self.h_sep_gb.grid(row=20, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')        
-        
+
+        self.h_sep_gb.grid(row=20, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')
+
         self.genSet.grid(row=21, column=0, columnspan=5, padx=5, pady=(5, 2), sticky='NSEW')
         self.exitGen.grid(row=22, column=0, columnspan=5, padx=5, pady=(2, 5), sticky='NSEW')
 
@@ -567,8 +569,8 @@ class Application(Frame):
 
         # Position in center screen
 
-        ws = self.popGen.winfo_screenwidth() 
-        hs = self.popGen.winfo_screenheight() 
+        ws = self.popGen.winfo_screenwidth()
+        hs = self.popGen.winfo_screenheight()
 
         # calculate x and y coordinates for the Tk root window
         x = (ws/2) - (ww/2)
@@ -587,7 +589,7 @@ class Application(Frame):
 
         self.progressMessage = Label(self.popProgress, text="Processing, please wait...", style="P.TLabel" )
         self.progressBar = Progressbar(self.popProgress, orient="horizontal", mode="indeterminate", length=280)
-        
+
         self.progressMessage.grid(row=0, column=0, columnspan=5, padx=10 , pady=5, sticky='NSEW')
         self.progressBar.grid(row=1, column=0, columnspan=5, padx=10 , pady=5, sticky='NSEW')
 
@@ -599,8 +601,8 @@ class Application(Frame):
 
         # Position in center screen
 
-        ws = self.popProgress.winfo_screenwidth() 
-        hs = self.popProgress.winfo_screenheight() 
+        ws = self.popProgress.winfo_screenwidth()
+        hs = self.popProgress.winfo_screenheight()
 
         # calculate x and y coordinates for the Tk root window
         x = (ws/2) - (ww/2)
@@ -626,8 +628,8 @@ root.maxsize(ww, wh)
 
 # Position in center screen
 
-ws = root.winfo_screenwidth() 
-hs = root.winfo_screenheight() 
+ws = root.winfo_screenwidth()
+hs = root.winfo_screenheight()
 
 # calculate x and y coordinates for the Tk root window
 x = (ws/2) - (ww/2)
