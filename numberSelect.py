@@ -5,7 +5,7 @@ import pandas as pd
 from pandas import Series, DataFrame
 
 from collections import defaultdict
-import datetime	
+import datetime
 import operator
 import random
 import copy
@@ -33,7 +33,7 @@ class numberSelect(object):
 
 		self.reformatFile()
 		self.loadSelectNumbers()
-		
+
 
 	def createList(self,start,top_limit=39):
 
@@ -63,7 +63,7 @@ class numberSelect(object):
 
 		''' Get the select numbers if a selection was made. If not, default the list to 1 - 20
 		'''
-		
+
 		self.selectedNumbers = []
 		self.otherNumbers = []
 
@@ -81,7 +81,7 @@ class numberSelect(object):
 					self.selectedNumbers.append(int(numb))
 
 		elif self.ltype == 2:
-			
+
 			if os.path.exists("data\\ss.txt"):
 
 				with open('data\\ss.txt', 'r') as selectFile:
@@ -117,7 +117,7 @@ class numberSelect(object):
 
 		limit = math.floor(select_count / 2)
 
-		# get even numbers  
+		# get even numbers
 		while (True):
 
 			selected = random.choice(self.allNumbers)
@@ -151,6 +151,10 @@ class numberSelect(object):
 			else:
 				self.otherNumbers.append(i)
 
+		return self.selectedNumbers
+
+	def writeOutSelected(self, select_count):
+
 		if self.ltype == 1:
 			selectFile = open("data\\sf.txt", "w")
 		elif self.ltype == 2:
@@ -159,18 +163,13 @@ class numberSelect(object):
 		sel_num = []
 
 		for i in range(select_count):
-
 			sel_num.append("{0:02}".format(self.selectedNumbers[i]))
 
 		record = " - ".join(sel_num)
 
 		selectFile.write(record)
 		selectFile.write("\n")
-
 		selectFile.close()
-
-		return self.selectedNumbers
-
 
 	def clearSelectNumbers(self):
 
@@ -208,11 +207,11 @@ class numberSelect(object):
 			with open(self.infile, 'r') as myInput:
 
 				for dataLine in myInput:
-			
+
 					fields = dataLine.split()
-				
+
 					if len(fields) > 0:
-					
+
 						if fields[0].isdigit():
 
 							# build the data to write to csv_data
@@ -247,11 +246,11 @@ class numberSelect(object):
 			with open(self.infile, 'r') as myInput:
 
 				for dataLine in myInput:
-			
+
 					fields = dataLine.split()
-				
+
 					if len(fields) > 0:
-					
+
 						if fields[0].isdigit():
 
 							# build the data to write to csv_data
@@ -282,7 +281,7 @@ class numberSelect(object):
 
 			1. Read the CSV file into a DataFrame
 			2. Get the top 20 numbers at the time before the draws and then compares them with the winning draws
-			3. Get the date of when the numbers from the last draw came from the top 20, the count of such incidents, and the shortest 
+			3. Get the date of when the numbers from the last draw came from the top 20, the count of such incidents, and the shortest
 			   and longest dates in between the occurences
 		'''
 
@@ -299,7 +298,7 @@ class numberSelect(object):
 		fantasy_file.columns = ['Draw', 'Date', 'A', 'B', 'C', 'D', 'E']
 
 		fantasy_file['MS'] = fantasy_file[['Draw', 'A', 'B', 'C', 'D', 'E']].apply(self.matchSelect, axis=1)
-		
+
 		fantasy_select = copy.copy(fantasy_file[fantasy_file['MS'] == 5])
 		fantasy_select.to_csv('data\\cf_select.csv')
 
@@ -328,7 +327,7 @@ class numberSelect(object):
 		superlotto_file.columns = ['Draw', 'Date', 'A', 'B', 'C', 'D', 'E', 'S']
 
 		superlotto_file['MS'] = superlotto_file[['Draw', 'A', 'B', 'C', 'D', 'E']].apply(self.matchSelect, axis=1)
-		
+
 		superlotto_select = copy.copy(superlotto_file[superlotto_file['MS'] == 5])
 		superlotto_select.to_csv('data\\cs_select.csv')
 
@@ -365,7 +364,7 @@ class numberSelect(object):
 
 	def getGaps(self, draw):
 
-		''' This function will get the gaps between the 
+		''' This function will get the gaps between the
 		'''
 
 		if self.ltype == 1:
@@ -419,4 +418,3 @@ class numberSelect(object):
 	def getStats(self):
 
 		return self.last_match, self.first_match, self.last_match_days.days, self.max_gap, self.min_gap, self.exact_match
-

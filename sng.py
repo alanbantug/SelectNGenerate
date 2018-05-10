@@ -73,7 +73,7 @@ class Application(Frame):
         # Create widgets for the main screen
 
         self.mainLabel = Label(self.main_container, text="Select and Generate", style="M.TLabel" )
-        self.exit = Button(self.main_container, text="EXIT", style="B.TButton", command=root.destroy)
+        self.exit = Button(self.main_container, text="EXIT", style="B.TButton", command=self.exitRoutine)
 
         # Create widgets for the Select Tab
 
@@ -236,6 +236,14 @@ class Application(Frame):
         else:
             messagebox.showerror('Generate Error', 'Generation taking too long. Retry.')
 
+    def exitRoutine(self):
+
+        response = messagebox.askquestion('Select Numbers', 'Do you want to save the current selected numbers?')
+
+        if response == 'yes':
+            self.numberSource.writeOutSelected(self.selectionCount.get())
+
+        root.destroy()
 
     def clearGenSet(self):
 
@@ -247,10 +255,10 @@ class Application(Frame):
             messagebox.showerror('Select Error', 'Please select data file before proceeding.')
         else:
 
-            response = messagebox.askquestion('Select Numbers', 'Current selected numbers will be replaced. Continue?')
+            #response = messagebox.askquestion('Select Numbers', 'Current selected numbers will be replaced. Continue?')
 
-            if response == 'yes':
-                self.dSel[0].changeStyle(self.numberSource.setSelectNumbers(self.selectionCount.get()))
+            #if response == 'yes':
+            self.dSel[0].changeStyle(self.numberSource.setSelectNumbers(self.selectionCount.get()))
 
 
     def checkSet(self):
