@@ -245,10 +245,6 @@ class Application(Frame):
 
         root.destroy()
 
-    def clearGenSet(self):
-
-        pass
-
     def selectSet(self):
 
         if self.sourceLabel["text"] == "None":
