@@ -237,7 +237,8 @@ class Application(Frame):
             messagebox.showerror('Generate Error', 'Generation taking too long. Retry.')
 
     def exitRoutine(self):
-
+        ''' This function will be executed when the user exits
+        '''
         response = messagebox.askquestion('Select Numbers', 'Do you want to save the current selected numbers?')
 
         if response == 'yes':
