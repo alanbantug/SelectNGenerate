@@ -252,10 +252,8 @@ class Application(Frame):
             messagebox.showerror('Select Error', 'Please select data file before proceeding.')
         else:
 
-            #response = messagebox.askquestion('Select Numbers', 'Current selected numbers will be replaced. Continue?')
-
-            #if response == 'yes':
-            self.dSel[0].changeStyle(self.numberSource.setSelectNumbers(self.selectionCount.get()))
+            #self.dSel[0].changeStyle(self.numberSource.setSelectNumbers(self.selectionCount.get()))
+            self.dSel[0].changeStyle(self.numberSource.getFromRecent(self.selectionCount.get()))
 
 
     def checkSet(self):

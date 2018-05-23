@@ -106,6 +106,62 @@ class numberSelect(object):
 
 		# Perform analysis on file after loading the randomly selected numbers
 
+	def getFromRecent(self, select_count=20):
+
+		self.selectedNumbers = []
+		self.otherNumbers = []
+
+		if self.ltype == 1:
+			sourceFile = 'data\\cf_data.csv'
+		elif self.ltype == 2:
+			sourceFile = 'data\\cs_data.csv'
+
+		with open(sourceFile, 'r') as i_file:
+
+			for data_line in i_file:
+
+				fields = data_line.split(',')
+
+				# remove the new line character at the end of the last field
+				fields[-1] = fields[-1][:2]
+
+				numbers = list(map(int, fields[2:]))
+
+				# randomly select a number from the data numbers
+				remove = np.random.choice(numbers)
+
+				# remove the selected number
+				numbers.pop(numbers.index(remove))
+
+				# load the remaining numbers
+				self.selectedNumbers = self.loadSelected(self.selectedNumbers, numbers, select_count)
+
+				if len(self.selectedNumbers) == select_count:
+					break
+
+		for i in range(1, self.topLimit + 1):
+			if i in self.selectedNumbers:
+				pass
+			else:
+				self.otherNumbers.append(i)
+
+		return self.selectedNumbers
+
+	def loadSelected(self, selected, numbers, limit):
+
+		for number in numbers:
+
+			if number in selected:
+				pass
+			else:
+
+				if len(selected) < limit:
+					selected.append(number)
+				else:
+					break
+
+		return selected
+
 
 	def setSelectNumbers(self, select_count=20):
 
@@ -371,9 +427,6 @@ class numberSelect(object):
 			csv_file = 'data\\cf_select.csv'
 		elif self.ltype == 2:
 			csv_file = 'data\\cs_select.csv'
-
-		elif self.ltype == 2:
-			self.analyzeSuperFile()
 
 		date_diff = datetime.timedelta(0)
 
