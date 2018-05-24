@@ -14,6 +14,8 @@ import os
 from time import time
 import math
 
+import itertools
+
 class numberSelect(object):
 
 	def __init__(self, infile, ltype):
@@ -105,6 +107,178 @@ class numberSelect(object):
 				self.otherNumbers.append(i)
 
 		# Perform analysis on file after loading the randomly selected numbers
+
+	def generateInitial(self, selection):
+
+		''' This function will generate a combination of numbers that is not a previous winner
+		'''
+
+		numberSet = []
+
+		limit = math.floor(5 / 2)
+
+		while True:
+
+			# get even numbers
+			while (True):
+
+				selected = random.choice(selection)
+
+				if selected in numberSet:
+					pass
+				else:
+					if selected % 2 == 0:
+						numberSet.append(selected)
+
+				if len(numberSet) == limit:
+					break
+
+			# get odd numbers
+			while (True):
+
+				selected = random.choice(selection)
+
+				if selected in numberSet:
+					pass
+				else:
+					if selected % 2 == 1:
+						numberSet.append(selected)
+
+				if len(numberSet) == 5:
+					break
+
+			if not self.checkIfWinner(sorted(numberSet), all_data=True):
+				break
+
+		return sorted(numberSet)
+
+	def addOneAndCheck(self, numberSet, selection, select_count):
+
+		''' This function will first create an iterator for the other numbers not selected, and then add them
+			one at a time, getting all combinations along the way while checking if there was a match in the last
+			30 days.
+		'''
+
+		# create an iterator of numbers not yet in inSet
+		sel_iter = [num for num in selection if num not in numberSet]
+
+		random.shuffle(sel_iter)
+		sel_iter = iter(sel_iter)
+
+		while True:
+			# get a number from the selection
+			selected = next(sel_iter)
+
+	        # append to inSet
+			numberSet.append(selected)
+			print(len(numberSet))
+			# check combinations for winners the last several draws
+			numberSet = self.getCombinations(numberSet)
+
+			if len(numberSet) == select_count:
+				break
+
+		return sorted(numberSet)
+
+	def getCombinations(self, numberSet):
+
+	    ''' This function will generate the combinations to check if any of it occured within the last 100 days.
+	        If it finds one, then it will pop-out the last number in the list since that's the number that most
+	        likely caused it
+	    '''
+
+	    iterator = itertools.combinations(numberSet, 5)
+
+	    while True:
+
+	        try:
+	            combination = sorted(next(iterator))
+
+	            if self.checkIfWinner(combination):
+	                # if there was a match, the last number added would have caused it, so it is popped out of the list
+	                numberSet.pop()
+	                break
+	        except:
+	            break
+
+	    return numberSet
+
+	def checkIfWinner(self, combination, all_data = False):
+
+		''' This function will check if the combination passed to it was a recent winner
+		'''
+
+		winner_found = False
+
+		# determine which configuration file to use
+		if self.ltype == 1:
+			c_File = 'data\\cf.txt'
+		elif self.ltype == 2:
+			c_File = 'data\\cstxt'
+
+		# open the configuration file
+		configFile = open(c_File, "r")
+
+		# read the configuration file then close it
+		configData = configFile.readline()
+		configFile.close()
+
+		dataFile = open(configData, "r")
+
+		d_count = 0
+
+		while True:
+
+			d_line = dataFile.readline()
+
+			if d_line == "":
+				break
+
+			d_list = d_line.split()
+
+			if len(d_list) > 0:
+				if d_list[0].isdigit():
+
+					d_count += 1
+
+					winner = []
+
+					for i in range(5, 10):
+						winner.append(int(d_list[i]))
+
+					# if all data is to be checked then there is no need to check the counter
+					if all_data:
+						pass
+					else:
+						# if the number of draws checked is more than 30, stop the checking
+						if d_count > 30:
+							break
+
+					if combination == winner:
+						winner_found = True
+						break
+
+		dataFile.close()
+
+		return winner_found
+
+	def randomSequentialAdd(self, select_count=20):
+
+		self.selectedNumbers = []
+		self.otherNumbers = []
+
+		# create an initial set of numbers
+		self.selectedNumbers = self.generateInitial(self.allNumbers)
+
+		self.selectedNumbers = self.addOneAndCheck(self.selectedNumbers, self.allNumbers, select_count)
+
+		for i in range(1, self.topLimit + 1):
+			if i in self.selectedNumbers:
+				pass
+			else:
+				self.otherNumbers.append(i)
+
+		return self.selectedNumbers
 
 	def getFromRecent(self, select_count=20):
 

@@ -253,7 +253,8 @@ class Application(Frame):
         else:
 
             #self.dSel[0].changeStyle(self.numberSource.setSelectNumbers(self.selectionCount.get()))
-            self.dSel[0].changeStyle(self.numberSource.getFromRecent(self.selectionCount.get()))
+            #self.dSel[0].changeStyle(self.numberSource.getFromRecent(self.selectionCount.get()))
+            self.dSel[0].changeStyle(self.numberSource.randomSequentialAdd(self.selectionCount.get()))
 
 
     def checkSet(self):
