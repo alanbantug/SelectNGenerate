@@ -410,8 +410,6 @@ class Application(Frame):
 
         self.popStats = Toplevel(self.main_container)
         self.popStats.title("Number Stats")
-        #self.popStats.maxsize(830, 550)
-        #self.popStats.minsize(830, 550)
 
         self.osep_a = Separator(self.popStats, orient=HORIZONTAL)
         self.osep_b = Separator(self.popStats, orient=HORIZONTAL)
