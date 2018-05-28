@@ -537,16 +537,25 @@ class numberSelect(object):
 
 		self.first_match = fantasy_select['Date'].min()
 		self.last_match = fantasy_select['Date'].max()
+
+		print(fantasy_file['Draw'].max())
+		print(fantasy_select['Draw'].max())
+
 		last_match_split = self.last_match.split('-')
 
 		date_a = datetime.datetime(int(last_match_split[0]), int(last_match_split[1]), int(last_match_split[2]))
 		curr_date  = datetime.datetime.now()
 
 		self.last_match_days = curr_date - date_a
+		self.last_match_draws = fantasy_file['Draw'].max() - fantasy_select['Draw'].max()
 
 		self.exact_match = fantasy_select['MS'].count()
 		self.max_gap = fantasy_select['GAP'].max()
 		self.min_gap = fantasy_select[fantasy_select['GAP'] > 0]['GAP'].min()
+
+		fantasy_plt = fantasy_file['MS'][:100].plot(legend=True, figsize=(4,3), fontsize="4", title='Consistency Plot')
+		fantasy_fig = fantasy_plt.get_figure()
+		fantasy_fig.savefig('data\\results.jpg')
 
 		#return self.last_match, self.first_match, self.last_match_days.days, self.max_gap, self.min_gap, self.exact_match
 
@@ -572,11 +581,15 @@ class numberSelect(object):
 		curr_date  = datetime.datetime.now()
 
 		self.last_match_days = curr_date - date_a
+		self.last_match_draws = superlotto_file['Draw'].max() - superlotto_select['Draw'].max()
 
 		self.exact_match = superlotto_select['MS'].count()
 		self.max_gap = superlotto_select['GAP'].max()
 		self.min_gap = superlotto_select[superlotto_select['GAP'] > 0]['GAP'].min()
 
+		superlotto_plt = superlotto_file['MS'][:100].plot(legend=True, figsize=(4,3), fontsize="6")
+		superlotto_fig = superlotto_plt.get_figure()
+		fantasy_fig.savefig('data\\results.jpg')
 
 	def matchSelect(self, data):
 
@@ -603,6 +616,7 @@ class numberSelect(object):
 			csv_file = 'data\\cs_select.csv'
 
 		date_diff = datetime.timedelta(0)
+		draw_diff = 0
 
 		with open(csv_file, 'r') as inFile:
 
@@ -618,13 +632,16 @@ class numberSelect(object):
 							draw_date = fields[2].split('-')
 
 							date_a = datetime.datetime(int(draw_date[0]), int(draw_date[1]), int(draw_date[2]))
+							draw_a = int(fields[1])
 
 						if int(draw) > int(fields[1]):
 
 							draw_date = fields[2].split('-')
 
 							date_b = datetime.datetime(int(draw_date[0]), int(draw_date[1]), int(draw_date[2]))
+							draw_b = int(fields[1])
 
+							draw_diff = draw_a - draw_b
 							date_diff = date_a - date_b
 
 							break
@@ -632,7 +649,8 @@ class numberSelect(object):
 		# close the file so that the outside process can read it
 		inFile.close()
 
-		return date_diff.days
+		#return date_diff.days
+		return draw_diff
 
 	def getSelectNumbers(self):
 
@@ -644,4 +662,4 @@ class numberSelect(object):
 
 	def getStats(self):
 
-		return self.last_match, self.first_match, self.last_match_days.days, self.max_gap, self.min_gap, self.exact_match
+		return self.last_match, self.first_match, self.last_match_draws, self.max_gap, self.min_gap, self.exact_match

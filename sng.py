@@ -22,6 +22,8 @@ import shutil
 import subprocess as sp
 import displayGenerate as dg
 
+from PIL import Image, ImageTk
+
 class Application(Frame):
 
     def __init__(self, master):
@@ -408,8 +410,8 @@ class Application(Frame):
 
         self.popStats = Toplevel(self.main_container)
         self.popStats.title("Number Stats")
-        self.popStats.maxsize(430, 550)
-        self.popStats.minsize(430, 550)
+        #self.popStats.maxsize(830, 550)
+        #self.popStats.minsize(830, 550)
 
         self.osep_a = Separator(self.popStats, orient=HORIZONTAL)
         self.osep_b = Separator(self.popStats, orient=HORIZONTAL)
@@ -420,6 +422,8 @@ class Application(Frame):
         self.optMaxGap = Label(self.popStats, text="", style="B.TLabel" )
         self.optMinGap = Label(self.popStats, text="", style="B.TLabel" )
         self.optLastMatchDays = Label(self.popStats, text="", style="B.TLabel" )
+
+        self.resultsData = Label(self.popStats)
 
         self.closeStats = Button(self.popStats, text="CLOSE", style="B.TButton", command=self.popStats.destroy)
 
@@ -435,20 +439,35 @@ class Application(Frame):
 
         self.osep_b.grid(row=6, columnspan=3, column=0, padx=5, pady=5, sticky='NSEW')
 
-        self.closeStats.grid(row=7, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
+        self.resultsData.grid(row=7, column=0, rowspan=4, padx=5, pady=5, sticky='NSEW')
 
-        last_match, first_match, last_match_days, max_gap, min_gap, exact_match = self.numberSource.getStats()
+        self.osep_c.grid(row=11, columnspan=3, column=0, padx=5, pady=5, sticky='NSEW')
+
+        self.closeStats.grid(row=12, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
+
+        last_match, first_match, last_match_draws, max_gap, min_gap, exact_match = self.numberSource.getStats()
 
         self.optLastMatch['text'] = "The last winner from select numbers occured on %s." %last_match
-        self.optLastMatchDays ['text']= "It has been %s days since the last winner from select numbers." %last_match_days
+        self.optLastMatchDays ['text']= "It has been %s draws since the last winner from select numbers." %last_match_draws
         self.optExactMatch ['text'] = "The total exact matches from this set is %s since %s." %(exact_match, first_match)
-        self.optMaxGap ['text'] = "The maximum gap between incidents is %s." %max_gap
-        self.optMinGap ['text'] = "The minimum gap between incidents is %s." %min_gap
+        self.optMaxGap ['text'] = "The maximum draw gap between incidents is %s." %max_gap
+        self.optMinGap ['text'] = "The minimum draw gap between incidents is %s." %min_gap
+
+        # Set the images
+
+        image = Image.open("data\\results.jpg")
+        results_fig = ImageTk.PhotoImage(image)
+
+        # Define a style
+        root.results_fig = results_fig
+        Style().configure("DT.TLabel", image=results_fig, background="white", anchor="left", font="Verdana 4")
+
+        self.resultsData['style'] = 'DT.TLabel'
 
         # Set size
 
-        wh = 150
-        ww = 400
+        wh = 480
+        ww = 420
 
         #root.resizable(height=False, width=False)
 
