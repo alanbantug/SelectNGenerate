@@ -538,9 +538,6 @@ class numberSelect(object):
 		self.first_match = fantasy_select['Date'].min()
 		self.last_match = fantasy_select['Date'].max()
 
-		print(fantasy_file['Draw'].max())
-		print(fantasy_select['Draw'].max())
-
 		last_match_split = self.last_match.split('-')
 
 		date_a = datetime.datetime(int(last_match_split[0]), int(last_match_split[1]), int(last_match_split[2]))
@@ -589,7 +586,7 @@ class numberSelect(object):
 
 		superlotto_plt = superlotto_file['MS'][:100].plot(legend=True, figsize=(4,3), fontsize="6")
 		superlotto_fig = superlotto_plt.get_figure()
-		fantasy_fig.savefig('data\\results.jpg')
+		superlotto_fig.savefig('data\\results.jpg')
 
 	def matchSelect(self, data):
 
