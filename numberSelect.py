@@ -4,6 +4,10 @@ import numpy as np
 import pandas as pd
 from pandas import Series, DataFrame
 
+import matplotlib.pyplot as plt
+
+import pdb
+
 from collections import defaultdict
 import datetime
 import operator
@@ -214,7 +218,7 @@ class numberSelect(object):
 		if self.ltype == 1:
 			c_File = 'data\\cf.txt'
 		elif self.ltype == 2:
-			c_File = 'data\\cstxt'
+			c_File = 'data\\cs.txt'
 
 		# open the configuration file
 		configFile = open(c_File, "r")
@@ -550,9 +554,21 @@ class numberSelect(object):
 		self.max_gap = fantasy_select['GAP'].max()
 		self.min_gap = fantasy_select[fantasy_select['GAP'] > 0]['GAP'].min()
 
-		fantasy_plt = fantasy_file['MS'][:100].plot(legend=True, figsize=(4,3), fontsize="4", title='Consistency Plot')
+		# delete the results files
+		try:
+			os.remove('data\\results.jpg')
+		except:
+			pass
+
+		'''
+		fantasy_plt = fantasy_file['MS'][:100].plot(legend=False, figsize=(4,3), fontsize="4", title='Consistency Plot')
 		fantasy_fig = fantasy_plt.get_figure()
 		fantasy_fig.savefig('data\\results.jpg')
+		'''
+		
+		plt.figure(figsize=(4,3))
+		plt.plot(fantasy_file['MS'][:100])
+		plt.savefig('data\\results.jpg')
 
 		#return self.last_match, self.first_match, self.last_match_days.days, self.max_gap, self.min_gap, self.exact_match
 
@@ -584,9 +600,21 @@ class numberSelect(object):
 		self.max_gap = superlotto_select['GAP'].max()
 		self.min_gap = superlotto_select[superlotto_select['GAP'] > 0]['GAP'].min()
 
-		superlotto_plt = superlotto_file['MS'][:100].plot(legend=True, figsize=(4,3), fontsize="6")
+		# delete the results files
+		try:
+			os.remove('data\\results.jpg')
+		except:
+			pass
+
+		'''
+		superlotto_plt = superlotto_file['MS'][:100].plot(legend=False, figsize=(4,3), fontsize="4", title='Consistency Plot')
 		superlotto_fig = superlotto_plt.get_figure()
 		superlotto_fig.savefig('data\\results.jpg')
+		'''
+
+		plt.figure(figsize=(4,3))
+		plt.plot(superlotto_file['MS'][:100])
+		plt.savefig('data\\results.jpg')
 
 	def matchSelect(self, data):
 

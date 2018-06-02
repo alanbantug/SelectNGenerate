@@ -253,10 +253,11 @@ class Application(Frame):
         if self.sourceLabel["text"] == "None":
             messagebox.showerror('Select Error', 'Please select data file before proceeding.')
         else:
-
+            self.showProgress()
             #self.dSel[0].changeStyle(self.numberSource.setSelectNumbers(self.selectionCount.get()))
             #self.dSel[0].changeStyle(self.numberSource.getFromRecent(self.selectionCount.get()))
             self.dSel[0].changeStyle(self.numberSource.randomSequentialAdd(self.selectionCount.get()))
+            self.popProgress.destroy()
 
 
     def checkSet(self):
