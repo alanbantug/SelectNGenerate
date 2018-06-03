@@ -106,7 +106,7 @@ class Application(Frame):
         self.selectionB = Radiobutton(self.selectGroup, text="20", style="B.TRadiobutton", variable=self.selectionCount, value=20)
         self.selectionC = Radiobutton(self.selectGroup, text="25", style="B.TRadiobutton", variable=self.selectionCount, value=25)
 
-        self.typeGroup = LabelFrame(self.selTab, text=' Type Options ', style="O.TLabelframe")
+        self.typeGroup = LabelFrame(self.selTab, text=' Game Selection ', style="O.TLabelframe")
         self.typeA = Radiobutton(self.typeGroup, text="Fantasy", style="B.TRadiobutton", command=self.displayDataFile, variable=self.type, value=1)
         self.typeB = Radiobutton(self.typeGroup, text="Super", style="B.TRadiobutton", command=self.displayDataFile, variable=self.type, value=2)
         self.typeC = Radiobutton(self.typeGroup, text="Not Used", style="B.TRadiobutton", command=self.displayDataFile, variable=self.type, value=3)
@@ -122,19 +122,19 @@ class Application(Frame):
 
         self.h_sep_sa.grid(row=3, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
-        self.dSel[0].positionDisplays(0, 0)
-        self.numberGroup.grid(row=4, column=0, columnspan=4, padx=5, pady=5, sticky='NSEW')
-
-        self.selectionA.grid(row=0, column=0, padx=10, pady=5, sticky='W')
-        self.selectionB.grid(row=1, column=0, padx=10, pady=5, sticky='W')
-        self.selectionC.grid(row=2, column=0, padx=10, pady=5, sticky='W')
-        self.selectGroup.grid(row=4, column=4, columnspan=1, padx=5, pady=5, sticky='NSEW')
-
         self.typeA.grid(row=0, column=0, padx=20, pady=(5, 10), sticky='W')
         self.typeB.grid(row=0, column=1, padx=20, pady=(5, 10), sticky='W')
         self.typeC.grid(row=0, column=2, padx=20, pady=(5, 10), sticky='W')
         self.typeD.grid(row=0, column=3, padx=20, pady=(5, 10), sticky='W')
-        self.typeGroup.grid(row=5, column=0, columnspan=5, padx=5, pady=(0,5), sticky='NSEW')
+        self.typeGroup.grid(row=4, column=0, columnspan=5, padx=5, pady=(0,5), sticky='NSEW')
+
+        self.dSel[0].positionDisplays(0, 0)
+        self.numberGroup.grid(row=5, column=0, columnspan=4, padx=5, pady=5, sticky='NSEW')
+
+        self.selectionA.grid(row=0, column=0, padx=10, pady=5, sticky='W')
+        self.selectionB.grid(row=1, column=0, padx=10, pady=5, sticky='W')
+        self.selectionC.grid(row=2, column=0, padx=10, pady=5, sticky='W')
+        self.selectGroup.grid(row=5, column=4, columnspan=1, padx=5, pady=5, sticky='NSEW')
 
         self.h_sep_sb.grid(row=7, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 

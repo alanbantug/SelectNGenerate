@@ -560,12 +560,6 @@ class numberSelect(object):
 		except:
 			pass
 
-		'''
-		fantasy_plt = fantasy_file['MS'][:100].plot(legend=False, figsize=(4,3), fontsize="4", title='Consistency Plot')
-		fantasy_fig = fantasy_plt.get_figure()
-		fantasy_fig.savefig('data\\results.jpg')
-		'''
-		
 		plt.figure(figsize=(4,3))
 		plt.plot(fantasy_file['MS'][:100])
 		plt.savefig('data\\results.jpg')
@@ -605,12 +599,6 @@ class numberSelect(object):
 			os.remove('data\\results.jpg')
 		except:
 			pass
-
-		'''
-		superlotto_plt = superlotto_file['MS'][:100].plot(legend=False, figsize=(4,3), fontsize="4", title='Consistency Plot')
-		superlotto_fig = superlotto_plt.get_figure()
-		superlotto_fig.savefig('data\\results.jpg')
-		'''
 
 		plt.figure(figsize=(4,3))
 		plt.plot(superlotto_file['MS'][:100])
