@@ -175,11 +175,11 @@ class numberSelect(object):
 
 	        # append to inSet
 			numberSet.append(selected)
-			print(len(numberSet))
+
 			# check combinations for winners the last several draws
 			numberSet = self.getCombinations(numberSet)
 
-			if len(numberSet) == select_count:
+			if len(numberSet) == 25:
 				break
 
 		return sorted(numberSet)
@@ -266,7 +266,7 @@ class numberSelect(object):
 
 		return winner_found
 
-	def randomSequentialAdd(self, select_count=20):
+	def randomSequentialAdd(self):
 
 		self.selectedNumbers = []
 		self.otherNumbers = []
@@ -274,7 +274,7 @@ class numberSelect(object):
 		# create an initial set of numbers
 		self.selectedNumbers = self.generateInitial(self.allNumbers)
 
-		self.selectedNumbers = self.addOneAndCheck(self.selectedNumbers, self.allNumbers, select_count)
+		self.selectedNumbers = self.addOneAndCheck(self.selectedNumbers, self.allNumbers)
 
 		for i in range(1, self.topLimit + 1):
 			if i in self.selectedNumbers:
@@ -387,7 +387,7 @@ class numberSelect(object):
 
 		return self.selectedNumbers
 
-	def writeOutSelected(self, select_count):
+	def writeOutSelected(self):
 
 		if self.ltype == 1:
 			selectFile = open("data\\sf.txt", "w")
@@ -396,7 +396,7 @@ class numberSelect(object):
 
 		sel_num = []
 
-		for i in range(select_count):
+		for i in range(25):
 			sel_num.append("{0:02}".format(self.selectedNumbers[i]))
 
 		record = " - ".join(sel_num)

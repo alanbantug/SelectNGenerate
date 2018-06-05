@@ -24,9 +24,10 @@ from sklearn.model_selection import train_test_split
 
 class getCombinations(object):
 
-	def __init__(self, selected, ltype):
+	def __init__(self, selected, ltype, usage):
 
 		self.selectedNumbers = selected
+
 		self.ltype = ltype
 		self.othNumbers = []
 		self.extNumbers = []
@@ -51,20 +52,20 @@ class getCombinations(object):
 
 		random.shuffle(self.extNumbers)
 
-		self.getCounts()
+		self.getCounts(usage)
 
 
-	def getCounts(self):
+	def getCounts(self, usage):
 
 		''' This procedure will get the count of possible combinations based on the numbers selected
 		'''
 
 		self.numberCount = len(self.selectedNumbers)
-		self.divCount = self.numberCount / 5
+		self.divCount = usage / 5
 		self.comboCount = math.factorial(self.numberCount) / (math.factorial(self.numberCount - self.divCount) * math.factorial(self.divCount))
 		self.duplCount = 25 - self.numberCount
 
-	def randomSelect(self):
+	def randomSelect(self, usage):
 
 		''' This function will generate the combinations using itertools instead of manually going thru
 		    the combinations which is done in the old function. The generation will be limited to 100 loops.
@@ -76,7 +77,7 @@ class getCombinations(object):
 		comb_count = 0
 
 		# initialize the generator
-		n_set = self.initIterator()
+		n_set = self.initIterator(usage)
 
 		while True:
 
@@ -86,10 +87,10 @@ class getCombinations(object):
 				# check if the generated combination satisfies the criteria
 				if self.checkQualified(num_list, selection):
 
-					if self.divCount == 5:
+					if usage == 25:
 						pass
 
-					elif self.divCount == 4:
+					elif usage == 20:
 
 						# get one more number from the unselected numbers to complete 5 numbers
 						num_list = self.getMore(num_list, 1)
@@ -116,7 +117,7 @@ class getCombinations(object):
 				# limit the count to 100 loops
 				if loop_count < 100:
 
-					n_set = self.initIterator()
+					n_set = self.initIterator(usage)
 					selection = []
 					comb_count = 0
 
@@ -126,7 +127,7 @@ class getCombinations(object):
 
 		return selection
 
-	def initIterator(self):
+	def initIterator(self, usage):
 
 		''' This function will be called to initialize the combination generator
 		'''
@@ -134,9 +135,9 @@ class getCombinations(object):
 		num_chk = copy.copy(self.selectedNumbers)
 		random.shuffle(num_chk)
 
-		if self.divCount == 5:
+		if usage == 25:
 			n_set = itertools.combinations(num_chk, 5)
-		elif self.divCount == 4:
+		elif usage == 20:
 			n_set = itertools.combinations(num_chk, 4)
 		else:
 			n_set = itertools.combinations(num_chk, 3)

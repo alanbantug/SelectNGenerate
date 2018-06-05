@@ -31,7 +31,7 @@ class Application(Frame):
         self.master = master
         self.main_container = Frame(self.master)
 
-        self.selectionCount = IntVar()
+        self.useCount = IntVar()
         self.type = IntVar()
 
         # Set images. Note that the line below is needed to change the working directory of the batch file to point to where the script files, including image files are
@@ -101,10 +101,10 @@ class Application(Frame):
         self.clearSet = Button(self.selTab, text="CLEAR", style="B.TButton", command=self.clearSelSet)
         self.showGen = Button(self.selTab, text="SHOW GENERATE PANEL", style="B.TButton", command=self.showGenerate)
 
-        self.selectGroup = LabelFrame(self.selTab, text=' Select Counts ', style="O.TLabelframe")
-        self.selectionA = Radiobutton(self.selectGroup, text="15", style="B.TRadiobutton", variable=self.selectionCount, value=15)
-        self.selectionB = Radiobutton(self.selectGroup, text="20", style="B.TRadiobutton", variable=self.selectionCount, value=20)
-        self.selectionC = Radiobutton(self.selectGroup, text="25", style="B.TRadiobutton", variable=self.selectionCount, value=25)
+        self.selectGroup = LabelFrame(self.selTab, text=' Use Counts ', style="O.TLabelframe")
+        self.selectionA = Radiobutton(self.selectGroup, text="15", style="B.TRadiobutton", variable=self.useCount, value=15)
+        self.selectionB = Radiobutton(self.selectGroup, text="20", style="B.TRadiobutton", variable=self.useCount, value=20)
+        self.selectionC = Radiobutton(self.selectGroup, text="25", style="B.TRadiobutton", variable=self.useCount, value=25)
 
         self.typeGroup = LabelFrame(self.selTab, text=' Game Selection ', style="O.TLabelframe")
         self.typeA = Radiobutton(self.typeGroup, text="Fantasy", style="B.TRadiobutton", command=self.displayDataFile, variable=self.type, value=1)
@@ -225,8 +225,8 @@ class Application(Frame):
 
         self.showProgress()
 
-        self.sGen = sg.getCombinations(self.numberSource.getSelectNumbers(), self.type.get())
-        selection = self.sGen.randomSelect()
+        self.sGen = sg.getCombinations(self.numberSource.getSelectNumbers(), self.type.get(), self.useCount.get())
+        selection = self.sGen.randomSelect(self.useCount.get())
 
         self.popProgress.destroy()
 
@@ -244,7 +244,7 @@ class Application(Frame):
         response = messagebox.askquestion('Select Numbers', 'Do you want to save the current selected numbers?')
 
         if response == 'yes':
-            self.numberSource.writeOutSelected(self.selectionCount.get())
+            self.numberSource.writeOutSelected(self.useCount.get())
 
         root.destroy()
 
@@ -254,9 +254,7 @@ class Application(Frame):
             messagebox.showerror('Select Error', 'Please select data file before proceeding.')
         else:
             self.showProgress()
-            #self.dSel[0].changeStyle(self.numberSource.setSelectNumbers(self.selectionCount.get()))
-            #self.dSel[0].changeStyle(self.numberSource.getFromRecent(self.selectionCount.get()))
-            self.dSel[0].changeStyle(self.numberSource.randomSequentialAdd(self.selectionCount.get()))
+            self.dSel[0].changeStyle(self.numberSource.randomSequentialAdd())
             self.popProgress.destroy()
 
 
@@ -317,7 +315,7 @@ class Application(Frame):
                     # Create an instance of number source each time a new file is selected
                     self.numberSource = ns.numberSelect(self.dataFile, self.type.get())
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
-                    self.selectionCount.set(len(self.numberSource.getSelectNumbers()))
+                    self.useCount.set(len(self.numberSource.getSelectNumbers()))
 
                     configFile.close()
                 else:
@@ -339,7 +337,7 @@ class Application(Frame):
                     # Create an instance of number source each time a new file is selected
                     self.numberSource = ns.numberSelect(self.dataFile, self.type.get())
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
-                    self.selectionCount.set(len(self.numberSource.getSelectNumbers()))
+                    self.useCount.set(len(self.numberSource.getSelectNumbers()))
 
                     configFile.close()
                 else:
@@ -371,7 +369,7 @@ class Application(Frame):
 
                     self.numberSource = ns.numberSelect(self.dataFile, ltype)
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
-                    self.selectionCount.set(len(self.numberSource.getSelectNumbers()))
+                    self.useCount.set(len(self.numberSource.getSelectNumbers()))
                 else:
                     self.sourceLabel["text"] = "None"
 
@@ -394,7 +392,7 @@ class Application(Frame):
 
                     self.numberSource = ns.numberSelect(self.dataFile, ltype)
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
-                    self.selectionCount.set(len(self.numberSource.getSelectNumbers()))
+                    self.useCount.set(len(self.numberSource.getSelectNumbers()))
                 else:
                     self.sourceLabel["text"] = "None"
 
