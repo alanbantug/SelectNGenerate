@@ -37,7 +37,7 @@ class Application(Frame):
         # Set images. Note that the line below is needed to change the working directory of the batch file to point to where the script files, including image files are
         # It has to be commented out in the testing library
 
-        # os.chdir("c:\\users\\alan\\mypythonscripts\\scripts")
+        # os.chdir("c:\\users\\alan\\documents\\scripts\\code\\sng")
 
         self.topValue = 0
         self.extValue = 0
@@ -244,7 +244,7 @@ class Application(Frame):
         response = messagebox.askquestion('Select Numbers', 'Do you want to save the current selected numbers?')
 
         if response == 'yes':
-            self.numberSource.writeOutSelected(self.useCount.get())
+            self.numberSource.writeOutSelected()
 
         root.destroy()
 

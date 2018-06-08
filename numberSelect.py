@@ -156,7 +156,7 @@ class numberSelect(object):
 
 		return sorted(numberSet)
 
-	def addOneAndCheck(self, numberSet, selection, select_count):
+	def addOneAndCheck(self, numberSet, selection):
 
 		''' This function will first create an iterator for the other numbers not selected, and then add them
 			one at a time, getting all combinations along the way while checking if there was a match in the last
