@@ -672,6 +672,41 @@ class numberSelect(object):
 
 		return self.selectedNumbers
 
+	def compareSaveSelect(self):
+
+		''' This function will compare the selected numbers currently in storage to the selected numbers saved.
+			If it is a match, then return False
+		'''
+
+		self.savedNumbers = []
+
+		if self.ltype == 1:
+
+			if os.path.exists("data\\sf.txt"):
+
+				with open('data\\sf.txt', 'r') as selectFile:
+
+					for data in selectFile:
+
+						numb_list = data.split(' - ')
+
+				for numb in numb_list:
+					self.savedNumbers.append(int(numb))
+
+		elif self.ltype == 2:
+
+			if os.path.exists("data\\ss.txt"):
+
+				with open('data\\ss.txt', 'r') as selectFile:
+
+					for data in selectFile:
+
+						numb_list = data.split(' - ')
+
+				for numb in numb_list:
+					self.savedNumbers.append(int(numb))
+
+		return self.savedNumbers == self.selectedNumbers
 
 	def getStats(self):
 
