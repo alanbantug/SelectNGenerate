@@ -218,10 +218,16 @@ class Application(Frame):
 
     def generateSet(self):
 
+        ''' This function will initiate the thread for generating combinations
+        '''
+
         t = threading.Thread(None, self.genSetThread, ())
         t.start()
 
     def genSetThread(self):
+
+        ''' This function will generate combinations of numbers using the getCombination method of the sg object
+        '''
 
         self.showProgress()
 
@@ -255,6 +261,9 @@ class Application(Frame):
 
     def selectSet(self):
 
+        ''' This function will initiate the thread for selecting numbers if a data file is provided
+        '''
+
         if self.sourceLabel["text"] == "None":
             messagebox.showerror('Select Error', 'Please select data file before proceeding.')
         else:
@@ -263,12 +272,20 @@ class Application(Frame):
             t.start()
 
     def selectSetThread(self):
+        ''' This function will select numbers that will be used for generating combinations. After generating, the
+            numbers will be marked accordingly
+        '''
 
         self.showProgress()
+
         self.dSel[0].changeStyle(self.numberSource.randomSequentialAdd())
+
         self.popProgress.destroy()
 
     def checkSet(self):
+
+        ''' This function will initiate the thread that will generate the statistics from the select numbers
+        '''
 
         if self.sourceLabel["text"] == "None":
             messagebox.showerror('Select Error', 'Please select data file before proceeding.')
@@ -279,6 +296,9 @@ class Application(Frame):
 
     def checkSetThread(self):
 
+        ''' This function will generate the statistics on the select numbers
+        '''
+
         self.showProgress()
         self.numberSource.analyzeData()
         self.popProgress.destroy()
@@ -286,6 +306,9 @@ class Application(Frame):
 
 
     def clearSelSet(self):
+
+        ''' This function will clear the set of selected numbers
+        '''
 
         if self.sourceLabel["text"] == "None":
             messagebox.showerror('Clear Error', 'Please select data file before proceeding.')
@@ -507,12 +530,18 @@ class Application(Frame):
 
     def showGenerate(self):
 
+        ''' This function will show the generate panel depending on the game type
+        '''
+
         if self.type.get() == 1:
             self.showFantasy()
         elif self.type.get() == 2:
             self.showSuper()
 
     def showFantasy(self):
+
+        ''' This function will show the Fantasy Five generate pane
+        '''
 
         self.popGen = Toplevel(self.main_container)
         self.popGen.title("Fantasy Five")
@@ -562,6 +591,9 @@ class Application(Frame):
 
     def showSuper(self):
 
+        ''' This function will show the SuperLotto generate panel
+        '''
+
         self.popGen = Toplevel(self.main_container)
         self.popGen.title("SuperLotto")
 
@@ -610,6 +642,9 @@ class Application(Frame):
 
 
     def showProgress(self):
+
+        ''' This function will show the progress bar for the different threads
+        '''
 
         Style().configure("P.TLabel", font="Verdana 12 bold", anchor="center")
         Style().configure("B.TProgressbar", foreground="blue", background="blue")
