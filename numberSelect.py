@@ -177,35 +177,33 @@ class numberSelect(object):
 			numberSet.append(selected)
 
 			# check combinations for winners the last several draws
-			numberSet = self.getCombinations(numberSet)
+			numberSet = self.getCombinations(numberSet, selected)
 
 			if len(numberSet) == 25:
 				break
 
 		return sorted(numberSet)
 
-	def getCombinations(self, numberSet):
+	def getCombinations(self, numberSet, selected):
+		''' This function will generate the combinations to check if any of it occured within the last 100 days.
+			If it finds one, then it will pop-out the last number in the list since that's the number that most
+			likely caused it
+		'''
 
-	    ''' This function will generate the combinations to check if any of it occured within the last 100 days.
-	        If it finds one, then it will pop-out the last number in the list since that's the number that most
-	        likely caused it
-	    '''
+		iterator = itertools.combinations(numberSet, 5)
+		while True:
+			try:
+				combination = sorted(next(iterator))
 
-	    iterator = itertools.combinations(numberSet, 5)
+				if selected in combination:
+					if self.checkIfWinner(combination):
+						# if there was a match, the last number added would have caused it, so it is popped out of the list
+						numberSet.pop()
+						break
+			except:
+				break
 
-	    while True:
-
-	        try:
-	            combination = sorted(next(iterator))
-
-	            if self.checkIfWinner(combination):
-	                # if there was a match, the last number added would have caused it, so it is popped out of the list
-	                numberSet.pop()
-	                break
-	        except:
-	            break
-
-	    return numberSet
+		return numberSet
 
 	def checkIfWinner(self, combination, all_data = False):
 

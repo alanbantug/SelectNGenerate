@@ -387,7 +387,19 @@ class getCombinations(object):
 
 	def getMore(self, n_set, count):
 
-		for i in range(count):
-			n_set.append(random.choice(self.othNumbers))
+		while True:
 
-		return n_set
+			n_set_new = copy.copy(n_set)
+			o_set_new = copy.copy(self.othNumbers)
+
+			random.shuffle(o_set_new)
+
+			for i in range(count):
+				n_set_new.append(o_set_new.pop())
+
+			n_set_new = sorted(n_set_new)
+			
+			if self.checkConsecutives(n_set_new) == 0:
+				break
+
+		return n_set_new
