@@ -547,6 +547,7 @@ class numberSelect(object):
 
 		self.last_match_days = curr_date - date_a
 		self.last_match_draws = fantasy_file['Draw'].max() - fantasy_select['Draw'].max()
+		self.last_compare = fantasy_file['MS'].iloc[0]
 
 		self.exact_match = fantasy_select['MS'].count()
 		self.max_gap = fantasy_select['GAP'].max()
@@ -587,6 +588,7 @@ class numberSelect(object):
 
 		self.last_match_days = curr_date - date_a
 		self.last_match_draws = superlotto_file['Draw'].max() - superlotto_select['Draw'].max()
+		self.last_compare = superlotto_file['MS'].iloc[0]
 
 		self.exact_match = superlotto_select['MS'].count()
 		self.max_gap = superlotto_select['GAP'].max()
@@ -708,4 +710,4 @@ class numberSelect(object):
 
 	def getStats(self):
 
-		return self.last_match, self.first_match, self.last_match_draws, self.max_gap, self.min_gap, self.exact_match
+		return self.last_match, self.last_compare, self.first_match, self.last_match_draws, self.max_gap, self.min_gap, self.exact_match

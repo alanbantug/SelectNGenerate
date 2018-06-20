@@ -451,6 +451,7 @@ class Application(Frame):
         self.optExactMatch = Label(self.popStats, text="", style="B.TLabel" )
         self.optMaxGap = Label(self.popStats, text="", style="B.TLabel" )
         self.optMinGap = Label(self.popStats, text="", style="B.TLabel" )
+        self.optLastCompare = Label(self.popStats, text="", style="B.TLabel" )
         self.optLastMatchDays = Label(self.popStats, text="", style="B.TLabel" )
 
         self.resultsData = Label(self.popStats)
@@ -466,22 +467,24 @@ class Application(Frame):
         self.optLastMatchDays.grid(row=3, column=0, padx=10, pady=0, sticky='W')
         self.optMaxGap.grid(row=4, column=0, padx=10, pady=0, sticky='W')
         self.optMinGap.grid(row=5, column=0, padx=10, pady=0, sticky='W')
+        self.optLastCompare.grid(row=6, column=0, padx=10, pady=0, sticky='W')
 
-        self.osep_b.grid(row=6, columnspan=3, column=0, padx=5, pady=5, sticky='NSEW')
+        self.osep_b.grid(row=7, columnspan=3, column=0, padx=5, pady=5, sticky='NSEW')
 
-        self.resultsData.grid(row=7, column=0, rowspan=4, padx=5, pady=5, sticky='NSEW')
+        self.resultsData.grid(row=8, column=0, rowspan=4, padx=5, pady=5, sticky='NSEW')
 
-        self.osep_c.grid(row=11, columnspan=3, column=0, padx=5, pady=5, sticky='NSEW')
+        self.osep_c.grid(row=12, columnspan=3, column=0, padx=5, pady=5, sticky='NSEW')
 
-        self.closeStats.grid(row=12, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
+        self.closeStats.grid(row=13, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
 
-        last_match, first_match, last_match_draws, max_gap, min_gap, exact_match = self.numberSource.getStats()
+        last_match, last_compare, first_match, last_match_draws, max_gap, min_gap, exact_match = self.numberSource.getStats()
 
         self.optLastMatch['text'] = "The last winner from select numbers occured on %s." %last_match
         self.optLastMatchDays ['text']= "It has been %s draws since the last winner from select numbers." %last_match_draws
         self.optExactMatch ['text'] = "The total exact matches from this set is %s since %s." %(exact_match, first_match)
         self.optMaxGap ['text'] = "The maximum draw gap between incidents is %s." %max_gap
         self.optMinGap ['text'] = "The minimum draw gap between incidents is %s." %min_gap
+        self.optLastCompare ['text'] = "The last comparison with this select set is %s." %last_compare
 
         # Set the images
 
@@ -496,7 +499,7 @@ class Application(Frame):
 
         # Set size
 
-        wh = 480
+        wh = 490
         ww = 420
 
         #root.resizable(height=False, width=False)
