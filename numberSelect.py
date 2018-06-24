@@ -252,8 +252,8 @@ class numberSelect(object):
 					if all_data:
 						pass
 					else:
-						# if the number of draws checked is more than 30, stop the checking
-						if d_count > 30:
+						# if the number of draws checked is more than 40, stop the checking
+						if d_count > 40:
 							break
 
 					if combination == winner:
