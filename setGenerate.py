@@ -93,12 +93,12 @@ class getCombinations(object):
 					elif usage == 20:
 
 						# get one more number from the unselected numbers to complete 5 numbers
-						num_list = self.getMore(num_list, 1)
+						num_list = self.getMore(num_list, selection, 1)
 						num_list = sorted(num_list)
 
 					else:
 						# get two more number from the unselected numbers to complete 5 numbers
-						num_list = self.getMore(num_list, 2)
+						num_list = self.getMore(num_list, selection, 2)
 						num_list = sorted(num_list)
 
 					# select a Super number if the lotto game selected is SuperLotto
@@ -385,7 +385,7 @@ class getCombinations(object):
 
 		return unique
 
-	def getMore(self, n_set, count):
+	def getMore(self, n_set, selection, count):
 
 		while True:
 
@@ -398,8 +398,8 @@ class getCombinations(object):
 				n_set_new.append(o_set_new.pop())
 
 			n_set_new = sorted(n_set_new)
-			
-			if self.checkConsecutives(n_set_new) == 0:
+
+			if self.checkConsecutives(n_set_new) == 0 and self.checkUnique(n_set_new, selection):
 				break
 
 		return n_set_new

@@ -294,7 +294,13 @@ class numberSelect(object):
 
 		with open(sourceFile, 'r') as i_file:
 
+			skipped = 0
+
 			for data_line in i_file:
+
+				if skipped < 10:
+					skipped += 1
+					continue
 
 				fields = data_line.split(',')
 
@@ -303,11 +309,12 @@ class numberSelect(object):
 
 				numbers = list(map(int, fields[2:]))
 
-				# randomly select a number from the data numbers
-				remove = np.random.choice(numbers)
+				for i in range(2):
+					# randomly select a number from the data numbers
+					remove = np.random.choice(numbers)
 
-				# remove the selected number
-				numbers.pop(numbers.index(remove))
+					# remove the selected number
+					numbers.pop(numbers.index(remove))
 
 				# load the remaining numbers
 				self.selectedNumbers = self.loadSelected(self.selectedNumbers, numbers, select_count)
