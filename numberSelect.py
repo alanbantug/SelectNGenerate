@@ -1,4 +1,4 @@
-#! python
+#! python3
 
 import numpy as np
 import pandas as pd
@@ -40,7 +40,6 @@ class numberSelect(object):
 		self.reformatFile()
 		self.loadSelectNumbers()
 
-
 	def createList(self,start,top_limit=39):
 
 		''' This function will create a list of numbers based on the top limit set
@@ -63,7 +62,6 @@ class numberSelect(object):
 				ext_list.append(add_one(i))
 
 		return out_list, ext_list
-
 
 	def loadSelectNumbers(self):
 
@@ -280,6 +278,49 @@ class numberSelect(object):
 			else:
 				self.otherNumbers.append(i)
 
+		return self.selectedNumbers
+
+	def avoidRecent(self, select_count=20):
+
+		''' This function will avoid recent winning numbers until the remaining numbers matches the count needed
+		'''
+
+		self.selectedNumbers = self.allNumbers
+		self.otherNumbers = []
+
+		if self.ltype == 1:
+			sourceFile = 'data\\cf_data.csv'
+		elif self.ltype == 2:
+			sourceFile = 'data\\cs_data.csv'
+
+		with open(sourceFile, 'r') as i_file:
+
+			data_count = 0
+
+			for data_line in i_file:
+
+				data_count += 1
+				fields = data_line.split(',')
+
+				# remove the new line character at the end of the last field
+				fields[-1] = fields[-1][:2]
+
+				numbers = list(map(int, fields[2:]))
+
+				for num in numbers:
+
+					if num in self.selectedNumbers:
+						self.selectedNumbers.pop(numbers.index(num))
+						self.otherNumbers.append(num)
+
+					# need to check if the count is satisfied after each pop
+					if len(self.selectedNumbers) == select_count:
+						break
+
+				if len(self.selectedNumbers) == select_count:
+					break
+
+		print(data_count)
 		return self.selectedNumbers
 
 	def getFromRecent(self, select_count=20):

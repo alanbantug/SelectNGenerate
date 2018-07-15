@@ -278,8 +278,8 @@ class Application(Frame):
 
         self.showProgress()
 
-        self.dSel[0].changeStyle(self.numberSource.randomSequentialAdd())
-        #self.dSel[0].changeStyle(self.numberSource.getFromRecent(25))
+        #self.dSel[0].changeStyle(self.numberSource.randomSequentialAdd())
+        self.dSel[0].changeStyle(self.numberSource.getFromRecent(25))
         #self.dSel[0].changeStyle(self.numberSource.setSelectNumbers(25))
 
         self.popProgress.destroy()

@@ -147,13 +147,13 @@ class getCombinations(object):
 
 		return n_set
 
+	'''
 	def randomSelection(self):
 
-		''' This function will:
-		    1. Randomly select a combination
-		    2. Get the next combination from the qualified combinations making sure that the numbers in the combination have not been used yet
-		'''
-
+		This function will:
+		1. Randomly select a combination
+		2. Get the next combination from the qualified combinations making sure that the numbers in the combination have not been used yet
+		
 		selection = []
 
 		num_chk = copy.copy(self.selectedNumbers)
@@ -178,10 +178,9 @@ class getCombinations(object):
 
 	def generateFive(self, start_id):
 
-		''' This function will generate all possible combinations of the selected numbers and tag whether they contain
-			consecutives and what the pattern is. This will make combination selection faster, instead of generating
-			a combination and then finding out it is not qualified.
-		'''
+		This function will generate all possible combinations of the selected numbers and tag whether they contain
+		consecutives and what the pattern is. This will make combination selection faster, instead of generating
+		a combination and then finding out it is not qualified.
 
 		num_src = copy.copy(self.selectedNumbers)
 
@@ -236,10 +235,9 @@ class getCombinations(object):
 
 	def generateFour(self, start_id):
 
-		''' This function will generate all possible combinations of the selected numbers and tag whether they contain
-			consecutives and what the pattern is. This will make combination selection faster, instead of generating
-			a combination and then finding out it is not qualified.
-		'''
+		This function will generate all possible combinations of the selected numbers and tag whether they contain
+		consecutives and what the pattern is. This will make combination selection faster, instead of generating
+		a combination and then finding out it is not qualified.
 
 		num_src = copy.copy(self.selectedNumbers)
 
@@ -292,10 +290,10 @@ class getCombinations(object):
 
 	def generateThree(self, start_id):
 
-		''' This function will generate all possible combinations of the selected numbers and tag whether they contain
-			consecutives and what the pattern is. This will make combination selection faster, instead of generating
-			a combination and then finding out it is not qualified.
-		'''
+		This function will generate all possible combinations of the selected numbers and tag whether they contain
+		consecutives and what the pattern is. This will make combination selection faster, instead of generating
+		a combination and then finding out it is not qualified.
+
 
 		num_src = copy.copy(self.selectedNumbers)
 
@@ -342,6 +340,7 @@ class getCombinations(object):
 
 		return selection
 
+	'''
 	def checkQualified(self, n_set, selection):
 
 		qual = True
