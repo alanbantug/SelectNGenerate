@@ -276,13 +276,9 @@ class Application(Frame):
             numbers will be marked accordingly
         '''
 
-        self.showProgress()
-
         #self.dSel[0].changeStyle(self.numberSource.randomSequentialAdd())
         self.dSel[0].changeStyle(self.numberSource.getFromRecent(25))
         #self.dSel[0].changeStyle(self.numberSource.setSelectNumbers(25))
-
-        self.popProgress.destroy()
 
     def checkSet(self):
 
