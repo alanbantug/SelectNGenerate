@@ -22,6 +22,8 @@ import shutil
 import subprocess as sp
 import displayGenerate as dg
 
+import dataDownload as dataD
+
 from PIL import Image, ImageTk
 
 class Application(Frame):
@@ -114,6 +116,8 @@ class Application(Frame):
 
         self.sourceLabel = Label(self.selTab, text="None", style="SB.TLabel" )
         self.selectSource = Button(self.selTab, text="SET DATA FILE", style="B.TButton", command=self.setDataFile)
+        self.downloadFile = Button(self.selTab, text="DOWNLOAD DATA", style="B.TButton", command=self.downloadData)
+        self.saveSource = Button(self.selTab, text="SAVE", style="B.TButton", command=self.saveDataSource)
 
         # Position widgets on the Select tab
 
@@ -144,12 +148,14 @@ class Application(Frame):
 
         self.h_sep_sc.grid(row=9, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
-        self.sourceLabel.grid(row=12, column=0, columnspan=4, padx=5, pady=5, sticky='NSEW')
-        self.selectSource.grid(row=12, column=4, columnspan=1, padx=5, pady=5, sticky='NSEW')
+        self.sourceLabel.grid(row=12, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+        self.selectSource.grid(row=13, column=0, columnspan=2, padx=5, pady=5, sticky='NSEW')
+        self.downloadFile.grid(row=13, column=2, columnspan=2, padx=5, pady=5, sticky='NSEW')
+        self.saveSource.grid(row=13, column=4, columnspan=1, padx=5, pady=5, sticky='NSEW')
 
-        self.h_sep_sd.grid(row=13, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+        self.h_sep_sd.grid(row=14, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
-        self.showGen.grid(row=14, column=0, columnspan=5, padx=5, pady=(2,5), sticky='NSEW')
+        self.showGen.grid(row=15, column=0, columnspan=5, padx=5, pady=(2,5), sticky='NSEW')
 
         # Create widgets for About tab
 
@@ -234,7 +240,7 @@ class Application(Frame):
         self.sGen = sg.getCombinations(self.numberSource.getSelectNumbers(), self.type.get(), self.useCount.get())
         selection = self.sGen.randomSelect(self.useCount.get())
 
-        self.popProgress.destroy()
+        self.hideProgress()
 
         # check the selection limit before showing it. this is needed since the looping limit for generating
         # may be reached without completely generating 5 combinations
@@ -243,6 +249,7 @@ class Application(Frame):
                 self.dGen[i].changeTopStyle(selection[i])
         else:
             messagebox.showerror('Generate Error', 'Generation taking too long. Retry.')
+
 
     def exitRoutine(self):
         ''' This function will be executed when the user exits
@@ -280,6 +287,7 @@ class Application(Frame):
         self.dSel[0].changeStyle(self.numberSource.getFromRecent(25))
         #self.dSel[0].changeStyle(self.numberSource.setSelectNumbers(25))
 
+
     def checkSet(self):
 
         ''' This function will initiate the thread that will generate the statistics from the select numbers
@@ -299,7 +307,7 @@ class Application(Frame):
 
         self.showProgress()
         self.numberSource.analyzeData()
-        self.popProgress.destroy()
+        self.hideProgress()
         self.showStats()
 
 
@@ -333,13 +341,6 @@ class Application(Frame):
             if self.type.get() == 1:
 
                 if "FANTASY" in d_list:
-                    try:
-                        configFile = open("data\\cf.txt", "w")
-                    except:
-                        os.makedirs("data")
-                        configFile = open("data\\cf.txt", "w")
-
-                    configFile.write(filename)
                     self.dataFile = filename
                     self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
 
@@ -348,20 +349,12 @@ class Application(Frame):
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
                     self.useCount.set(len(self.numberSource.getSelectNumbers()))
 
-                    configFile.close()
                 else:
                     messagebox.showerror('Invalid File', 'File selected is not a valid Fantasy Five data file.')
 
             elif self.type.get() == 2:
 
                 if "SUPERLOTTO" in d_list:
-                    try:
-                        configFile = open("data\\cs.txt", "w")
-                    except:
-                        os.makedirs("data")
-                        configFile = open("data\\cs.txt", "w")
-
-                    configFile.write(filename)
                     self.dataFile = filename
                     self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
 
@@ -370,13 +363,70 @@ class Application(Frame):
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
                     self.useCount.set(len(self.numberSource.getSelectNumbers()))
 
-                    configFile.close()
                 else:
                     messagebox.showerror('Invalid File', 'File selected is not a valid SuperLotto data file.')
 
             else:
                 self.displayDataFile()
 
+    def downloadData(self):
+
+        if self.type.get() == 1:
+            baseUrl = 'http://www.calottery.com/play/draw-games/fantasy-5/winning-numbers'
+            dataFileName = "data\\FantasyFive.txt"
+
+        elif self.type.get() == 2:
+            baseUrl = 'http://www.calottery.com/play/draw-games/superlotto-plus/winning-numbers'
+            dataFileName = "data\\SuperLottoPlus.txt"
+
+        else:
+            messagebox.showerror("Download Error", "Download not available for game selected.")
+            return
+
+        try:
+            dataFile = open(dataFileName, "w")
+        except:
+            os.makedirs("data")
+            dataFile = open(dataFileName, "w")
+
+        dataFile.close()
+
+        fileNamePath = os.path.join(os.getcwd(), dataFileName)
+
+        self.showProgress()
+        dataD.dataDownload(baseUrl, fileNamePath)
+        self.hideProgress()
+
+        self.dataFile = dataFileName
+        self.sourceLabel["text"] = fileNamePath[:20] + '...' + os.path.basename(fileNamePath)
+
+        messagebox.showinfo("Download complete", "The latest data file for the selected game hase been downloaded.")
+
+    def saveDataSource(self):
+
+        response = messagebox.askquestion('Save Data Source', 'Do you want to save the current data source?')
+
+        if response == 'no':
+            return
+
+        if self.type.get() == 1:
+            try:
+                configFile = open("data\\cs.txt", "w")
+            except:
+                os.makedirs("data")
+                configFile = open("data\\cs.txt", "w")
+
+        elif self.type.get() == 2:
+            try:
+                configFile = open("data\\cs.txt", "w")
+            except:
+                os.makedirs("data")
+                configFile = open("data\\cs.txt", "w")
+
+        configFile.write(self.dataFile)
+        configFile.close()
+
+        messagebox.showinfo("Source File Saved", "The data source file has been saved.")
 
     def displayDataFile(self):
 
@@ -678,13 +728,17 @@ class Application(Frame):
 
         self.progressBar.start()
 
+    def hideProgress(self):
+
+        self.progressBar.stop()
+        self.popProgress.destroy()
 
 root = Tk()
 root.title("SELECT AND GENERATE")
 
 # Set size
 
-wh = 500
+wh = 530
 ww = 480
 
 #root.resizable(height=False, width=False)
