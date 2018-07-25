@@ -397,8 +397,12 @@ class Application(Frame):
         dataD.dataDownload(baseUrl, fileNamePath)
         self.hideProgress()
 
-        self.dataFile = dataFileName
+        self.dataFile = fileNamePath
         self.sourceLabel["text"] = fileNamePath[:20] + '...' + os.path.basename(fileNamePath)
+
+        self.numberSource = ns.numberSelect(self.dataFile, self.type.get())
+        self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
+        self.useCount.set(len(self.numberSource.getSelectNumbers()))
 
         messagebox.showinfo("Download complete", "The latest data file for the selected game hase been downloaded.")
 
@@ -411,10 +415,10 @@ class Application(Frame):
 
         if self.type.get() == 1:
             try:
-                configFile = open("data\\cs.txt", "w")
+                configFile = open("data\\cf.txt", "w")
             except:
                 os.makedirs("data")
-                configFile = open("data\\cs.txt", "w")
+                configFile = open("data\\cf.txt", "w")
 
         elif self.type.get() == 2:
             try:
