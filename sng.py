@@ -342,7 +342,7 @@ class Application(Frame):
 
                 if "FANTASY" in d_list:
                     self.dataFile = filename
-                    self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
+                    self.sourceLabel["text"] = os.path.dirname(filename)[:20] + "..." + os.path.basename(filename)
 
                     # Create an instance of number source each time a new file is selected
                     self.numberSource = ns.numberSelect(self.dataFile, self.type.get())
@@ -356,7 +356,7 @@ class Application(Frame):
 
                 if "SUPERLOTTO" in d_list:
                     self.dataFile = filename
-                    self.sourceLabel["text"] = os.path.dirname(filename)[:15] + ".../" + os.path.basename(filename)
+                    self.sourceLabel["text"] = os.path.dirname(filename)[:20] + "..." + os.path.basename(filename)
 
                     # Create an instance of number source each time a new file is selected
                     self.numberSource = ns.numberSelect(self.dataFile, self.type.get())
@@ -450,7 +450,7 @@ class Application(Frame):
                 if os.path.exists(filename):
 
                     self.dataFile = filename
-                    self.sourceLabel["text"] = os.path.dirname(filename)[:20] + ".../" + os.path.basename(filename)
+                    self.sourceLabel["text"] = os.path.dirname(filename)[:20] + "..." + os.path.basename(filename)
 
                     self.numberSource = ns.numberSelect(self.dataFile, ltype)
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
@@ -473,7 +473,7 @@ class Application(Frame):
                 if os.path.exists(filename):
 
                     self.dataFile = filename
-                    self.sourceLabel["text"] = os.path.dirname(filename)[:20] + ".../" + os.path.basename(filename)
+                    self.sourceLabel["text"] = os.path.dirname(filename)[:20] + "..." + os.path.basename(filename)
 
                     self.numberSource = ns.numberSelect(self.dataFile, ltype)
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
