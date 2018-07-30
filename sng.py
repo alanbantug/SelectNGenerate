@@ -116,7 +116,7 @@ class Application(Frame):
 
         self.sourceLabel = Label(self.selTab, text="None", style="SB.TLabel" )
         self.selectSource = Button(self.selTab, text="SET DATA FILE", style="B.TButton", command=self.setDataFile)
-        self.downloadFile = Button(self.selTab, text="DOWNLOAD DATA", style="B.TButton", command=self.downloadData)
+        self.downloadFile = Button(self.selTab, text="DOWNLOAD DATA", style="B.TButton", command=self.downloadThread)
         self.saveSource = Button(self.selTab, text="SAVE", style="B.TButton", command=self.saveDataSource)
 
         # Position widgets on the Select tab
@@ -368,6 +368,11 @@ class Application(Frame):
 
             else:
                 self.displayDataFile()
+
+    def downloadThread(self):
+
+        t = threading.Thread(None, self.downloadData, ())
+        t.start()
 
     def downloadData(self):
 
