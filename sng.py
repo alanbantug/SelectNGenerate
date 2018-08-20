@@ -283,8 +283,8 @@ class Application(Frame):
             numbers will be marked accordingly
         '''
 
-        #self.dSel[0].changeStyle(self.numberSource.randomSequentialAdd())
-        self.dSel[0].changeStyle(self.numberSource.getFromRecent(25))
+        self.dSel[0].changeStyle(self.numberSource.randomSequentialAdd())
+        #self.dSel[0].changeStyle(self.numberSource.getFromRecent(25))
         #self.dSel[0].changeStyle(self.numberSource.setSelectNumbers(25))
 
 

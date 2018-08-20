@@ -35,12 +35,46 @@ class numberSelect(object):
 		self.selectedNumbers = []
 		self.otherNumbers = []
 		self.lastWinner = []
-		self.allNumbers, self.extNumbers = self.createList(1, self.topLimit)
+		self.allNumbers, self.extNumbers = self.createList(self.topLimit)
 
+		self.dataHash, self.latestDraw = self.hashDataFile()
 		self.reformatFile()
 		self.loadSelectNumbers()
 
-	def createList(self,start,top_limit=39):
+	def hashDataFile(self):
+
+		''' This function will create a hash table for the data file passed. Note this will be common for fantasy and superlotto
+		'''
+		hashTable = {}
+		latest_draw = 0
+		with open(self.infile, 'r') as f_data:
+
+			for data in f_data:
+
+				fields = data.split()
+
+				if len(fields) == 0:
+					continue
+
+				if fields[0].isdigit():
+
+					# get the draw and store it in the last draw field
+					if latest_draw == 0:
+						latest_draw = int(fields[0])
+
+					# create the hash key
+					hash_key = bytes([int(num) for num in fields[5:10]])
+
+					# store the draw number with the hash key if it is still not in the table. this is needed so that
+					# subsequent similar draws will not overwrite the latest draw
+					if hash_key in hashTable:
+						pass
+					else:
+						hashTable[hash_key] = int(fields[0])
+
+		return hashTable, latest_draw
+
+	def createList(self,top_limit=39):
 
 		''' This function will create a list of numbers based on the top limit set
 		'''
@@ -54,7 +88,7 @@ class numberSelect(object):
 
 			num = add_one(i)
 
-			if num >= start:
+			if num >= 1:
 				out_list.append(add_one(i))
 
 		if top_limit == 47:
@@ -99,7 +133,7 @@ class numberSelect(object):
 
 		else:
 
-			self.selectedNumbers = self.createList(1, self.topLimit)
+			self.selectedNumbers = self.createList(self.topLimit)
 
 
 		for i in range(1, self.topLimit + 1):
@@ -149,10 +183,14 @@ class numberSelect(object):
 				if len(numberSet) == 5:
 					break
 
-			if not self.checkIfWinner(sorted(numberSet), all_data=True):
+			numberSet = sorted(numberSet)
+
+			hash_check = bytes([num for num in numberSet])
+
+			if hash_check not in self.dataHash:
 				break
 
-		return sorted(numberSet)
+		return numberSet
 
 	def addOneAndCheck(self, numberSet, selection):
 
@@ -183,21 +221,28 @@ class numberSelect(object):
 		return sorted(numberSet)
 
 	def getCombinations(self, numberSet, selected):
+
 		''' This function will generate the combinations to check if any of it occured within the last 100 days.
 			If it finds one, then it will pop-out the last number in the list since that's the number that most
 			likely caused it
 		'''
 
 		iterator = itertools.combinations(numberSet, 5)
+
 		while True:
 			try:
 				combination = sorted(next(iterator))
 
 				if selected in combination:
-					if self.checkIfWinner(combination):
-						# if there was a match, the last number added would have caused it, so it is popped out of the list
-						numberSet.pop()
-						break
+
+					hash_check = bytes([int(num) for num in combination])
+
+					if hash_check in self.dataHash:
+						# if there was a match, check if the match is within 40 days from latest draw, if not pop the last number out
+						if self.latestDraw - self.dataHash[hash_check] < 40:
+							numberSet.pop()
+							break
+
 			except:
 				break
 
@@ -205,7 +250,8 @@ class numberSelect(object):
 
 	def checkIfWinner(self, combination, all_data = False):
 
-		''' This function will check if the combination passed to it was a recent winner
+		''' FOR DELETION
+			This function will check if the combination passed to it was a recent winner
 		'''
 
 		winner_found = False
@@ -264,6 +310,9 @@ class numberSelect(object):
 
 	def randomSequentialAdd(self):
 
+		''' This function will create the selection of numbers in a random order
+		'''
+
 		self.selectedNumbers = []
 		self.otherNumbers = []
 
@@ -282,7 +331,8 @@ class numberSelect(object):
 
 	def avoidRecent(self, select_count=20):
 
-		''' This function will avoid recent winning numbers until the remaining numbers matches the count needed
+		''' FOR DELETION
+			This function will avoid recent winning numbers until the remaining numbers matches the count needed
 		'''
 
 		self.selectedNumbers = self.allNumbers
@@ -325,6 +375,10 @@ class numberSelect(object):
 
 	def getFromRecent(self, select_count=20):
 
+		''' FOR DELETION
+			This function will create a list of numbers from the recent draws
+		'''
+
 		self.selectedNumbers = []
 		self.otherNumbers = []
 
@@ -339,7 +393,7 @@ class numberSelect(object):
 
 			for data_line in i_file:
 
-				if skipped < 10:
+				if skipped < 25:
 					skipped += 1
 					continue
 
@@ -350,7 +404,7 @@ class numberSelect(object):
 
 				numbers = list(map(int, fields[2:]))
 
-				for i in range(2):
+				for i in range(1):
 					# randomly select a number from the data numbers
 					remove = np.random.choice(numbers)
 
@@ -373,6 +427,9 @@ class numberSelect(object):
 
 	def loadSelected(self, selected, numbers, limit):
 
+		''' This function will load the numbers into the selected list
+		'''
+
 		for number in numbers:
 
 			if number in selected:
@@ -389,7 +446,8 @@ class numberSelect(object):
 
 	def setSelectNumbers(self, select_count=20):
 
-		''' This function will select numbers randomly
+		''' FOR DELETION
+			This function will select numbers randomly
 		'''
 
 		self.selectedNumbers = []
@@ -456,7 +514,7 @@ class numberSelect(object):
 		''' This function will select all possible numbers as selected
 		'''
 
-		self.selectedNumbers = self.createList(1, self.topLimit)
+		self.selectedNumbers = self.createList(self.topLimit)
 		self.otherNumbers = []
 
 		if self.ltype == 1:
