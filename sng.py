@@ -12,6 +12,7 @@ from tkinter.filedialog import askopenfilename
 import threading
 
 import setGenerate as sg
+import setOddEven as so
 import displaySelect as ds
 import numberSelect as ns
 import os
@@ -221,6 +222,43 @@ class Application(Frame):
         self.type.set(1)
 
         self.displayDataFile()
+
+    def genOddSet(self):
+
+        ''' This function will initiate the thread for generating combinations
+        '''
+
+        t = threading.Thread(None, self.genOddEvenThread(1), ())
+        t.start()
+
+    def genEvenSet(self):
+
+        ''' This function will initiate the thread for generating combinations
+        '''
+
+        t = threading.Thread(None, self.genOddEvenThread(0), ())
+        t.start()
+
+    def genOddEvenThread(self, indicator):
+
+        ''' This function will generate combinations of numbers using the getCombination method of the sg object
+        '''
+
+        self.showProgress()
+
+        self.sOE = so.getCombinations(indicator, self.type.get())
+        selection = self.sOE.randomSelect()
+
+        self.hideProgress()
+
+        # check the selection limit before showing it. this is needed since the looping limit for generating
+        # may be reached without completely generating 5 combinations
+        if len(selection) == 5:
+            for i in range(5):
+                self.dGen[i].changeTopStyle(selection[i])
+        else:
+            messagebox.showerror('Generate Error', 'Generation taking too long. Retry.')
+
 
     def generateSet(self):
 
@@ -620,6 +658,8 @@ class Application(Frame):
             self.dGen.append(dg.displayNumbers(self.popGen, self.type.get()))
 
         self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
+        self.genOdd = Button(self.popGen, text="ALL ODD", style="B.TButton", command=self.genOddSet)
+        self.genEven = Button(self.popGen, text="ALL EVEN", style="B.TButton", command=self.genEvenSet)
         self.exitGen = Button(self.popGen, text="EXIT", style="B.TButton", command=self.popGen.destroy)
 
         self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
@@ -629,7 +669,9 @@ class Application(Frame):
 
         self.h_sep_gb.grid(row=15, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')
 
-        self.genSet.grid(row=16, column=0, columnspan=5, padx=5, pady=(5, 2), sticky='NSEW')
+        self.genSet.grid(row=16, column=0, columnspan=3, padx=5, pady=(5, 2), sticky='NSEW')
+        self.genOdd.grid(row=16, column=3, columnspan=1, padx=5, pady=(5, 2), sticky='NSEW')
+        self.genEven.grid(row=16, column=4, columnspan=1, padx=5, pady=(5, 2), sticky='NSEW')
         self.exitGen.grid(row=17, column=0, columnspan=5, padx=5, pady=(2, 5), sticky='NSEW')
 
         wh = 290
@@ -671,6 +713,8 @@ class Application(Frame):
             self.dGen.append(dg.displayNumbers(self.popGen, self.type.get()))
 
         self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
+        self.genOdd = Button(self.popGen, text="ALL ODD", style="B.TButton", command=self.genOddSet)
+        self.genEven = Button(self.popGen, text="ALL EVEN", style="B.TButton", command=self.genEvenSet)
         self.exitGen = Button(self.popGen, text="EXIT", style="B.TButton", command=self.popGen.destroy)
 
         self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
@@ -680,7 +724,9 @@ class Application(Frame):
 
         self.h_sep_gb.grid(row=20, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')
 
-        self.genSet.grid(row=21, column=0, columnspan=5, padx=5, pady=(5, 2), sticky='NSEW')
+        self.genSet.grid(row=21, column=0, columnspan=3, padx=5, pady=(5, 2), sticky='NSEW')
+        self.genOdd.grid(row=21, column=3, columnspan=1, padx=5, pady=(5, 2), sticky='NSEW')
+        self.genEven.grid(row=21, column=4, columnspan=1, padx=5, pady=(5, 2), sticky='NSEW')
         self.exitGen.grid(row=22, column=0, columnspan=5, padx=5, pady=(2, 5), sticky='NSEW')
 
         wh = 380
