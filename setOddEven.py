@@ -11,6 +11,8 @@ import random
 import copy
 import os
 
+from tkinter import messagebox
+
 import math
 from time import time
 
@@ -40,9 +42,9 @@ class getCombinations(object):
 			self.extlimit = 27
 
 		if indicator == 1:
-			self.selectedNumbers = [n for n in range(1,self.limit) if n % 2 != 0]
+			self.selectedNumbers = [n for n in range(1,self.limit + 1) if n % 2 != 0]
 		else:
-			self.selectedNumbers = [n for n in range(1,self.limit) if n % 2 == 0]
+			self.selectedNumbers = [n for n in range(1,self.limit + 1) if n % 2 == 0]
 
 		for i in range(self.extlimit):
 			self.extNumbers.append(i+1)
@@ -105,7 +107,19 @@ class getCombinations(object):
 				else:
 					break
 
-		return selection
+		unused = []
+
+		for n in self.selectedNumbers:
+			n_count = 0
+
+			for sel in selection:
+				n_count += sel.count(n)
+
+			if n_count == 0:
+				unused.append(n)
+
+
+		return selection, len(unused)
 
 	def initIterator(self):
 

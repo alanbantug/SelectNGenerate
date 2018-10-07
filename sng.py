@@ -247,9 +247,14 @@ class Application(Frame):
         self.showProgress()
 
         self.sOE = so.getCombinations(indicator, self.type.get())
-        selection = self.sOE.randomSelect()
+        selection, unused = self.sOE.randomSelect()
 
         self.hideProgress()
+
+        if unused > 0:
+            self.unused['text'] = 'Unused: ' + str(unused)
+        else:
+            self.unused['text'] = ''
 
         # check the selection limit before showing it. this is needed since the looping limit for generating
         # may be reached without completely generating 5 combinations
@@ -280,6 +285,8 @@ class Application(Frame):
 
         self.hideProgress()
 
+        self.unused['text'] = ''
+        
         # check the selection limit before showing it. this is needed since the looping limit for generating
         # may be reached without completely generating 5 combinations
         if len(selection) == 5:
@@ -660,9 +667,13 @@ class Application(Frame):
         self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
         self.genOdd = Button(self.popGen, text="ALL ODD", style="B.TButton", command=self.genOddSet)
         self.genEven = Button(self.popGen, text="ALL EVEN", style="B.TButton", command=self.genEvenSet)
+        self.unused = Label(self.popGen, text="", style="B.TLabel" )
+        self.topLabel = Label(self.popGen, text="Fantasy Five", style="B.TLabel" )
         self.exitGen = Button(self.popGen, text="EXIT", style="B.TButton", command=self.popGen.destroy)
 
-        self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+        self.topLabel.grid(row=0, column=0, columnspan=2, padx=5, pady=(5, 2), sticky='NSEW')
+        self.unused.grid(row=0, column=4, columnspan=1, padx=5, pady=(5, 2), sticky='NSEW')
+        self.h_sep_ga.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
         for i in range(5):
             self.dGen[i].positionDisplays(5, i)
@@ -674,7 +685,7 @@ class Application(Frame):
         self.genEven.grid(row=16, column=4, columnspan=1, padx=5, pady=(5, 2), sticky='NSEW')
         self.exitGen.grid(row=17, column=0, columnspan=5, padx=5, pady=(2, 5), sticky='NSEW')
 
-        wh = 290
+        wh = 320
         ww = 490
 
         self.popGen.minsize(ww, wh)
@@ -712,10 +723,16 @@ class Application(Frame):
         for i in range(5):
             self.dGen.append(dg.displayNumbers(self.popGen, self.type.get()))
 
+        self.unused = Label(self.popGen, text="", style="B.TLabel" )
+        self.topLabel = Label(self.popGen, text="Super Lotto", style="B.TLabel" )
+
         self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
         self.genOdd = Button(self.popGen, text="ALL ODD", style="B.TButton", command=self.genOddSet)
         self.genEven = Button(self.popGen, text="ALL EVEN", style="B.TButton", command=self.genEvenSet)
         self.exitGen = Button(self.popGen, text="EXIT", style="B.TButton", command=self.popGen.destroy)
+
+        self.topLabel.grid(row=0, column=0, columnspan=2, padx=5, pady=(5, 2), sticky='NSEW')
+        self.unused.grid(row=0, column=4, columnspan=1, padx=5, pady=(5, 2), sticky='NSEW')
 
         self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
@@ -729,7 +746,7 @@ class Application(Frame):
         self.genEven.grid(row=21, column=4, columnspan=1, padx=5, pady=(5, 2), sticky='NSEW')
         self.exitGen.grid(row=22, column=0, columnspan=5, padx=5, pady=(2, 5), sticky='NSEW')
 
-        wh = 380
+        wh = 410
         ww = 640
 
         self.popGen.minsize(ww, wh)
