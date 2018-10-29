@@ -41,6 +41,14 @@ class getCombinations(object):
 			self.limit = 47
 			self.extlimit = 27
 
+		elif self.ltype == 3:
+			self.limit = 70
+			self.extlimit = 25
+
+		elif self.ltype == 4:
+			self.limit = 69
+			self.extlimit = 25
+
 		for i in range(self.limit):
 			if i+1 in self.selectedNumbers:
 				pass
@@ -102,7 +110,7 @@ class getCombinations(object):
 						num_list = sorted(num_list)
 
 					# select a Super number if the lotto game selected is SuperLotto
-					if self.ltype == 2:
+					if self.ltype == 2 or self.ltype == 3 or self.ltype == 4:
 						num_list.append(self.extNumbers[random.randint(0, self.extlimit - 1)])
 
 					selection.append(num_list)

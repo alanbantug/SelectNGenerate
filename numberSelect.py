@@ -29,16 +29,25 @@ class numberSelect(object):
 
 		if ltype == 1:
 			self.topLimit = 39
-		else:
+		elif ltype == 2:
 			self.topLimit = 47
+		elif ltype == 3:
+			self.topLimit = 70
+		elif ltype == 4:
+			self.topLimit = 69
 
 		self.selectedNumbers = []
 		self.otherNumbers = []
 		self.lastWinner = []
 		self.allNumbers, self.extNumbers = self.createList(self.topLimit)
 
-		self.dataHash, self.latestDraw = self.hashDataFile()
-		self.reformatFile()
+		if self.infile == None:
+			self.dataHash = {}
+			self.lastestDraw = 0
+		else:
+			self.dataHash, self.latestDraw = self.hashDataFile()
+			self.reformatFile()
+
 		self.loadSelectNumbers()
 
 	def hashDataFile(self):
@@ -94,6 +103,12 @@ class numberSelect(object):
 		if top_limit == 47:
 			for i in range(27):
 				ext_list.append(add_one(i))
+		elif top_limit == 70:
+			for i in range(25):
+				ext_list.append(add_one(i))
+		elif top_limit == 69:
+			for i in range(26):
+				ext_list.append(add_one(i))
 
 		return out_list, ext_list
 
@@ -106,35 +121,31 @@ class numberSelect(object):
 		self.otherNumbers = []
 
 		if self.ltype == 1:
-
-			if os.path.exists("data\\sf.txt"):
-
-				with open('data\\sf.txt', 'r') as selectFile:
-
-					for data in selectFile:
-
-						numb_list = data.split(' - ')
-
-				for numb in numb_list:
-					self.selectedNumbers.append(int(numb))
+			data_file = "data\\sf.txt"
 
 		elif self.ltype == 2:
+			data_file = "data\\ss.txt"
 
-			if os.path.exists("data\\ss.txt"):
+		elif self.ltype == 3:
+			data_file = "data\\sm.txt"
 
-				with open('data\\ss.txt', 'r') as selectFile:
-
-					for data in selectFile:
-
-						numb_list = data.split(' - ')
-
-				for numb in numb_list:
-					self.selectedNumbers.append(int(numb))
+		elif self.ltype == 4:
+			data_file = "data\\sp.txt"
 
 		else:
-
+			data_file = "data\\dummy.txt"
 			self.selectedNumbers = self.createList(self.topLimit)
 
+		if os.path.exists(data_file):
+
+			with open(data_file, 'r') as selectFile:
+
+				for data in selectFile:
+
+					numb_list = data.split(' - ')
+
+					for numb in numb_list:
+						self.selectedNumbers.append(int(numb))
 
 		for i in range(1, self.topLimit + 1):
 			if i in self.selectedNumbers:
@@ -497,6 +508,10 @@ class numberSelect(object):
 			selectFile = open("data\\sf.txt", "w")
 		elif self.ltype == 2:
 			selectFile = open("data\\ss.txt", "w")
+		elif self.ltype == 3:
+			selectFile = open("data\\sm.txt", "w")
+		elif self.ltype == 4:
+			selectFile = open("data\\sp.txt", "w")
 
 		sel_num = []
 
@@ -787,30 +802,22 @@ class numberSelect(object):
 		self.savedNumbers = []
 
 		if self.ltype == 1:
-
-			if os.path.exists("data\\sf.txt"):
-
-				with open('data\\sf.txt', 'r') as selectFile:
-
-					for data in selectFile:
-
-						numb_list = data.split(' - ')
-
-				for numb in numb_list:
-					self.savedNumbers.append(int(numb))
-
+			select_file = "data\\sf.txt"
 		elif self.ltype == 2:
+			select_file = "data\\ss.txt"
+		elif self.ltype == 3:
+			select_file = "data\\sm.txt"
+		elif self.ltype == 4:
+			select_file = "data\\sp.txt"
 
-			if os.path.exists("data\\ss.txt"):
+		with open(select_file, 'r') as selectFile:
 
-				with open('data\\ss.txt', 'r') as selectFile:
+			for data in selectFile:
 
-					for data in selectFile:
+				numb_list = data.split(' - ')
 
-						numb_list = data.split(' - ')
-
-				for numb in numb_list:
-					self.savedNumbers.append(int(numb))
+		for numb in numb_list:
+			self.savedNumbers.append(int(numb))
 
 		return self.savedNumbers == self.selectedNumbers
 

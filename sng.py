@@ -97,7 +97,7 @@ class Application(Frame):
         self.dSel = []
 
         self.numberGroup = LabelFrame(self.selTab, text=' Selection ', style="O.TLabelframe")
-        self.dSel.append(ds.displayNumbers(self.numberGroup, 47))
+        self.dSel.append(ds.displayNumbers(self.numberGroup, 75))
 
         self.selSet = Button(self.selTab, text="SELECT", style="B.TButton", command=self.selectSet)
         self.chkSet = Button(self.selTab, text="CHECK", style="B.TButton", command=self.checkSet)
@@ -112,8 +112,8 @@ class Application(Frame):
         self.typeGroup = LabelFrame(self.selTab, text=' Game Selection ', style="O.TLabelframe")
         self.typeA = Radiobutton(self.typeGroup, text="Fantasy", style="B.TRadiobutton", command=self.displayDataFile, variable=self.type, value=1)
         self.typeB = Radiobutton(self.typeGroup, text="Super", style="B.TRadiobutton", command=self.displayDataFile, variable=self.type, value=2)
-        self.typeC = Radiobutton(self.typeGroup, text="Not Used", style="B.TRadiobutton", command=self.displayDataFile, variable=self.type, value=3)
-        self.typeD = Radiobutton(self.typeGroup, text="Not Used", style="B.TRadiobutton", command=self.displayDataFile, variable=self.type, value=4)
+        self.typeC = Radiobutton(self.typeGroup, text="Mega", style="B.TRadiobutton", command=self.displayDataFile, variable=self.type, value=3)
+        self.typeD = Radiobutton(self.typeGroup, text="Powerball", style="B.TRadiobutton", command=self.displayDataFile, variable=self.type, value=4)
 
         self.sourceLabel = Label(self.selTab, text="None", style="SB.TLabel" )
         self.selectSource = Button(self.selTab, text="SET DATA FILE", style="B.TButton", command=self.setDataFile)
@@ -286,7 +286,7 @@ class Application(Frame):
         self.hideProgress()
 
         self.unused['text'] = ''
-        
+
         # check the selection limit before showing it. this is needed since the looping limit for generating
         # may be reached without completely generating 5 combinations
         if len(selection) == 5:
@@ -316,7 +316,7 @@ class Application(Frame):
         ''' This function will initiate the thread for selecting numbers if a data file is provided
         '''
 
-        if self.sourceLabel["text"] == "None":
+        if self.sourceLabel["text"] == "None" and (self.type == 1 or self.type ==2):
             messagebox.showerror('Select Error', 'Please select data file before proceeding.')
         else:
 
@@ -470,6 +470,11 @@ class Application(Frame):
                 os.makedirs("data")
                 configFile = open("data\\cf.txt", "w")
 
+            configFile.write(self.dataFile)
+            configFile.close()
+
+            messagebox.showinfo("Source File Saved", "The data source file has been saved.")
+
         elif self.type.get() == 2:
             try:
                 configFile = open("data\\cs.txt", "w")
@@ -477,10 +482,10 @@ class Application(Frame):
                 os.makedirs("data")
                 configFile = open("data\\cs.txt", "w")
 
-        configFile.write(self.dataFile)
-        configFile.close()
+            configFile.write(self.dataFile)
+            configFile.close()
 
-        messagebox.showinfo("Source File Saved", "The data source file has been saved.")
+            messagebox.showinfo("Source File Saved", "The data source file has been saved.")
 
     def displayDataFile(self):
 
@@ -536,6 +541,12 @@ class Application(Frame):
                 self.sourceLabel["text"] = "None"
         else:
             self.sourceLabel["text"] = "None"
+
+            # create instance of number select for MegaLotto and Powerball with no file inputs
+            self.numberSource = ns.numberSelect(None, ltype)
+            self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
+            self.useCount.set(len(self.numberSource.getSelectNumbers()))
+
 
     def showStats(self):
 
@@ -642,6 +653,11 @@ class Application(Frame):
             self.showFantasy()
         elif self.type.get() == 2:
             self.showSuper()
+        elif self.type.get() == 3:
+            self.showMega()
+        elif self.type.get() == 4:
+            self.showPower()
+
 
     def showFantasy(self):
 
@@ -763,6 +779,128 @@ class Application(Frame):
 
         self.popGen.geometry('%dx%d+%d+%d' % (ww, wh, x, y))
 
+    def showMega(self):
+
+        ''' This function will show the MegaLotto generate panel
+        '''
+
+        self.popGen = Toplevel(self.main_container)
+        self.popGen.title("MegaLotto")
+
+        self.h_sep_ga = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gb = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gc = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gd = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_ge = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gf = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gg = Separator(self.popGen, orient=HORIZONTAL)
+
+        self.dGen = []
+
+        for i in range(5):
+            self.dGen.append(dg.displayNumbers(self.popGen, self.type.get()))
+
+        self.unused = Label(self.popGen, text="", style="B.TLabel" )
+        self.topLabel = Label(self.popGen, text="Super Lotto", style="B.TLabel" )
+
+        self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
+        self.genOdd = Button(self.popGen, text="ALL ODD", style="B.TButton", command=self.genOddSet)
+        self.genEven = Button(self.popGen, text="ALL EVEN", style="B.TButton", command=self.genEvenSet)
+        self.exitGen = Button(self.popGen, text="EXIT", style="B.TButton", command=self.popGen.destroy)
+
+        self.topLabel.grid(row=0, column=0, columnspan=2, padx=5, pady=(5, 2), sticky='NSEW')
+        self.unused.grid(row=0, column=4, columnspan=1, padx=5, pady=(5, 2), sticky='NSEW')
+
+        self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+
+        for i in range(5):
+            self.dGen[i].positionDisplays(5, i)
+
+        self.h_sep_gb.grid(row=24, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')
+
+        self.genSet.grid(row=25, column=0, columnspan=3, padx=5, pady=(5, 2), sticky='NSEW')
+        self.genOdd.grid(row=25, column=3, columnspan=1, padx=5, pady=(5, 2), sticky='NSEW')
+        self.genEven.grid(row=25, column=4, columnspan=1, padx=5, pady=(5, 2), sticky='NSEW')
+        self.exitGen.grid(row=26, column=0, columnspan=5, padx=5, pady=(2, 5), sticky='NSEW')
+
+        wh = 460
+        ww = 640
+
+        self.popGen.minsize(ww, wh)
+        self.popGen.maxsize(ww, wh)
+
+        # Position in center screen
+
+        ws = self.popGen.winfo_screenwidth()
+        hs = self.popGen.winfo_screenheight()
+
+        # calculate x and y coordinates for the Tk root window
+        x = (ws/2) - (ww/2)
+        y = (hs/2) - (wh/2)
+
+        self.popGen.geometry('%dx%d+%d+%d' % (ww, wh, x, y))
+
+    def showPower(self):
+
+        ''' This function will show the MegaLotto generate panel
+        '''
+
+        self.popGen = Toplevel(self.main_container)
+        self.popGen.title("Powerball")
+
+        self.h_sep_ga = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gb = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gc = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gd = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_ge = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gf = Separator(self.popGen, orient=HORIZONTAL)
+        self.h_sep_gg = Separator(self.popGen, orient=HORIZONTAL)
+
+        self.dGen = []
+
+        for i in range(5):
+            self.dGen.append(dg.displayNumbers(self.popGen, self.type.get()))
+
+        self.unused = Label(self.popGen, text="", style="B.TLabel" )
+        self.topLabel = Label(self.popGen, text="Super Lotto", style="B.TLabel" )
+
+        self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
+        self.genOdd = Button(self.popGen, text="ALL ODD", style="B.TButton", command=self.genOddSet)
+        self.genEven = Button(self.popGen, text="ALL EVEN", style="B.TButton", command=self.genEvenSet)
+        self.exitGen = Button(self.popGen, text="EXIT", style="B.TButton", command=self.popGen.destroy)
+
+        self.topLabel.grid(row=0, column=0, columnspan=2, padx=5, pady=(5, 2), sticky='NSEW')
+        self.unused.grid(row=0, column=4, columnspan=1, padx=5, pady=(5, 2), sticky='NSEW')
+
+        self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+
+        for i in range(5):
+            self.dGen[i].positionDisplays(5, i)
+
+        self.h_sep_gb.grid(row=25, column=0, columnspan=10, padx=5, pady=5, sticky='NSEW')
+
+        self.genSet.grid(row=26, column=0, columnspan=3, padx=5, pady=(5, 2), sticky='NSEW')
+        self.genOdd.grid(row=26, column=3, columnspan=1, padx=5, pady=(5, 2), sticky='NSEW')
+        self.genEven.grid(row=26, column=4, columnspan=1, padx=5, pady=(5, 2), sticky='NSEW')
+        self.exitGen.grid(row=27, column=0, columnspan=5, padx=5, pady=(2, 5), sticky='NSEW')
+
+        wh = 460
+        ww = 640
+
+        self.popGen.minsize(ww, wh)
+        self.popGen.maxsize(ww, wh)
+
+        # Position in center screen
+
+        ws = self.popGen.winfo_screenwidth()
+        hs = self.popGen.winfo_screenheight()
+
+        # calculate x and y coordinates for the Tk root window
+        x = (ws/2) - (ww/2)
+        y = (hs/2) - (wh/2)
+
+        self.popGen.geometry('%dx%d+%d+%d' % (ww, wh, x, y))
+
 
     def showProgress(self):
 
@@ -810,7 +948,7 @@ root.title("SELECT AND GENERATE")
 
 # Set size
 
-wh = 530
+wh = 550
 ww = 480
 
 #root.resizable(height=False, width=False)

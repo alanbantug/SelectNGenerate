@@ -14,12 +14,12 @@ class displayNumbers(object):
 
         Style().configure("W.TLabel", foreground= "black", background="white", font="Courier 8", anchor="center")
         Style().configure("G.TLabel", foreground= "white", background="green", font="Courier 8", anchor="center")
-        
+
         for i in range(self.topLimit):
             idx = "{0:02}".format(i + 1)
             self.num.append(Label(container, text=idx, style="W.TLabel", width=2))
-        
-       
+
+
     def changeStyle(self, topSelect):
 
         Style().configure("W.TLabel", foreground= "black", background="white", font="Courier 8", anchor="center")
@@ -45,16 +45,11 @@ class displayNumbers(object):
         for i in range(self.topLimit):
             self.num[i].grid(row=row_ctr, column=col, padx=(x_position,10), pady=(0,5), sticky='W')
             col_ctr += 1
-            if col_ctr > 13:
+            if col_ctr > 15:
                 col_ctr = 1
                 row_ctr += 1
                 x_position = 10
-            else:    
-                x_position += 25
+            else:
+                x_position += 22
 
         row_ctr += 1
-        
-
-        
-
-        

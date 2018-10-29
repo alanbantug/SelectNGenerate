@@ -10,7 +10,7 @@ class displayNumbers(object):
 
     def __init__(self, container, ltype):
 
-        
+
         self.ltype = ltype
 
         if self.ltype == 1:
@@ -21,6 +21,14 @@ class displayNumbers(object):
             self.topLimit = 47
             self.extLimit = 27
 
+        elif self.ltype == 3:
+            self.topLimit = 70
+            self.extLimit = 25
+
+        elif self.ltype == 4:
+            self.topLimit = 69
+            self.extLimit = 26
+
         self.num = []
         self.ext = []
 
@@ -29,7 +37,7 @@ class displayNumbers(object):
         Style().configure("Y.TLabel", foreground= "blue", background="yellow", font="Courier 8", anchor="center")
         Style().configure("G.TLabel", foreground= "white", background="green", font="Courier 8", anchor="center")
         Style().configure("R.TLabel", foreground= "white", background="red", font="Courier 8", anchor="center")
-        
+
         for i in range(self.topLimit):
             idx = "{0:02}".format(i + 1)
             self.num.append(Label(container, text=idx, style="W.TLabel"))
@@ -37,7 +45,7 @@ class displayNumbers(object):
         for i in range(self.extLimit):
             idx = "{0:02}".format(i + 1)
             self.ext.append(Label(container, text=idx, style="W.TLabel"))
-       
+
         self.h_sep_a = Separator(container, orient=HORIZONTAL)
 
     def changeTopStyle(self, topSelect):
@@ -62,6 +70,14 @@ class displayNumbers(object):
             for i in range(len(topSelect) - 1):
                 self.num[topSelect[i] - 1]["style"] = sty
             self.ext[topSelect[5] - 1]["style"] = sty
+        elif self.ltype == 3:
+            for i in range(len(topSelect) - 1):
+                self.num[topSelect[i] - 1]["style"] = sty
+            self.ext[topSelect[5] - 1]["style"] = sty
+        elif self.ltype == 4:
+            for i in range(len(topSelect) - 1):
+                self.num[topSelect[i] - 1]["style"] = sty
+            self.ext[topSelect[5] - 1]["style"] = sty
 
     def positionDisplays(self, row, col):
 
@@ -69,6 +85,10 @@ class displayNumbers(object):
             self.positionFantasy(row, col)
         elif self.ltype == 2:
             self.positionSuper(row, col)
+        elif self.ltype == 3:
+            self.positionMega(row, col)
+        elif self.ltype == 4:
+            self.positionPower(row, col)
 
     def positionFantasy(self, row, col):
 
@@ -83,8 +103,8 @@ class displayNumbers(object):
                 col_ctr = 1
                 row_ctr += 1
                 x_position = 9
-            else:    
-                x_position += 20 
+            else:
+                x_position += 20
 
         row_ctr += 1
 
@@ -101,11 +121,11 @@ class displayNumbers(object):
                 col_ctr = 1
                 row_ctr += 1
                 x_position = 9
-            else:    
-                x_position += 18 
+            else:
+                x_position += 18
 
         row_ctr += 1
-        
+
         self.h_sep_a.grid(row=row_ctr, column=col, padx=5, pady=5, sticky='NSEW')
 
         x_position = 9
@@ -119,8 +139,76 @@ class displayNumbers(object):
                 col_ctr = 1
                 row_ctr += 1
                 x_position = 9
-            else:    
-                x_position += 18         
+            else:
+                x_position += 18
+
+    def positionMega(self, row, col):
+
+        x_position = 9
+        col_ctr = 1
+        row_ctr = row
+
+        for i in range(self.topLimit):
+            self.num[i].grid(row=row_ctr, column=col, padx=(x_position,10), pady=1, sticky='W')
+            col_ctr += 1
+            if col_ctr > 6:
+                col_ctr = 1
+                row_ctr += 1
+                x_position = 9
+            else:
+                x_position += 18
+
+        row_ctr += 1
+
+        self.h_sep_a.grid(row=row_ctr, column=col, padx=5, pady=5, sticky='NSEW')
+
+        x_position = 9
+        col_ctr = 1
+        row_ctr += 1
+
+        for i in range(self.extLimit):
+            self.ext[i].grid(row=row_ctr, column=col, padx=(x_position,10), pady=1, sticky='W')
+            col_ctr += 1
+            if col_ctr > 5:
+                col_ctr = 1
+                row_ctr += 1
+                x_position = 9
+            else:
+                x_position += 18
+
+    def positionPower(self, row, col):
+
+        x_position = 9
+        col_ctr = 1
+        row_ctr = row
+
+        for i in range(self.topLimit):
+            self.num[i].grid(row=row_ctr, column=col, padx=(x_position,10), pady=1, sticky='W')
+            col_ctr += 1
+            if col_ctr > 6:
+                col_ctr = 1
+                row_ctr += 1
+                x_position = 9
+            else:
+                x_position += 18
+
+        row_ctr += 1
+
+        self.h_sep_a.grid(row=row_ctr, column=col, padx=5, pady=5, sticky='NSEW')
+
+        x_position = 9
+        col_ctr = 1
+        row_ctr += 1
+
+        for i in range(self.extLimit):
+            self.ext[i].grid(row=row_ctr, column=col, padx=(x_position,10), pady=1, sticky='W')
+            col_ctr += 1
+            if col_ctr > 6:
+                col_ctr = 1
+                row_ctr += 1
+                x_position = 9
+            else:
+                x_position += 18
 
     def checkPattern(self, num_set):
 
@@ -147,26 +235,28 @@ class displayNumbers(object):
             pass
         else:
             return False
-        
+
         if self.ltype == 1:
             configFile = open("data\\cf.txt", "r")
         elif self.ltype == 2:
             configFile = open("data\\cs.txt", "r")
+        else:
+            return False
 
         filename = configFile.readline()
         configFile.close()
 
         # If data file does not exist, return False
-        
+
         if os.path.isfile(filename):
             pass
         else:
             return False
-        
+
         dataFile = open(filename, "r")
 
         while True:
-        
+
             d_line = dataFile.readline()
 
             if d_line == "":
@@ -178,7 +268,7 @@ class displayNumbers(object):
                 if d_list[0].isdigit():
 
                     winner = []
-                    
+
                     for i in range(5, 10):
                         winner.append(int(d_list[i]))
 
@@ -187,7 +277,3 @@ class displayNumbers(object):
 
         dataFile.close()
         return False
-
-
-
-        
