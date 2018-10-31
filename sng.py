@@ -37,6 +37,17 @@ class Application(Frame):
         self.useCount = IntVar()
         self.type = IntVar()
 
+        self.getMatch3 = IntVar()
+        self.getMatch4 = IntVar()
+        self.getMatch5 = IntVar()
+        self.getMatchExtra = IntVar()
+        self.numberA = StringVar()
+        self.numberB = StringVar()
+        self.numberC = StringVar()
+        self.numberD = StringVar()
+        self.numberE = StringVar()
+        self.numberExtra = StringVar()
+
         # Set images. Note that the line below is needed to change the working directory of the batch file to point to where the script files, including image files are
         # It has to be commented out in the testing library
 
@@ -64,6 +75,7 @@ class Application(Frame):
 
         # Set button styles
         Style().configure("B.TButton", font="Verdana 8", relief="raised")
+        Style().configure("B.TCheckbutton", font="Verdana 8")
         Style().configure("B.TRadiobutton", font="Verdana 8")
 
         # Set scale styles
@@ -71,8 +83,10 @@ class Application(Frame):
 
         self.parentTab = Notebook(self.main_container)
         self.selTab = Frame(self.parentTab)   # first page, which would get widgets gridded into it
-        self.abtTab = Frame(self.parentTab)   # second page
+        self.datTab = Frame(self.parentTab)  # second page
+        self.abtTab = Frame(self.parentTab)   # third page
         self.parentTab.add(self.selTab, text='    Select  ')
+        self.parentTab.add(self.datTab, text='    Data ')
         self.parentTab.add(self.abtTab, text='    About ')
 
         # Create widgets for the main screen
@@ -158,6 +172,80 @@ class Application(Frame):
 
         self.showGen.grid(row=15, column=0, columnspan=5, padx=5, pady=(2,5), sticky='NSEW')
 
+        # Create widgets for the Data tab
+
+        self.h_sep_da = Separator(self.datTab, orient=HORIZONTAL)
+        self.h_sep_db = Separator(self.datTab, orient=HORIZONTAL)
+        self.h_sep_dc = Separator(self.datTab, orient=HORIZONTAL)
+        self.h_sep_dd = Separator(self.datTab, orient=HORIZONTAL)
+        self.h_sep_de = Separator(self.datTab, orient=HORIZONTAL)
+        self.h_sep_df = Separator(self.datTab, orient=HORIZONTAL)
+
+        self.datLabel = Label(self.datTab, text="Data File", style="T.TLabel" )
+        self.datLabelA = Label(self.datTab, text="Displays downloaded data from CALottery.com and allows filtering of ", style="B.TLabel" )
+        self.datLabelB = Label(self.datTab, text="winning combinations based on provided numbers. Winners that ", style="B.TLabel" )
+        self.datLabelC = Label(self.datTab, text="match 3 or 4 numbers from the combination entered are also listed.", style="B.TLabel" )
+
+        self.numberEntry = LabelFrame(self.datTab, text=' Combination ', style="O.TLabelframe")
+        self.submit = Button(self.numberEntry, text="CHECK", style="B.TButton", width='13', command=self.startProcess)
+        self.numA = Entry(self.numberEntry, textvariable=self.numberA, width="5")
+        self.numB = Entry(self.numberEntry, textvariable=self.numberB, width="5")
+        self.numC = Entry(self.numberEntry, textvariable=self.numberC, width="5")
+        self.numD = Entry(self.numberEntry, textvariable=self.numberD, width="5")
+        self.numE = Entry(self.numberEntry, textvariable=self.numberE, width="5")
+        self.numExtra = Entry(self.numberEntry, textvariable=self.numberExtra, width="5")
+        self.extraLabel = Label(self.numberEntry, text="EXTRA", width="7", style="B.TLabel")
+
+        self.filterOpt = LabelFrame(self.datTab, text=' Match Filter Options ', style="O.TLabelframe")
+        self.match3 = Checkbutton(self.filterOpt, text=' 3 Numbers ', style="B.TCheckbutton", variable=self.getMatch3)
+        self.match4 = Checkbutton(self.filterOpt, text=' 4 Numbers  ', style="B.TCheckbutton", variable=self.getMatch4)
+        self.match5 = Checkbutton(self.filterOpt, text=' 5 Numbers  ', style="B.TCheckbutton", variable=self.getMatch5)
+        self.matchExtra = Checkbutton(self.filterOpt, text=' Extra ', style="B.TCheckbutton", variable=self.getMatchExtra)
+
+        self.dataDisplay = LabelFrame(self.datTab, text=' Winner Matches ', style="O.TLabelframe")
+        self.scroller = Scrollbar(self.dataDisplay, orient=VERTICAL)
+        self.dataSelect = Listbox(self.dataDisplay, yscrollcommand=self.scroller.set, width=65)
+
+        self.statusLabel = Label(self.datTab, text="Select source and target folders", style="G.TLabel")
+        #self.reset = Button(self.datTab, text="RESET", style="B.TButton", width=30, command=self.resetProcess)
+        #self.exit = Button(self.datTab, text="EXIT", style="B.TButton", width=30, command=self.checkExit)
+
+        # Position widgets
+
+        self.datLabel.grid(row=0, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
+        self.datLabelA.grid(row=1, column=0, columnspan=3, padx=5, pady=0, sticky='NSEW')
+        self.datLabelB.grid(row=2, column=0, columnspan=3, padx=5, pady=0, sticky='NSEW')
+        self.datLabelC.grid(row=3, column=0, columnspan=3, padx=5, pady=0, sticky='NSEW')
+
+        self.h_sep_da.grid(row=4, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
+
+        self.numA.grid(row=0, column=0, padx=(10,0), pady=(5, 10), sticky='W')
+        self.numB.grid(row=0, column=0, padx=(55,0), pady=(5, 10), sticky='W')
+        self.numC.grid(row=0, column=0, padx=(100,0), pady=(5, 10), sticky='W')
+        self.numD.grid(row=0, column=0, padx=(145,0), pady=(5, 10), sticky='W')
+        self.numE.grid(row=0, column=0, padx=(190,0), pady=(5, 10), sticky='W')
+        self.extraLabel.grid(row=0, column=0, padx=(240,0), pady=(5, 10), sticky='W')
+        self.numExtra.grid(row=0, column=0, padx=(295,0), pady=(5, 10), sticky='W')
+        self.submit.grid(row=0, column=0, padx=(350,0), pady=(5, 10), sticky='W')
+        self.numberEntry.grid(row=5, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
+
+        self.match3.grid(row=0, column=0, padx=(10,0), pady=(5, 10), sticky='W')
+        self.match4.grid(row=0, column=0, padx=(120,0), pady=(5, 10), sticky='W')
+        self.match5.grid(row=0, column=0, padx=(230,0), pady=(5, 10), sticky='W')
+        self.matchExtra.grid(row=0, column=0, padx=(340,0), pady=(5, 10), sticky='W')
+        self.filterOpt.grid(row=6, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
+
+        self.h_sep_db.grid(row=7, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
+
+        self.dataSelect.grid(row=0, column=0, padx=(10,0), pady=5, sticky='NSEW')
+        self.scroller.grid(row=0, column=2, padx=(10,0), pady=5, sticky='NSEW')
+        self.dataDisplay.grid(row=8, column=0, columnspan=3, rowspan=5, padx=5, pady=5, sticky='NSEW')
+
+        #self.h_sep_dc.grid(row=14, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
+
+        #self.reset.grid(row=15, column=0, padx=(10, 0), pady=5, sticky='W')
+        #self.exit.grid(row=15, column=0, padx=(245, 0), pady=5, sticky='W')
+
         # Create widgets for About tab
 
         self.h_sep_aa = Separator(self.abtTab, orient=HORIZONTAL)
@@ -216,7 +304,7 @@ class Application(Frame):
 
         self.mainLabel.grid(row=0, column=0, padx=5, pady=5, sticky='NSEW')
         self.parentTab.grid(row=1, column=0, padx=5, pady=5, sticky='NSEW')
-        self.exit.grid(row=3, column=0, padx=5, pady=(2,5), sticky='NSEW')
+        self.exit.grid(row=5, column=0, padx=5, pady=(2,5), sticky='NSEW')
 
         # set the type selection to Fantasy Five
         self.type.set(1)
@@ -510,6 +598,8 @@ class Application(Frame):
                     self.numberSource = ns.numberSelect(self.dataFile, ltype)
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
                     self.useCount.set(len(self.numberSource.getSelectNumbers()))
+
+                    self.datLabel['text'] = "Fantasy Five Data"
                 else:
                     self.sourceLabel["text"] = "None"
 
@@ -533,6 +623,8 @@ class Application(Frame):
                     self.numberSource = ns.numberSelect(self.dataFile, ltype)
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
                     self.useCount.set(len(self.numberSource.getSelectNumbers()))
+
+                    self.datLabel['text'] = "SuperLottoPlus Data"
                 else:
                     self.sourceLabel["text"] = "None"
 
@@ -546,6 +638,8 @@ class Application(Frame):
             self.numberSource = ns.numberSelect(None, ltype)
             self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
             self.useCount.set(len(self.numberSource.getSelectNumbers()))
+
+            self.datLabel['text'] = "No Data File"
 
 
     def showStats(self):
@@ -942,6 +1036,15 @@ class Application(Frame):
 
         self.progressBar.stop()
         self.popProgress.destroy()
+
+    def startProcess(self):
+        pass
+
+    def resetProcess(self):
+        pass
+
+    def checkExit(self):
+        pass
 
 root = Tk()
 root.title("SELECT AND GENERATE")
