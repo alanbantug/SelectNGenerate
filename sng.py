@@ -22,6 +22,7 @@ import random
 import shutil
 import subprocess as sp
 import displayGenerate as dg
+import datetime
 
 import dataDownload as dataD
 
@@ -83,11 +84,11 @@ class Application(Frame):
 
         self.parentTab = Notebook(self.main_container)
         self.selTab = Frame(self.parentTab)   # first page, which would get widgets gridded into it
-        self.datTab = Frame(self.parentTab)  # second page
+        self.datTab = Frame(self.parentTab)   # second page
         self.abtTab = Frame(self.parentTab)   # third page
-        self.parentTab.add(self.selTab, text='    Select  ')
-        self.parentTab.add(self.datTab, text='    Data ')
-        self.parentTab.add(self.abtTab, text='    About ')
+        self.parentTab.add(self.selTab, text='    Select    ')
+        self.parentTab.add(self.datTab, text='    Data      ')
+        self.parentTab.add(self.abtTab, text='    About     ')
 
         # Create widgets for the main screen
 
@@ -187,7 +188,6 @@ class Application(Frame):
         self.datLabelC = Label(self.datTab, text="match 3 or 4 numbers from the combination entered are also listed.", style="B.TLabel" )
 
         self.numberEntry = LabelFrame(self.datTab, text=' Combination ', style="O.TLabelframe")
-        self.submit = Button(self.numberEntry, text="CHECK", style="B.TButton", width='13', command=self.startProcess)
         self.numA = Entry(self.numberEntry, textvariable=self.numberA, width="5")
         self.numB = Entry(self.numberEntry, textvariable=self.numberB, width="5")
         self.numC = Entry(self.numberEntry, textvariable=self.numberC, width="5")
@@ -204,7 +204,10 @@ class Application(Frame):
 
         self.dataDisplay = LabelFrame(self.datTab, text=' Winner Matches ', style="O.TLabelframe")
         self.scroller = Scrollbar(self.dataDisplay, orient=VERTICAL)
-        self.dataSelect = Listbox(self.dataDisplay, yscrollcommand=self.scroller.set, width=65)
+        self.dataSelect = Listbox(self.dataDisplay, yscrollcommand=self.scroller.set, width=68, height=8)
+
+        self.filter = Button(self.datTab, text="FILTER", style="B.TButton", command=self.startProcess)
+        self.reset = Button(self.datTab, text="RESET", style="B.TButton", command=self.readDataFile)
 
         self.statusLabel = Label(self.datTab, text="Select source and target folders", style="G.TLabel")
         #self.reset = Button(self.datTab, text="RESET", style="B.TButton", width=30, command=self.resetProcess)
@@ -212,35 +215,37 @@ class Application(Frame):
 
         # Position widgets
 
-        self.datLabel.grid(row=0, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
-        self.datLabelA.grid(row=1, column=0, columnspan=3, padx=5, pady=0, sticky='NSEW')
-        self.datLabelB.grid(row=2, column=0, columnspan=3, padx=5, pady=0, sticky='NSEW')
-        self.datLabelC.grid(row=3, column=0, columnspan=3, padx=5, pady=0, sticky='NSEW')
+        self.datLabel.grid(row=0, column=0, padx=5, pady=5, sticky='NSEW')
+        self.datLabelA.grid(row=1, column=0, padx=5, pady=0, sticky='NSEW')
+        self.datLabelB.grid(row=2, column=0, padx=5, pady=0, sticky='NSEW')
+        self.datLabelC.grid(row=3, column=0, padx=5, pady=0, sticky='NSEW')
 
-        self.h_sep_da.grid(row=4, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
+        self.h_sep_da.grid(row=4, column=0, padx=5, pady=5, sticky='NSEW')
+
+        self.dataSelect.grid(row=0, column=0, padx=(10,0), pady=(5,10), sticky='NSEW')
+        self.scroller.grid(row=0, column=2, padx=(10,0), pady=(5,10), sticky='NSEW')
+        self.dataDisplay.grid(row=5, column=0, padx=5, pady=5, sticky='NSEW')
+
+        self.h_sep_db.grid(row=9, column=0, padx=5, pady=5, sticky='NSEW')
 
         self.numA.grid(row=0, column=0, padx=(10,0), pady=(5, 10), sticky='W')
-        self.numB.grid(row=0, column=0, padx=(55,0), pady=(5, 10), sticky='W')
-        self.numC.grid(row=0, column=0, padx=(100,0), pady=(5, 10), sticky='W')
-        self.numD.grid(row=0, column=0, padx=(145,0), pady=(5, 10), sticky='W')
-        self.numE.grid(row=0, column=0, padx=(190,0), pady=(5, 10), sticky='W')
-        self.extraLabel.grid(row=0, column=0, padx=(240,0), pady=(5, 10), sticky='W')
-        self.numExtra.grid(row=0, column=0, padx=(295,0), pady=(5, 10), sticky='W')
-        self.submit.grid(row=0, column=0, padx=(350,0), pady=(5, 10), sticky='W')
-        self.numberEntry.grid(row=5, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
+        self.numB.grid(row=0, column=0, padx=(70,0), pady=(5, 10), sticky='W')
+        self.numC.grid(row=0, column=0, padx=(130,0), pady=(5, 10), sticky='W')
+        self.numD.grid(row=0, column=0, padx=(190,0), pady=(5, 10), sticky='W')
+        self.numE.grid(row=0, column=0, padx=(250,0), pady=(5, 10), sticky='W')
+        self.extraLabel.grid(row=0, column=0, padx=(320,0), pady=(5, 10), sticky='W')
+        self.numExtra.grid(row=0, column=0, padx=(380,0), pady=(5, 10), sticky='W')
+        self.numberEntry.grid(row=10, column=0, padx=5, pady=5, sticky='NSEW')
 
         self.match3.grid(row=0, column=0, padx=(10,0), pady=(5, 10), sticky='W')
         self.match4.grid(row=0, column=0, padx=(120,0), pady=(5, 10), sticky='W')
         self.match5.grid(row=0, column=0, padx=(230,0), pady=(5, 10), sticky='W')
         self.matchExtra.grid(row=0, column=0, padx=(340,0), pady=(5, 10), sticky='W')
-        self.filterOpt.grid(row=6, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
+        self.filterOpt.grid(row=11, column=0, padx=5, pady=5, sticky='NSEW')
 
-        self.h_sep_db.grid(row=7, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
+        # self.h_sep_dc.grid(row=12, column=0, padx=5, pady=5, sticky='NSEW')
 
-        self.dataSelect.grid(row=0, column=0, padx=(10,0), pady=5, sticky='NSEW')
-        self.scroller.grid(row=0, column=2, padx=(10,0), pady=5, sticky='NSEW')
-        self.dataDisplay.grid(row=8, column=0, columnspan=3, rowspan=5, padx=5, pady=5, sticky='NSEW')
-
+        self.filter.grid(row=13, column=0, padx=5, pady=5, sticky='NSEW')
         #self.h_sep_dc.grid(row=14, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
 
         #self.reset.grid(row=15, column=0, padx=(10, 0), pady=5, sticky='W')
@@ -583,55 +588,49 @@ class Application(Frame):
         ltype = self.type.get()
 
         if ltype == 1:
-
-            if os.path.exists("data\\cf.txt"):
-
-                configFile = open("data\\cf.txt", "r")
-
-                filename = configFile.readline()
-
-                if os.path.exists(filename):
-
-                    self.dataFile = filename
-                    self.sourceLabel["text"] = os.path.dirname(filename)[:20] + "..." + os.path.basename(filename)
-
-                    self.numberSource = ns.numberSelect(self.dataFile, ltype)
-                    self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
-                    self.useCount.set(len(self.numberSource.getSelectNumbers()))
-
-                    self.datLabel['text'] = "Fantasy Five Data"
-                else:
-                    self.sourceLabel["text"] = "None"
-
-                configFile.close()
-            else:
-                self.sourceLabel["text"] = "None"
-
+            config_file = "data\\cf.txt"
         elif ltype == 2:
+            config_file = "data\\cs.txt"
+        elif ltype == 3:
+            config_file = "data\\cm.txt"
+        elif ltype == 4:
+            config_file = "data\\cp.txt"
 
-            if os.path.exists("data\\cs.txt"):
+        if os.path.exists(config_file):
 
-                configFile = open("data\\cs.txt", "r")
+            configFile = open(config_file, "r")
 
-                filename = configFile.readline()
+            filename = configFile.readline()
 
-                if os.path.exists(filename):
+            if os.path.exists(filename):
 
-                    self.dataFile = filename
-                    self.sourceLabel["text"] = os.path.dirname(filename)[:20] + "..." + os.path.basename(filename)
+                self.dataFile = filename
+                self.sourceLabel["text"] = os.path.dirname(filename)[:20] + "..." + os.path.basename(filename)
 
-                    self.numberSource = ns.numberSelect(self.dataFile, ltype)
-                    self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
-                    self.useCount.set(len(self.numberSource.getSelectNumbers()))
+                self.numberSource = ns.numberSelect(self.dataFile, ltype)
+                self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
+                self.useCount.set(len(self.numberSource.getSelectNumbers()))
 
-                    self.datLabel['text'] = "SuperLottoPlus Data"
-                else:
-                    self.sourceLabel["text"] = "None"
+                if ltype == 1:
+                    self.datLabel['text'] = "Fantasy Five Data"
+                if ltype == 2:
+                    self.datLabel['text'] = "SuperLotto Data"
+                if ltype == 3:
+                    self.datLabel['text'] = "MegaLotto Data"
+                if ltype == 4:
+                    self.datLabel['text'] = "Powerball Data"
 
-                configFile.close()
+                self.readDataFile()
+
             else:
+                # delete the contents of the display list, if any
+                self.dataSelect.delete(0, END)
                 self.sourceLabel["text"] = "None"
+
+            configFile.close()
         else:
+            # delete the contents of the display list, if any
+            self.dataSelect.delete(0, END)
             self.sourceLabel["text"] = "None"
 
             # create instance of number select for MegaLotto and Powerball with no file inputs
@@ -1037,11 +1036,142 @@ class Application(Frame):
         self.progressBar.stop()
         self.popProgress.destroy()
 
+
+    def readDataFile(self, filter=False):
+
+        ''' This function will check for close matches to the numbers entered
+        '''
+
+        # Set indicator for finding exact match to False
+        self.exactMatch = False
+
+        # delete the contents of the list
+        self.dataSelect.delete(0, END)
+
+        filename = self.dataFile
+        print(filename)
+        dataFile = open(filename, "r")
+
+        while True:
+
+            d_line = dataFile.readline()
+
+            if d_line == "":
+                break
+
+            d_list = d_line.split()
+
+            if len(d_list) > 0:
+
+                if d_list[0].isdigit():
+
+                    winner = []
+
+                    for i in range(5, 10):
+                        winner.append(int(d_list[i]))
+
+                    if len(d_list) > 10:
+                        winner_extra = int(d_list[10])
+                    else:
+                        winner_extra = ''
+
+                    if filter:
+                        self.filterData(winner, winner_extra, d_line)
+                    else:
+                        self.formatOutput(d_line, 0, 0)
+
+
+        dataFile.close()
+
+        self.scroller.config(command=self.dataSelect.yview)
+
+    def filterData(self, winner, winner_extra, d_line):
+
+        search_set = [int(self.numberA.get()), int(self.numberB.get()), int(self.numberC.get()), int(self.numberD.get()), int(self.numberE.get())]
+
+        match_ctr = 0
+
+        for w in winner:
+            for s in search_set:
+                if s == w:
+                    match_ctr += 1
+
+        if match_ctr == 3 and self.getMatch3.get() == 1:
+            if len(d_line.split()) > 10:
+                search_extra = int(self.numberExtra.get())
+                if search_extra == winner_extra and self.getMatchExtra.get() == 1:
+                    self.formatOutput(d_line, match_ctr, 1)
+            else:
+                self.formatOutput(d_line, match_ctr, 0)
+
+        elif match_ctr == 4 and self.getMatch4.get() == 1:
+            if len(d_line.split()) > 10:
+                search_extra = int(self.numberExtra.get())
+                if search_extra == winner_extra and self.getMatchExtra.get() == 1:
+                    self.formatOutput(d_line, match_ctr, 1)
+            else:
+                self.formatOutput(d_line, match_ctr, 0)
+
+        elif match_ctr == 5 and self.getMatch5.get() == 1:
+            if len(d_line.split()) > 10:
+                search_extra = int(self.numberExtra.get())
+                if search_extra == winner_extra and self.getMatchExtra.get() == 1:
+                    self.exactMatch = True
+                    self.formatOutput(d_line, match_ctr, 1)
+            else:
+                self.formatOutput(d_line, match_ctr, 0)
+
+        if len(d_line.split()) > 10:
+            search_extra = int(self.numberExtra.get())
+            if search_extra == winner_extra and self.getMatchExtra.get() == 1:
+                self.formatOutput(d_line, match_ctr, 1)
+
+
+    def formatOutput(self, data_line, match_ctr, super_ctr):
+
+        data_list = data_line.split()
+
+        winner_data = []
+
+        # Format draw number
+        draw_number = '{:06d}'.format(int(data_list[0]))
+
+        winner_data.append(draw_number)
+
+        in_date = data_list[2] + ' ' + data_list[3] + ' ' + data_list[4]
+        draw_date = str(datetime.datetime.strptime(in_date, '%b %d, %Y').date())
+
+        winner_data.append(draw_date)
+
+        for i in range(5, 10):
+            number = '{:02d}'.format(int(data_list[i]))
+            winner_data.append(number)
+
+        winner_data.append(str(match_ctr))
+
+        if len(data_list) > 10:
+            winner_data.append('{:02d}'.format(int(data_list[10])))
+            winner_data.append(str(super_ctr))
+
+        format_data_line = "   |   ".join(winner_data)
+
+        self.dataSelect.insert(END, format_data_line)
+
+
     def startProcess(self):
-        pass
+
+        if self.getMatch3.get() == 0 and self.getMatch4.get() == 0 and self.getMatch5.get() == 0 and self.getMatchExtra.get() == 0:
+
+            self.getMatch3.set(1)
+            self.getMatch4.set(1)
+            self.getMatch5.set(1)
+            self.getMatchExtra.set(1)
+
+        self.readDataFile(True)
 
     def resetProcess(self):
-        pass
+
+        self.readDataFile(False)
 
     def checkExit(self):
         pass
