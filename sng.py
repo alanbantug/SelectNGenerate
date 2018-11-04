@@ -207,7 +207,7 @@ class Application(Frame):
         self.dataSelect = Listbox(self.dataDisplay, yscrollcommand=self.scroller.set, width=68, height=8)
 
         self.filter = Button(self.datTab, text="FILTER", style="B.TButton", command=self.startProcess)
-        self.reset = Button(self.datTab, text="RESET", style="B.TButton", command=self.readDataFile)
+        self.reset = Button(self.datTab, text="RESET", style="B.TButton", command=self.resetProcess)
 
         self.statusLabel = Label(self.datTab, text="Select source and target folders", style="G.TLabel")
         #self.reset = Button(self.datTab, text="RESET", style="B.TButton", width=30, command=self.resetProcess)
@@ -215,18 +215,18 @@ class Application(Frame):
 
         # Position widgets
 
-        self.datLabel.grid(row=0, column=0, padx=5, pady=5, sticky='NSEW')
-        self.datLabelA.grid(row=1, column=0, padx=5, pady=0, sticky='NSEW')
-        self.datLabelB.grid(row=2, column=0, padx=5, pady=0, sticky='NSEW')
-        self.datLabelC.grid(row=3, column=0, padx=5, pady=0, sticky='NSEW')
+        self.datLabel.grid(row=0, column=0, columnspan=2, padx=5, pady=5, sticky='NSEW')
+        self.datLabelA.grid(row=1, column=0, columnspan=2, padx=5, pady=0, sticky='NSEW')
+        self.datLabelB.grid(row=2, column=0, columnspan=2, padx=5, pady=0, sticky='NSEW')
+        self.datLabelC.grid(row=3, column=0, columnspan=2, padx=5, pady=0, sticky='NSEW')
 
-        self.h_sep_da.grid(row=4, column=0, padx=5, pady=5, sticky='NSEW')
+        self.h_sep_da.grid(row=4, column=0, columnspan=2, padx=5, pady=5, sticky='NSEW')
 
         self.dataSelect.grid(row=0, column=0, padx=(10,0), pady=(5,10), sticky='NSEW')
         self.scroller.grid(row=0, column=2, padx=(10,0), pady=(5,10), sticky='NSEW')
-        self.dataDisplay.grid(row=5, column=0, padx=5, pady=5, sticky='NSEW')
+        self.dataDisplay.grid(row=5, column=0, columnspan=2, padx=5, pady=5, sticky='NSEW')
 
-        self.h_sep_db.grid(row=9, column=0, padx=5, pady=5, sticky='NSEW')
+        self.h_sep_db.grid(row=9, column=0, columnspan=2, padx=5, pady=5, sticky='NSEW')
 
         self.numA.grid(row=0, column=0, padx=(10,0), pady=(5, 10), sticky='W')
         self.numB.grid(row=0, column=0, padx=(70,0), pady=(5, 10), sticky='W')
@@ -235,17 +235,18 @@ class Application(Frame):
         self.numE.grid(row=0, column=0, padx=(250,0), pady=(5, 10), sticky='W')
         self.extraLabel.grid(row=0, column=0, padx=(320,0), pady=(5, 10), sticky='W')
         self.numExtra.grid(row=0, column=0, padx=(380,0), pady=(5, 10), sticky='W')
-        self.numberEntry.grid(row=10, column=0, padx=5, pady=5, sticky='NSEW')
+        self.numberEntry.grid(row=10, column=0, columnspan=2, padx=5, pady=5, sticky='NSEW')
 
         self.match3.grid(row=0, column=0, padx=(10,0), pady=(5, 10), sticky='W')
         self.match4.grid(row=0, column=0, padx=(120,0), pady=(5, 10), sticky='W')
         self.match5.grid(row=0, column=0, padx=(230,0), pady=(5, 10), sticky='W')
         self.matchExtra.grid(row=0, column=0, padx=(340,0), pady=(5, 10), sticky='W')
-        self.filterOpt.grid(row=11, column=0, padx=5, pady=5, sticky='NSEW')
+        self.filterOpt.grid(row=11, column=0, columnspan=2, padx=5, pady=5, sticky='NSEW')
 
         # self.h_sep_dc.grid(row=12, column=0, padx=5, pady=5, sticky='NSEW')
 
         self.filter.grid(row=13, column=0, padx=5, pady=5, sticky='NSEW')
+        self.reset.grid(row=13, column=1, padx=5, pady=5, sticky='NSEW')
         #self.h_sep_dc.grid(row=14, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
 
         #self.reset.grid(row=15, column=0, padx=(10, 0), pady=5, sticky='W')
@@ -751,7 +752,6 @@ class Application(Frame):
         elif self.type.get() == 4:
             self.showPower()
 
-
     def showFantasy(self):
 
         ''' This function will show the Fantasy Five generate pane
@@ -1049,7 +1049,7 @@ class Application(Frame):
         self.dataSelect.delete(0, END)
 
         filename = self.dataFile
-        print(filename)
+
         dataFile = open(filename, "r")
 
         while True:
@@ -1170,6 +1170,11 @@ class Application(Frame):
         self.readDataFile(True)
 
     def resetProcess(self):
+
+        self.getMatch3.set(0)
+        self.getMatch4.set(0)
+        self.getMatch5.set(0)
+        self.getMatchExtra.set(0)
 
         self.readDataFile(False)
 
