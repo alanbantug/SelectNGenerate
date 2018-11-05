@@ -207,11 +207,9 @@ class Application(Frame):
         self.dataSelect = Listbox(self.dataDisplay, yscrollcommand=self.scroller.set, width=68, height=8)
 
         self.filter = Button(self.datTab, text="FILTER", style="B.TButton", command=self.startProcess)
-        self.reset = Button(self.datTab, text="RESET", style="B.TButton", command=self.resetProcess)
+        self.reset = Button(self.datTab, text="RESET", style="B.TButton", command=self.initReadProcess)
 
         self.statusLabel = Label(self.datTab, text="Select source and target folders", style="G.TLabel")
-        #self.reset = Button(self.datTab, text="RESET", style="B.TButton", width=30, command=self.resetProcess)
-        #self.exit = Button(self.datTab, text="EXIT", style="B.TButton", width=30, command=self.checkExit)
 
         # Position widgets
 
@@ -243,14 +241,8 @@ class Application(Frame):
         self.matchExtra.grid(row=0, column=0, padx=(340,0), pady=(5, 10), sticky='W')
         self.filterOpt.grid(row=11, column=0, columnspan=2, padx=5, pady=5, sticky='NSEW')
 
-        # self.h_sep_dc.grid(row=12, column=0, padx=5, pady=5, sticky='NSEW')
-
         self.filter.grid(row=13, column=0, padx=5, pady=5, sticky='NSEW')
         self.reset.grid(row=13, column=1, padx=5, pady=5, sticky='NSEW')
-        #self.h_sep_dc.grid(row=14, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
-
-        #self.reset.grid(row=15, column=0, padx=(10, 0), pady=5, sticky='W')
-        #self.exit.grid(row=15, column=0, padx=(245, 0), pady=5, sticky='W')
 
         # Create widgets for About tab
 
@@ -621,7 +613,7 @@ class Application(Frame):
                 if ltype == 4:
                     self.datLabel['text'] = "Powerball Data"
 
-                self.readDataFile()
+                self.initReadProcess()
 
             else:
                 # delete the contents of the display list, if any
@@ -632,6 +624,8 @@ class Application(Frame):
         else:
             # delete the contents of the display list, if any
             self.dataSelect.delete(0, END)
+
+            self.dataFile = "dummy.txt"
             self.sourceLabel["text"] = "None"
 
             # create instance of number select for MegaLotto and Powerball with no file inputs
@@ -640,7 +634,6 @@ class Application(Frame):
             self.useCount.set(len(self.numberSource.getSelectNumbers()))
 
             self.datLabel['text'] = "No Data File"
-
 
     def showStats(self):
 
@@ -1028,7 +1021,6 @@ class Application(Frame):
         y = (hs/2) - (wh/2)
 
         self.popProgress.geometry('%dx%d+%d+%d' % (ww, wh, x, y))
-
         self.progressBar.start()
 
     def hideProgress(self):
@@ -1050,7 +1042,10 @@ class Application(Frame):
 
         filename = self.dataFile
 
-        dataFile = open(filename, "r")
+        try:
+            dataFile = open(filename, "r")
+        except:
+            return
 
         while True:
 
@@ -1089,6 +1084,11 @@ class Application(Frame):
 
         search_set = [int(self.numberA.get()), int(self.numberB.get()), int(self.numberC.get()), int(self.numberD.get()), int(self.numberE.get())]
 
+        if len(d_line.split()) > 10:
+            search_extra = int(self.numberExtra.get())
+        else:
+            search_extra = 0
+
         match_ctr = 0
 
         for w in winner:
@@ -1096,33 +1096,12 @@ class Application(Frame):
                 if s == w:
                     match_ctr += 1
 
-        if match_ctr == 3 and self.getMatch3.get() == 1:
-            if len(d_line.split()) > 10:
-                search_extra = int(self.numberExtra.get())
-                if search_extra == winner_extra and self.getMatchExtra.get() == 1:
-                    self.formatOutput(d_line, match_ctr, 1)
+        if (match_ctr == 3 and self.getMatch3.get() == 1) or  (match_ctr == 4 and self.getMatch4.get() == 1) or (match_ctr == 5 and self.getMatch5.get() == 1):
+            if search_extra == winner_extra and self.getMatchExtra.get() == 1:
+                self.formatOutput(d_line, match_ctr, 1)
             else:
                 self.formatOutput(d_line, match_ctr, 0)
-
-        elif match_ctr == 4 and self.getMatch4.get() == 1:
-            if len(d_line.split()) > 10:
-                search_extra = int(self.numberExtra.get())
-                if search_extra == winner_extra and self.getMatchExtra.get() == 1:
-                    self.formatOutput(d_line, match_ctr, 1)
-            else:
-                self.formatOutput(d_line, match_ctr, 0)
-
-        elif match_ctr == 5 and self.getMatch5.get() == 1:
-            if len(d_line.split()) > 10:
-                search_extra = int(self.numberExtra.get())
-                if search_extra == winner_extra and self.getMatchExtra.get() == 1:
-                    self.exactMatch = True
-                    self.formatOutput(d_line, match_ctr, 1)
-            else:
-                self.formatOutput(d_line, match_ctr, 0)
-
-        if len(d_line.split()) > 10:
-            search_extra = int(self.numberExtra.get())
+        else:
             if search_extra == winner_extra and self.getMatchExtra.get() == 1:
                 self.formatOutput(d_line, match_ctr, 1)
 
@@ -1169,17 +1148,22 @@ class Application(Frame):
 
         self.readDataFile(True)
 
-    def resetProcess(self):
+    def initReadProcess(self):
 
         self.getMatch3.set(0)
         self.getMatch4.set(0)
         self.getMatch5.set(0)
         self.getMatchExtra.set(0)
 
+        self.numberA.set('')
+        self.numberB.set('')
+        self.numberC.set('')
+        self.numberD.set('')
+        self.numberE.set('')
+        self.numberExtra.set('')
+
         self.readDataFile(False)
 
-    def checkExit(self):
-        pass
 
 root = Tk()
 root.title("SELECT AND GENERATE")
