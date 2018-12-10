@@ -259,65 +259,6 @@ class numberSelect(object):
 
 		return numberSet
 
-	def checkIfWinner(self, combination, all_data = False):
-
-		''' FOR DELETION
-			This function will check if the combination passed to it was a recent winner
-		'''
-
-		winner_found = False
-
-		# determine which configuration file to use
-		if self.ltype == 1:
-			c_File = 'data\\cf.txt'
-		elif self.ltype == 2:
-			c_File = 'data\\cs.txt'
-
-		# open the configuration file
-		configFile = open(c_File, "r")
-
-		# read the configuration file then close it
-		configData = configFile.readline()
-		configFile.close()
-
-		dataFile = open(configData, "r")
-
-		d_count = 0
-
-		while True:
-
-			d_line = dataFile.readline()
-
-			if d_line == "":
-				break
-
-			d_list = d_line.split()
-
-			if len(d_list) > 0:
-				if d_list[0].isdigit():
-
-					d_count += 1
-
-					winner = []
-
-					for i in range(5, 10):
-						winner.append(int(d_list[i]))
-
-					# if all data is to be checked then there is no need to check the counter
-					if all_data:
-						pass
-					else:
-						# if the number of draws checked is more than 40, stop the checking
-						if d_count > 40:
-							break
-
-					if combination == winner:
-						winner_found = True
-						break
-
-		dataFile.close()
-
-		return winner_found
 
 	def randomSequentialAdd(self):
 
@@ -549,8 +490,8 @@ class numberSelect(object):
 
 		if self.ltype == 1:
 			self.reformatFantasy()
-		elif self.ltype == 2:
-			self.reformatSuper()
+		else:
+			self.reformatSuperMegaPower(self.ltype)
 
 	def reformatFantasy(self):
 
@@ -588,14 +529,21 @@ class numberSelect(object):
 		myInput.close()
 		myOutput.close()
 
-	def reformatSuper(self):
+	def reformatSuperMegaPower(self, ltype):
 
 		''' This function will count the occurences and get the top 25
 		'''
 
+		if ltype == 2:
+			dfile = 'data\\cs_data.csv'
+		elif ltype == 3:
+			dfile = 'data\\cm_data.csv'
+		else:
+			dfile = 'data\\cp_data.csv'
+
 		rec_ctr = 0
 
-		with open('data\\cs_data.csv', 'w') as myOutput:
+		with open(dfile, 'w') as myOutput:
 			with open(self.infile, 'r') as myInput:
 
 				for dataLine in myInput:
@@ -643,6 +591,12 @@ class numberSelect(object):
 
 		elif self.ltype == 2:
 			self.analyzeSuperFile()
+
+		elif self.ltype == 3:
+			self.analyzeMegaFile()
+
+		elif self.ltype == 4:
+			self.analyzePowerFile()
 
 	def analyzeFantasyFile(self):
 
@@ -725,6 +679,85 @@ class numberSelect(object):
 		plt.plot(superlotto_file['MS'][:100])
 		plt.savefig('data\\results.jpg')
 
+	def analyzeMegaFile(self):
+
+		# Load the csv_data file into a dataframe
+		megalotto_file = pd.read_csv('data\\cm_data.csv', header=None)
+		megalotto_file.columns = ['Draw', 'Date', 'A', 'B', 'C', 'D', 'E', 'M']
+
+		megalotto_file['MS'] = megalotto_file[['Draw', 'A', 'B', 'C', 'D', 'E']].apply(self.matchSelect, axis=1)
+
+		megalotto_select = copy.copy(megalotto_file[megalotto_file['MS'] == 5])
+		megalotto_select.to_csv('data\\cm_select.csv')
+
+		megalotto_select['GAP'] = megalotto_select[['Draw']].apply(self.getGaps, axis=1)
+		megalotto_select.to_csv('data\\cm_select.csv')
+
+		self.first_match = megalotto_select['Date'].min()
+		self.last_match = megalotto_select['Date'].max()
+		last_match_split = self.last_match.split('-')
+
+		date_a = datetime.datetime(int(last_match_split[0]), int(last_match_split[1]), int(last_match_split[2]))
+		curr_date  = datetime.datetime.now()
+
+		self.last_match_days = curr_date - date_a
+		self.last_match_draws = megalotto_file['Draw'].max() - megalotto_select['Draw'].max()
+		self.last_compare = megalotto_file['MS'].iloc[0]
+
+		self.exact_match = megalotto_select['MS'].count()
+		self.max_gap = megalotto_select['GAP'].max()
+		self.min_gap = megalotto_select[megalotto_select['GAP'] > 0]['GAP'].min()
+
+		# delete the results files
+		try:
+			os.remove('data\\results.jpg')
+		except:
+			pass
+
+		plt.figure(figsize=(4,3))
+		plt.plot(megalotto_file['MS'][:100])
+		plt.savefig('data\\results.jpg')
+
+
+	def analyzePowerFile(self):
+
+		# Load the csv_data file into a dataframe
+		powerball_file = pd.read_csv('data\\cm_data.csv', header=None)
+		powerball_file.columns = ['Draw', 'Date', 'A', 'B', 'C', 'D', 'E', 'M']
+
+		powerball_file['MS'] = powerball_file[['Draw', 'A', 'B', 'C', 'D', 'E']].apply(self.matchSelect, axis=1)
+
+		powerball_select = copy.copy(powerball_file[powerball_file['MS'] == 5])
+		powerball_select.to_csv('data\\cp_select.csv')
+
+		powerball_select['GAP'] = powerball_select[['Draw']].apply(self.getGaps, axis=1)
+		powerball_select.to_csv('data\\cp_select.csv')
+
+		self.first_match = powerball_select['Date'].min()
+		self.last_match = powerball_select['Date'].max()
+		last_match_split = self.last_match.split('-')
+
+		date_a = datetime.datetime(int(last_match_split[0]), int(last_match_split[1]), int(last_match_split[2]))
+		curr_date  = datetime.datetime.now()
+
+		self.last_match_days = curr_date - date_a
+		self.last_match_draws = powerball_file['Draw'].max() - powerball_select['Draw'].max()
+		self.last_compare = powerball_file['MS'].iloc[0]
+
+		self.exact_match = powerball_select['MS'].count()
+		self.max_gap = powerball_select['GAP'].max()
+		self.min_gap = powerball_select[powerball_select['GAP'] > 0]['GAP'].min()
+
+		# delete the results files
+		try:
+			os.remove('data\\results.jpg')
+		except:
+			pass
+
+		plt.figure(figsize=(4,3))
+		plt.plot(powerball_file['MS'][:100])
+		plt.savefig('data\\results.jpg')
+
 	def matchSelect(self, data):
 
 		draw, numa, numb, numc, numd, nume = data
@@ -748,6 +781,10 @@ class numberSelect(object):
 			csv_file = 'data\\cf_select.csv'
 		elif self.ltype == 2:
 			csv_file = 'data\\cs_select.csv'
+		elif self.ltype == 3:
+			csv_file = 'data\\cm_select.csv'
+		elif self.ltype == 4:
+			csv_file = 'data\\cp_select.csv'
 
 		date_diff = datetime.timedelta(0)
 		draw_diff = 0

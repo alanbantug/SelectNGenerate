@@ -402,7 +402,8 @@ class Application(Frame):
         ''' This function will initiate the thread for selecting numbers if a data file is provided
         '''
 
-        if self.sourceLabel["text"] == "None" and (self.type == 1 or self.type ==2):
+        #if self.sourceLabel["text"] == "None" and (self.type == 1 or self.type ==2):
+        if self.sourceLabel["text"] == "None":
             messagebox.showerror('Select Error', 'Please select data file before proceeding.')
         else:
 
@@ -497,6 +498,34 @@ class Application(Frame):
                 else:
                     messagebox.showerror('Invalid File', 'File selected is not a valid SuperLotto data file.')
 
+            elif self.type.get() == 3:
+
+                if "MEGA MILLIONS" in d_list:
+                    self.dataFile = filename
+                    self.sourceLabel["text"] = os.path.dirname(filename)[:20] + "..." + os.path.basename(filename)
+
+                    # Create an instance of number source each time a new file is selected
+                    self.numberSource = ns.numberSelect(self.dataFile, self.type.get())
+                    self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
+                    self.useCount.set(len(self.numberSource.getSelectNumbers()))
+
+                else:
+                    messagebox.showerror('Invalid File', 'File selected is not a valid SuperLotto data file.')
+
+            elif self.type.get() == 4:
+
+                if "POWERBALL" in d_list:
+                    self.dataFile = filename
+                    self.sourceLabel["text"] = os.path.dirname(filename)[:20] + "..." + os.path.basename(filename)
+
+                    # Create an instance of number source each time a new file is selected
+                    self.numberSource = ns.numberSelect(self.dataFile, self.type.get())
+                    self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
+                    self.useCount.set(len(self.numberSource.getSelectNumbers()))
+
+                else:
+                    messagebox.showerror('Invalid File', 'File selected is not a valid SuperLotto data file.')
+
             else:
                 self.displayDataFile()
 
@@ -514,6 +543,14 @@ class Application(Frame):
         elif self.type.get() == 2:
             baseUrl = 'http://www.calottery.com/play/draw-games/superlotto-plus/winning-numbers'
             dataFileName = "data\\SuperLottoPlus.txt"
+
+        elif self.type.get() == 3:
+            baseUrl = 'https://www.calottery.com/play/draw-games/mega-millions/winning-numbers'
+            dataFileName = "data\\MegaLotto.txt"
+
+        elif self.type.get() == 4:
+            baseUrl = 'https://www.calottery.com/play/draw-games/powerball/winning-numbers'
+            dataFileName = "data\\PowerBall.txt"
 
         else:
             messagebox.showerror("Download Error", "Download not available for game selected.")
@@ -556,11 +593,6 @@ class Application(Frame):
                 os.makedirs("data")
                 configFile = open("data\\cf.txt", "w")
 
-            configFile.write(self.dataFile)
-            configFile.close()
-
-            messagebox.showinfo("Source File Saved", "The data source file has been saved.")
-
         elif self.type.get() == 2:
             try:
                 configFile = open("data\\cs.txt", "w")
@@ -568,10 +600,24 @@ class Application(Frame):
                 os.makedirs("data")
                 configFile = open("data\\cs.txt", "w")
 
-            configFile.write(self.dataFile)
-            configFile.close()
+        elif self.type.get() == 3:
+            try:
+                configFile = open("data\\cm.txt", "w")
+            except:
+                os.makedirs("data")
+                configFile = open("data\\cm.txt", "w")
 
-            messagebox.showinfo("Source File Saved", "The data source file has been saved.")
+        elif self.type.get() == 4:
+            try:
+                configFile = open("data\\cp.txt", "w")
+            except:
+                os.makedirs("data")
+                configFile = open("data\\cp.txt", "w")
+
+        configFile.write(self.dataFile)
+        configFile.close()
+
+        messagebox.showinfo("Source File Saved", "The data source file has been saved.")
 
     def displayDataFile(self):
 
