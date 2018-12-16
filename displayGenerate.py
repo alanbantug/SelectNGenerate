@@ -8,9 +8,9 @@ import os
 
 class displayNumbers(object):
 
-    def __init__(self, container, ltype):
+    def __init__(self, container, ltype, config):
 
-
+        self.config = config
         self.ltype = ltype
 
         if self.ltype == 1:
@@ -231,23 +231,9 @@ class displayNumbers(object):
         ''' This function will check if the combination is a previous winner
         '''
 
-        if os.path.isfile("config.txt"):
-            pass
-        else:
-            return False
-
-        if self.ltype == 1:
-            configFile = open("data\\cf.txt", "r")
-        elif self.ltype == 2:
-            configFile = open("data\\cs.txt", "r")
-        else:
-            return False
-
-        filename = configFile.readline()
-        configFile.close()
+        filename = self.config.getSource(self.ltype)
 
         # If data file does not exist, return False
-
         if os.path.isfile(filename):
             pass
         else:

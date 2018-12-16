@@ -25,6 +25,7 @@ import displayGenerate as dg
 import datetime
 
 import dataDownload as dataD
+import configIO as cIO
 
 from PIL import Image, ImageTk
 
@@ -60,6 +61,9 @@ class Application(Frame):
 
         # Create main frame
         self.main_container.grid(column=0, row=0, sticky=(N,S,E,W))
+
+        # initialize the configuration file input-output class
+        self.config = cIO.configIO()
 
         # Set Label styles
         Style().configure("M.TLabel", font="Verdana 20 bold", anchor="center")
@@ -116,6 +120,7 @@ class Application(Frame):
 
         self.selSet = Button(self.selTab, text="SELECT", style="B.TButton", command=self.selectSet)
         self.chkSet = Button(self.selTab, text="CHECK", style="B.TButton", command=self.checkSet)
+        self.saveSet = Button(self.selTab, text="SAVE", style="B.TButton", command=self.saveSelSet)
         self.clearSet = Button(self.selTab, text="CLEAR", style="B.TButton", command=self.clearSelSet)
         self.showGen = Button(self.selTab, text="SHOW GENERATE PANEL", style="B.TButton", command=self.showGenerate)
 
@@ -131,47 +136,48 @@ class Application(Frame):
         self.typeD = Radiobutton(self.typeGroup, text="Powerball", style="B.TRadiobutton", command=self.displayDataFile, variable=self.type, value=4)
 
         self.sourceLabel = Label(self.selTab, text="None", style="SB.TLabel" )
-        self.selectSource = Button(self.selTab, text="SET DATA FILE", style="B.TButton", command=self.setDataFile)
+        self.selectSource = Button(self.selTab, text="SELECT FILE", style="B.TButton", command=self.setDataFile)
         self.downloadFile = Button(self.selTab, text="DOWNLOAD DATA", style="B.TButton", command=self.downloadThread)
         self.saveSource = Button(self.selTab, text="SAVE", style="B.TButton", command=self.saveDataSource)
 
         # Position widgets on the Select tab
 
-        self.selLabel.grid(row=0, column=0, columnspan=5, padx=5, pady=(10,10), sticky='NSEW')
-        self.selLabelA.grid(row=2, column=0, columnspan=5, padx=5, pady=(0, 5), sticky='NSEW')
+        self.selLabel.grid(row=0, column=0, columnspan=4, padx=5, pady=(10,10), sticky='NSEW')
+        self.selLabelA.grid(row=2, column=0, columnspan=4, padx=5, pady=(0, 5), sticky='NSEW')
 
-        self.h_sep_sa.grid(row=3, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+        self.h_sep_sa.grid(row=3, column=0, columnspan=4, padx=5, pady=5, sticky='NSEW')
 
         self.typeA.grid(row=0, column=0, padx=20, pady=(5, 10), sticky='W')
         self.typeB.grid(row=0, column=1, padx=20, pady=(5, 10), sticky='W')
         self.typeC.grid(row=0, column=2, padx=20, pady=(5, 10), sticky='W')
         self.typeD.grid(row=0, column=3, padx=20, pady=(5, 10), sticky='W')
-        self.typeGroup.grid(row=4, column=0, columnspan=5, padx=5, pady=(0,5), sticky='NSEW')
+        self.typeGroup.grid(row=4, column=0, columnspan=4, padx=5, pady=(0,5), sticky='NSEW')
 
         self.dSel[0].positionDisplays(0, 0)
-        self.numberGroup.grid(row=5, column=0, columnspan=4, padx=5, pady=5, sticky='NSEW')
+        self.numberGroup.grid(row=5, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
 
         self.selectionA.grid(row=0, column=0, padx=10, pady=5, sticky='W')
         self.selectionB.grid(row=1, column=0, padx=10, pady=5, sticky='W')
         self.selectionC.grid(row=2, column=0, padx=10, pady=5, sticky='W')
-        self.selectGroup.grid(row=5, column=4, columnspan=1, padx=5, pady=5, sticky='NSEW')
+        self.selectGroup.grid(row=5, column=3, columnspan=1, padx=5, pady=5, sticky='NSEW')
 
-        self.h_sep_sb.grid(row=7, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+        self.h_sep_sb.grid(row=7, column=0, columnspan=4, padx=5, pady=5, sticky='NSEW')
 
-        self.selSet.grid(row=8, column=0, columnspan=2, padx=5, pady=5, sticky='NSEW')
-        self.chkSet.grid(row=8, column=2, columnspan=2, padx=5, pady=5, sticky='NSEW')
-        self.clearSet.grid(row=8, column=4, columnspan=1, padx=5, pady=5, sticky='NSEW')
+        self.selSet.grid(row=8, column=0, columnspan=1, padx=5, pady=5, sticky='NSEW')
+        self.chkSet.grid(row=8, column=1, columnspan=1, padx=5, pady=5, sticky='NSEW')
+        self.saveSet.grid(row=8, column=2, columnspan=1, padx=5, pady=5, sticky='NSEW')
+        self.clearSet.grid(row=8, column=3, columnspan=1, padx=5, pady=5, sticky='NSEW')
 
-        self.h_sep_sc.grid(row=9, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+        self.h_sep_sc.grid(row=9, column=0, columnspan=4, padx=5, pady=5, sticky='NSEW')
 
-        self.sourceLabel.grid(row=12, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+        self.sourceLabel.grid(row=12, column=0, columnspan=4, padx=5, pady=5, sticky='NSEW')
         self.selectSource.grid(row=13, column=0, columnspan=2, padx=5, pady=5, sticky='NSEW')
         self.downloadFile.grid(row=13, column=2, columnspan=2, padx=5, pady=5, sticky='NSEW')
-        self.saveSource.grid(row=13, column=4, columnspan=1, padx=5, pady=5, sticky='NSEW')
+        #self.saveSource.grid(row=13, column=4, columnspan=1, padx=5, pady=5, sticky='NSEW')
 
-        self.h_sep_sd.grid(row=14, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
+        self.h_sep_sd.grid(row=14, column=0, columnspan=4, padx=5, pady=5, sticky='NSEW')
 
-        self.showGen.grid(row=15, column=0, columnspan=5, padx=5, pady=(2,5), sticky='NSEW')
+        self.showGen.grid(row=15, column=0, columnspan=4, padx=5, pady=(2,5), sticky='NSEW')
 
         # Create widgets for the Data tab
 
@@ -386,14 +392,14 @@ class Application(Frame):
         ''' This function will be executed when the user exits
         '''
 
-        if self.numberSource.compareSaveSelect():
+        if self.numberSource.compareSaveSelect(self.config):
             pass
         else:
 
             response = messagebox.askquestion('Select Numbers', 'Do you want to save the current selected numbers?')
 
             if response == 'yes':
-                self.numberSource.writeOutSelected()
+                self.numberSource.writeOutSelected(self.config)
 
         root.destroy()
 
@@ -416,9 +422,6 @@ class Application(Frame):
         '''
 
         self.dSel[0].changeStyle(self.numberSource.randomSequentialAdd())
-        #self.dSel[0].changeStyle(self.numberSource.getFromRecent(25))
-        #self.dSel[0].changeStyle(self.numberSource.setSelectNumbers(25))
-
 
     def checkSet(self):
 
@@ -442,6 +445,14 @@ class Application(Frame):
         self.hideProgress()
         self.showStats()
 
+    def saveSelSet(self):
+
+        ''' This function will call the methods to save the selected numbers to the JSON file
+        '''
+
+        self.numberSource.writeOutSelected(self.config)
+
+        messagebox.showinfo("Selection saved", "Your selection has been saved.")
 
     def clearSelSet(self):
 
@@ -451,7 +462,7 @@ class Application(Frame):
         if self.sourceLabel["text"] == "None":
             messagebox.showerror('Clear Error', 'Please select data file before proceeding.')
         else:
-            self.dSel[0].changeStyle(self.numberSource.clearSelectNumbers())
+            self.dSel[0].changeStyle(self.numberSource.clearSelectNumbers(self.config))
 
 
     def setDataFile(self):
@@ -477,7 +488,7 @@ class Application(Frame):
                     self.sourceLabel["text"] = os.path.dirname(filename)[:20] + "..." + os.path.basename(filename)
 
                     # Create an instance of number source each time a new file is selected
-                    self.numberSource = ns.numberSelect(self.dataFile, self.type.get())
+                    self.numberSource = ns.numberSelect(self.config, self.dataFile, self.type.get())
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
                     self.useCount.set(len(self.numberSource.getSelectNumbers()))
 
@@ -491,7 +502,7 @@ class Application(Frame):
                     self.sourceLabel["text"] = os.path.dirname(filename)[:20] + "..." + os.path.basename(filename)
 
                     # Create an instance of number source each time a new file is selected
-                    self.numberSource = ns.numberSelect(self.dataFile, self.type.get())
+                    self.numberSource = ns.numberSelect(self.config, self.dataFile, self.type.get())
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
                     self.useCount.set(len(self.numberSource.getSelectNumbers()))
 
@@ -505,7 +516,7 @@ class Application(Frame):
                     self.sourceLabel["text"] = os.path.dirname(filename)[:20] + "..." + os.path.basename(filename)
 
                     # Create an instance of number source each time a new file is selected
-                    self.numberSource = ns.numberSelect(self.dataFile, self.type.get())
+                    self.numberSource = ns.numberSelect(self.config, self.dataFile, self.type.get())
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
                     self.useCount.set(len(self.numberSource.getSelectNumbers()))
 
@@ -519,7 +530,7 @@ class Application(Frame):
                     self.sourceLabel["text"] = os.path.dirname(filename)[:20] + "..." + os.path.basename(filename)
 
                     # Create an instance of number source each time a new file is selected
-                    self.numberSource = ns.numberSelect(self.dataFile, self.type.get())
+                    self.numberSource = ns.numberSelect(self.config, self.dataFile, self.type.get())
                     self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
                     self.useCount.set(len(self.numberSource.getSelectNumbers()))
 
@@ -528,6 +539,10 @@ class Application(Frame):
 
             else:
                 self.displayDataFile()
+
+            # copy the data source to the JSON config file
+            self.config.updateSource(self.type.get(), self.dataFile)
+
 
     def downloadThread(self):
 
@@ -573,9 +588,12 @@ class Application(Frame):
         self.dataFile = fileNamePath
         self.sourceLabel["text"] = fileNamePath[:20] + '...' + os.path.basename(fileNamePath)
 
-        self.numberSource = ns.numberSelect(self.dataFile, self.type.get())
+        self.numberSource = ns.numberSelect(self.config, self.dataFile, self.type.get())
         self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
         self.useCount.set(len(self.numberSource.getSelectNumbers()))
+
+        # copy the data source to the JSON config file
+        self.config.updateSource(self.type.get(), fileNamePath)
 
         messagebox.showinfo("Download complete", "The latest data file for the selected game hase been downloaded.")
 
@@ -586,6 +604,10 @@ class Application(Frame):
         if response == 'no':
             return
 
+        # copy the data source to the JSON config file
+        self.config.updateSource(self.type.get(), self.dataFile)
+
+        '''
         if self.type.get() == 1:
             try:
                 configFile = open("data\\cf.txt", "w")
@@ -617,6 +639,7 @@ class Application(Frame):
         configFile.write(self.dataFile)
         configFile.close()
 
+        '''
         messagebox.showinfo("Source File Saved", "The data source file has been saved.")
 
     def displayDataFile(self):
@@ -624,6 +647,35 @@ class Application(Frame):
         ''' This function will display the data file name
         '''
 
+        filename = self.config.getSource(self.type.get())
+
+        if os.path.exists(filename):
+
+            self.dataFile = filename
+            self.sourceLabel["text"] = os.path.dirname(filename)[:40] + '...' + os.path.basename(filename)
+
+            self.numberSource = ns.numberSelect(self.config, self.dataFile, self.type.get())
+            self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
+            self.useCount.set(len(self.numberSource.getSelectNumbers()))
+
+            if self.type.get() == 1:
+                self.datLabel['text'] = "Fantasy Five Data"
+            if self.type.get() == 2:
+                self.datLabel['text'] = "SuperLotto Data"
+            if self.type.get() == 3:
+                self.datLabel['text'] = "MegaLotto Data"
+            if self.type.get() == 4:
+                self.datLabel['text'] = "Powerball Data"
+
+            self.initReadProcess()
+
+        else:
+            # delete the contents of the display list, if any
+            self.dataSelect.delete(0, END)
+            self.sourceLabel["text"] = "None"
+            self.datLabel['text'] = "No Data File"
+
+        '''
         ltype = self.type.get()
 
         if ltype == 1:
@@ -680,6 +732,7 @@ class Application(Frame):
             self.useCount.set(len(self.numberSource.getSelectNumbers()))
 
             self.datLabel['text'] = "No Data File"
+        '''
 
     def showStats(self):
 
@@ -810,7 +863,7 @@ class Application(Frame):
         self.dGen = []
 
         for i in range(5):
-            self.dGen.append(dg.displayNumbers(self.popGen, self.type.get()))
+            self.dGen.append(dg.displayNumbers(self.popGen, self.type.get(), self.config))
 
         self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
         self.genOdd = Button(self.popGen, text="ALL ODD", style="B.TButton", command=self.genOddSet)
@@ -869,7 +922,7 @@ class Application(Frame):
         self.dGen = []
 
         for i in range(5):
-            self.dGen.append(dg.displayNumbers(self.popGen, self.type.get()))
+            self.dGen.append(dg.displayNumbers(self.popGen, self.type.get(), self.config))
 
         self.unused = Label(self.popGen, text="", style="B.TLabel" )
         self.topLabel = Label(self.popGen, text="Super Lotto", style="B.TLabel" )
@@ -930,7 +983,7 @@ class Application(Frame):
         self.dGen = []
 
         for i in range(5):
-            self.dGen.append(dg.displayNumbers(self.popGen, self.type.get()))
+            self.dGen.append(dg.displayNumbers(self.popGen, self.type.get(), self.config))
 
         self.unused = Label(self.popGen, text="", style="B.TLabel" )
         self.topLabel = Label(self.popGen, text="Super Lotto", style="B.TLabel" )
@@ -991,7 +1044,7 @@ class Application(Frame):
         self.dGen = []
 
         for i in range(5):
-            self.dGen.append(dg.displayNumbers(self.popGen, self.type.get()))
+            self.dGen.append(dg.displayNumbers(self.popGen, self.type.get(), self.config))
 
         self.unused = Label(self.popGen, text="", style="B.TLabel" )
         self.topLabel = Label(self.popGen, text="Super Lotto", style="B.TLabel" )
@@ -1216,7 +1269,7 @@ root.title("SELECT AND GENERATE")
 
 # Set size
 
-wh = 550
+wh = 555
 ww = 480
 
 #root.resizable(height=False, width=False)

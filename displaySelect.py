@@ -28,7 +28,8 @@ class displayNumbers(object):
         for i in range(self.topLimit):
             self.num[i]["style"] = "W.TLabel"
 
-        if len(topSelect) == self.topLimit:
+        # if the list is empty, do not change the styles
+        if len(topSelect) == 0:
             pass
         else:
 

@@ -22,7 +22,7 @@ import itertools
 
 class numberSelect(object):
 
-	def __init__(self, infile, ltype):
+	def __init__(self, config, infile, ltype):
 
 		self.infile = infile
 		self.ltype = ltype
@@ -48,7 +48,7 @@ class numberSelect(object):
 			self.dataHash, self.latestDraw = self.hashDataFile()
 			self.reformatFile()
 
-		self.loadSelectNumbers()
+		self.loadSelectNumbers(config)
 
 	def hashDataFile(self):
 
@@ -112,40 +112,13 @@ class numberSelect(object):
 
 		return out_list, ext_list
 
-	def loadSelectNumbers(self):
+	def loadSelectNumbers(self, config):
 
 		''' Get the select numbers if a selection was made. If not, default the list to 1 - 20
 		'''
 
-		self.selectedNumbers = []
+		self.selectedNumbers = config.getSelect(self.ltype)
 		self.otherNumbers = []
-
-		if self.ltype == 1:
-			data_file = "data\\sf.txt"
-
-		elif self.ltype == 2:
-			data_file = "data\\ss.txt"
-
-		elif self.ltype == 3:
-			data_file = "data\\sm.txt"
-
-		elif self.ltype == 4:
-			data_file = "data\\sp.txt"
-
-		else:
-			data_file = "data\\dummy.txt"
-			self.selectedNumbers = self.createList(self.topLimit)
-
-		if os.path.exists(data_file):
-
-			with open(data_file, 'r') as selectFile:
-
-				for data in selectFile:
-
-					numb_list = data.split(' - ')
-
-					for numb in numb_list:
-						self.selectedNumbers.append(int(numb))
 
 		for i in range(1, self.topLimit + 1):
 			if i in self.selectedNumbers:
@@ -281,207 +254,24 @@ class numberSelect(object):
 
 		return self.selectedNumbers
 
-	def avoidRecent(self, select_count=20):
+	def writeOutSelected(self, config):
 
-		''' FOR DELETION
-			This function will avoid recent winning numbers until the remaining numbers matches the count needed
-		'''
-
-		self.selectedNumbers = self.allNumbers
-		self.otherNumbers = []
-
-		if self.ltype == 1:
-			sourceFile = 'data\\cf_data.csv'
-		elif self.ltype == 2:
-			sourceFile = 'data\\cs_data.csv'
-
-		with open(sourceFile, 'r') as i_file:
-
-			data_count = 0
-
-			for data_line in i_file:
-
-				data_count += 1
-				fields = data_line.split(',')
-
-				# remove the new line character at the end of the last field
-				fields[-1] = fields[-1][:2]
-
-				numbers = list(map(int, fields[2:]))
-
-				for num in numbers:
-
-					if num in self.selectedNumbers:
-						self.selectedNumbers.pop(numbers.index(num))
-						self.otherNumbers.append(num)
-
-					# need to check if the count is satisfied after each pop
-					if len(self.selectedNumbers) == select_count:
-						break
-
-				if len(self.selectedNumbers) == select_count:
-					break
-
-		print(data_count)
-		return self.selectedNumbers
-
-	def getFromRecent(self, select_count=20):
-
-		''' FOR DELETION
-			This function will create a list of numbers from the recent draws
-		'''
-
-		self.selectedNumbers = []
-		self.otherNumbers = []
-
-		if self.ltype == 1:
-			sourceFile = 'data\\cf_data.csv'
-		elif self.ltype == 2:
-			sourceFile = 'data\\cs_data.csv'
-
-		with open(sourceFile, 'r') as i_file:
-
-			skipped = 0
-
-			for data_line in i_file:
-
-				if skipped < 25:
-					skipped += 1
-					continue
-
-				fields = data_line.split(',')
-
-				# remove the new line character at the end of the last field
-				fields[-1] = fields[-1][:2]
-
-				numbers = list(map(int, fields[2:]))
-
-				for i in range(1):
-					# randomly select a number from the data numbers
-					remove = np.random.choice(numbers)
-
-					# remove the selected number
-					numbers.pop(numbers.index(remove))
-
-				# load the remaining numbers
-				self.selectedNumbers = self.loadSelected(self.selectedNumbers, numbers, select_count)
-
-				if len(self.selectedNumbers) == select_count:
-					break
-
-		for i in range(1, self.topLimit + 1):
-			if i in self.selectedNumbers:
-				pass
-			else:
-				self.otherNumbers.append(i)
-
-		return self.selectedNumbers
-
-	def loadSelected(self, selected, numbers, limit):
-
-		''' This function will load the numbers into the selected list
-		'''
-
-		for number in numbers:
-
-			if number in selected:
-				pass
-			else:
-
-				if len(selected) < limit:
-					selected.append(number)
-				else:
-					break
-
-		return selected
+		config.updateSelect(self.ltype, self.selectedNumbers)
 
 
-	def setSelectNumbers(self, select_count=20):
-
-		''' FOR DELETION
-			This function will select numbers randomly
-		'''
-
-		self.selectedNumbers = []
-		self.otherNumbers = []
-
-		limit = math.floor(select_count / 2)
-
-		# get even numbers
-		while (True):
-
-			selected = random.choice(self.allNumbers)
-
-			if selected in self.selectedNumbers:
-				pass
-			else:
-				if selected % 2 == 0:
-					self.selectedNumbers.append(selected)
-
-			if len(self.selectedNumbers) == limit:
-				break
-
-		# get odd numbers
-		while (True):
-
-			selected = random.choice(self.allNumbers)
-
-			if selected in self.selectedNumbers:
-				pass
-			else:
-				if selected % 2 == 1:
-					self.selectedNumbers.append(selected)
-
-			if len(self.selectedNumbers) == select_count:
-				break
-
-		for i in range(1, self.topLimit + 1):
-			if i in self.selectedNumbers:
-				pass
-			else:
-				self.otherNumbers.append(i)
-
-		return self.selectedNumbers
-
-	def writeOutSelected(self):
-
-		if self.ltype == 1:
-			selectFile = open("data\\sf.txt", "w")
-		elif self.ltype == 2:
-			selectFile = open("data\\ss.txt", "w")
-		elif self.ltype == 3:
-			selectFile = open("data\\sm.txt", "w")
-		elif self.ltype == 4:
-			selectFile = open("data\\sp.txt", "w")
-
-		sel_num = []
-
-		for i in range(25):
-			sel_num.append("{0:02}".format(self.selectedNumbers[i]))
-
-		record = " - ".join(sel_num)
-
-		selectFile.write(record)
-		selectFile.write("\n")
-		selectFile.close()
-
-	def clearSelectNumbers(self):
+	def clearSelectNumbers(self, config):
 
 		''' This function will select all possible numbers as selected
 		'''
 
-		self.selectedNumbers = self.createList(self.topLimit)
+		config.updateSelect(self.ltype, [])
+
+		self.selectedNumbers = []
 		self.otherNumbers = []
 
-		if self.ltype == 1:
-			if os.path.exists("sf.txt"):
-				os.remove("sf.txt")
-		elif self.ltype == 2:
-			if os.path.exists("ss.txt"):
-				os.remove("ss.txt")
+		#self.selectedNumbers, self.otherNumbers = self.createList(self.topLimit)
 
 		return self.selectedNumbers
-
 
 	def reformatFile(self):
 
@@ -601,6 +391,7 @@ class numberSelect(object):
 	def analyzeFantasyFile(self):
 
 		# Load the csv_data file into a dataframe
+		
 		fantasy_file = pd.read_csv('data\\cf_data.csv', header=None)
 		fantasy_file.columns = ['Draw', 'Date', 'A', 'B', 'C', 'D', 'E']
 
@@ -830,31 +621,13 @@ class numberSelect(object):
 
 		return self.selectedNumbers
 
-	def compareSaveSelect(self):
+	def compareSaveSelect(self, config):
 
 		''' This function will compare the selected numbers currently in storage to the selected numbers saved.
 			If it is a match, then return False
 		'''
 
-		self.savedNumbers = []
-
-		if self.ltype == 1:
-			select_file = "data\\sf.txt"
-		elif self.ltype == 2:
-			select_file = "data\\ss.txt"
-		elif self.ltype == 3:
-			select_file = "data\\sm.txt"
-		elif self.ltype == 4:
-			select_file = "data\\sp.txt"
-
-		with open(select_file, 'r') as selectFile:
-
-			for data in selectFile:
-
-				numb_list = data.split(' - ')
-
-		for numb in numb_list:
-			self.savedNumbers.append(int(numb))
+		self.savedNumbers = config.getSelect(self.ltype)
 
 		return self.savedNumbers == self.selectedNumbers
 
