@@ -607,39 +607,6 @@ class Application(Frame):
         # copy the data source to the JSON config file
         self.config.updateSource(self.type.get(), self.dataFile)
 
-        '''
-        if self.type.get() == 1:
-            try:
-                configFile = open("data\\cf.txt", "w")
-            except:
-                os.makedirs("data")
-                configFile = open("data\\cf.txt", "w")
-
-        elif self.type.get() == 2:
-            try:
-                configFile = open("data\\cs.txt", "w")
-            except:
-                os.makedirs("data")
-                configFile = open("data\\cs.txt", "w")
-
-        elif self.type.get() == 3:
-            try:
-                configFile = open("data\\cm.txt", "w")
-            except:
-                os.makedirs("data")
-                configFile = open("data\\cm.txt", "w")
-
-        elif self.type.get() == 4:
-            try:
-                configFile = open("data\\cp.txt", "w")
-            except:
-                os.makedirs("data")
-                configFile = open("data\\cp.txt", "w")
-
-        configFile.write(self.dataFile)
-        configFile.close()
-
-        '''
         messagebox.showinfo("Source File Saved", "The data source file has been saved.")
 
     def displayDataFile(self):
@@ -674,65 +641,6 @@ class Application(Frame):
             self.dataSelect.delete(0, END)
             self.sourceLabel["text"] = "None"
             self.datLabel['text'] = "No Data File"
-
-        '''
-        ltype = self.type.get()
-
-        if ltype == 1:
-            config_file = "data\\cf.txt"
-        elif ltype == 2:
-            config_file = "data\\cs.txt"
-        elif ltype == 3:
-            config_file = "data\\cm.txt"
-        elif ltype == 4:
-            config_file = "data\\cp.txt"
-
-        if os.path.exists(config_file):
-
-            configFile = open(config_file, "r")
-
-            filename = configFile.readline()
-
-            if os.path.exists(filename):
-
-                self.dataFile = filename
-                self.sourceLabel["text"] = os.path.dirname(filename)[:20] + "..." + os.path.basename(filename)
-
-                self.numberSource = ns.numberSelect(self.dataFile, ltype)
-                self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
-                self.useCount.set(len(self.numberSource.getSelectNumbers()))
-
-                if ltype == 1:
-                    self.datLabel['text'] = "Fantasy Five Data"
-                if ltype == 2:
-                    self.datLabel['text'] = "SuperLotto Data"
-                if ltype == 3:
-                    self.datLabel['text'] = "MegaLotto Data"
-                if ltype == 4:
-                    self.datLabel['text'] = "Powerball Data"
-
-                self.initReadProcess()
-
-            else:
-                # delete the contents of the display list, if any
-                self.dataSelect.delete(0, END)
-                self.sourceLabel["text"] = "None"
-
-            configFile.close()
-        else:
-            # delete the contents of the display list, if any
-            self.dataSelect.delete(0, END)
-
-            self.dataFile = "dummy.txt"
-            self.sourceLabel["text"] = "None"
-
-            # create instance of number select for MegaLotto and Powerball with no file inputs
-            self.numberSource = ns.numberSelect(None, ltype)
-            self.dSel[0].changeStyle(self.numberSource.getSelectNumbers())
-            self.useCount.set(len(self.numberSource.getSelectNumbers()))
-
-            self.datLabel['text'] = "No Data File"
-        '''
 
     def showStats(self):
 

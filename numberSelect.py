@@ -391,7 +391,7 @@ class numberSelect(object):
 	def analyzeFantasyFile(self):
 
 		# Load the csv_data file into a dataframe
-		
+
 		fantasy_file = pd.read_csv('data\\cf_data.csv', header=None)
 		fantasy_file.columns = ['Draw', 'Date', 'A', 'B', 'C', 'D', 'E']
 
@@ -428,8 +428,6 @@ class numberSelect(object):
 		plt.figure(figsize=(4,3))
 		plt.plot(fantasy_file['MS'][:100])
 		plt.savefig('data\\results.jpg')
-
-		#return self.last_match, self.first_match, self.last_match_days.days, self.max_gap, self.min_gap, self.exact_match
 
 	def analyzeSuperFile(self):
 
