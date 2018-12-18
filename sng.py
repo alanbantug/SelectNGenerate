@@ -595,6 +595,8 @@ class Application(Frame):
         # copy the data source to the JSON config file
         self.config.updateSource(self.type.get(), fileNamePath)
 
+        self.readDataFile(False)
+
         messagebox.showinfo("Download complete", "The latest data file for the selected game hase been downloaded.")
 
     def saveDataSource(self):
