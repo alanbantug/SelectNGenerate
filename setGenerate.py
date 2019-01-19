@@ -225,28 +225,6 @@ class getCombinations(object):
 
 		return n_set
 
-	def checkQualified(self, n_set, selection):
-
-		''' FOR DELETION 
-		'''
-
-		qual = True
-
-		# Allow only one pair of consecutive numbers
-		if self.checkConsecutives(n_set) == 0:
-			pass
-		else:
-			qual = False
-
-		# The code below was removed as it is a duplicate of the
-		# Make sure that numbers are not repeated
-		# if self.checkUnique(n_set, selection):
-		#	pass
-		# else:
-		#	qual = False
-
-		return qual
-
 	def checkConsecutives(self, n_list):
 
 		# This function checks if a combination has consecutive numbers. If there are consecutive numbers, return 1
