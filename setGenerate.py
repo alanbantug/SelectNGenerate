@@ -73,68 +73,6 @@ class getCombinations(object):
 		self.comboCount = math.factorial(self.numberCount) / (math.factorial(self.numberCount - self.divCount) * math.factorial(self.divCount))
 		self.duplCount = 25 - self.numberCount
 
-	def randomSelect_old(self, usage):
-
-		''' This function will generate the combinations using itertools instead of manually going thru
-		    the combinations which is done in the old function. The generation will be limited to 100 loops.
-		'''
-
-		selection = []
-
-		loop_count = 0
-		comb_count = 0
-
-		# initialize the generator
-		n_set = self.initIterator(usage)
-
-		while True:
-
-			try:
-				num_list = sorted(next(n_set))
-
-				# check if the generated combination satisfies the criteria
-				if self.checkQualified(num_list, selection):
-
-					if usage == 25:
-						pass
-
-					elif usage == 20:
-
-						# get one more number from the unselected numbers to complete 5 numbers
-						num_list = self.getMore(num_list, selection, 1)
-						num_list = sorted(num_list)
-
-					else:
-						# get two more number from the unselected numbers to complete 5 numbers
-						num_list = self.getMore(num_list, selection, 2)
-						num_list = sorted(num_list)
-
-					# select a Super number if the lotto game selected is SuperLotto
-					if self.ltype == 2 or self.ltype == 3 or self.ltype == 4:
-						num_list.append(self.extNumbers[random.randint(0, self.extlimit - 1)])
-
-					selection.append(num_list)
-					comb_count += 1
-
-				if comb_count == 5:
-					break
-
-			except:
-				loop_count += 1
-
-				# limit the count to 100 loops
-				if loop_count < 100:
-
-					n_set = self.initIterator(usage)
-					selection = []
-					comb_count = 0
-
-				else:
-					print(loop_count)
-					break
-
-		return selection
-
 	def randomSelect(self, usage):
 
 		''' This function will generate the combinations using itertools instead of manually going thru
@@ -225,28 +163,6 @@ class getCombinations(object):
 
 		return n_set
 
-	def checkQualified(self, n_set, selection):
-
-		''' FOR DELETION
-		'''
-
-		qual = True
-
-		# Allow only one pair of consecutive numbers
-		if self.checkConsecutives(n_set) == 0:
-			pass
-		else:
-			qual = False
-
-		# The code below was removed as it is a duplicate of the
-		# Make sure that numbers are not repeated
-		# if self.checkUnique(n_set, selection):
-		#	pass
-		# else:
-		#	qual = False
-
-		return qual
-
 	def checkConsecutives(self, n_list):
 
 		# This function checks if a combination has consecutive numbers. If there are consecutive numbers, return 1
@@ -258,21 +174,6 @@ class getCombinations(object):
 				conctr += 1
 
 		return True if conctr == 0 else False
-
-	def checkUnique(self, n_set, selection):
-
-		''' FOR DELETION
-		'''
-		# This function checks the numbers in the generated combinations exist is the selected combinations
-
-		unique = True
-
-		for n in n_set:
-			for sel in selection:
-				if n in sel:
-					unique = False
-
-		return unique
 
 	def getMore(self, n_set, selection, count):
 
