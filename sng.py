@@ -384,6 +384,8 @@ class Application(Frame):
         if len(selection) == 5:
             for i in range(5):
                 self.dGen[i].changeTopStyle(selection[i])
+
+            self.saveGenerated(selection)
         else:
             messagebox.showerror('Generate Error', 'Generation taking too long. Retry.')
 
@@ -444,6 +446,14 @@ class Application(Frame):
         self.numberSource.analyzeData()
         self.hideProgress()
         self.showStats()
+
+    def saveGenerated(self, selection):
+
+        ''' This function will call the method to save the last generated set of combinations
+        '''
+
+        self.numberSource.writeGenerated(self.config, selection)
+
 
     def saveSelSet(self):
 
@@ -753,6 +763,12 @@ class Application(Frame):
             self.showMega()
         elif self.type.get() == 4:
             self.showPower()
+
+        lastset = self.config.getLastSet(self.type.get())
+
+        if len(lastset) == 5:
+            for i in range(5):
+                self.dGen[i].changeTopStyle(lastset[i])
 
     def showFantasy(self):
 

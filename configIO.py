@@ -85,7 +85,7 @@ class configIO(object):
 
         data_dict = self.readConfigFile()
 
-        return data_dict[select_key]['Last Set']
+        return data_dict[select_key]['LastSet']
 
     def updateSelect(self, ltype, select):
 

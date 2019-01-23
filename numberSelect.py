@@ -258,6 +258,9 @@ class numberSelect(object):
 
 		config.updateSelect(self.ltype, self.selectedNumbers)
 
+	def writeGenerated(self, config, selection):
+
+		config.updateLastSet(self.ltype, selection)
 
 	def clearSelectNumbers(self, config):
 
