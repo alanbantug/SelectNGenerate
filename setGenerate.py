@@ -101,7 +101,7 @@ class getCombinations(object):
 				if sim_count == 0:
 
 					# check if the generated combination satisfies the criteria
-					if self.checkConsecutives(num_list):
+					if self.checkConsecutives(num_list) and self.checkSpread(num_list):
 
 						if usage == 25:
 							pass
@@ -162,6 +162,10 @@ class getCombinations(object):
 			n_set = itertools.combinations(num_chk, 3)
 
 		return n_set
+
+	def checkSpread(self, n_list):
+
+		return True if n_list[4] - n_list[0] > 12 else False
 
 	def checkConsecutives(self, n_list):
 
