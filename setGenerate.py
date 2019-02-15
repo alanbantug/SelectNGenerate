@@ -154,6 +154,8 @@ class getCombinations(object):
 
 		num_chk = copy.copy(self.selectedNumbers)
 
+		random.shuffle(num_chk)
+
 		if usage == 25:
 			n_set = itertools.combinations(num_chk, 5)
 		elif usage == 20:
