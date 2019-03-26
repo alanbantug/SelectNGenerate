@@ -124,10 +124,10 @@ class Application(Frame):
         self.clearSet = Button(self.selTab, text="CLEAR", style="B.TButton", command=self.clearSelSet)
         self.showGen = Button(self.selTab, text="SHOW GENERATE PANEL", style="B.TButton", command=self.showGenerate)
 
-        self.selectGroup = LabelFrame(self.selTab, text=' Use Counts ', style="O.TLabelframe")
-        self.selectionA = Radiobutton(self.selectGroup, text="15", style="B.TRadiobutton", variable=self.useCount, value=15)
-        self.selectionB = Radiobutton(self.selectGroup, text="20", style="B.TRadiobutton", variable=self.useCount, value=20)
-        self.selectionC = Radiobutton(self.selectGroup, text="25", style="B.TRadiobutton", variable=self.useCount, value=25)
+        #self.selectGroup = LabelFrame(self.selTab, text=' Use Counts ', style="O.TLabelframe")
+        #self.selectionA = Radiobutton(self.selectGroup, text="15", style="B.TRadiobutton", variable=self.useCount, value=15)
+        #self.selectionB = Radiobutton(self.selectGroup, text="20", style="B.TRadiobutton", variable=self.useCount, value=20)
+        #self.selectionC = Radiobutton(self.selectGroup, text="25", style="B.TRadiobutton", variable=self.useCount, value=25)
 
         self.typeGroup = LabelFrame(self.selTab, text=' Game Selection ', style="O.TLabelframe")
         self.typeA = Radiobutton(self.typeGroup, text="Fantasy", style="B.TRadiobutton", command=self.displayDataFile, variable=self.type, value=1)
@@ -154,12 +154,12 @@ class Application(Frame):
         self.typeGroup.grid(row=4, column=0, columnspan=4, padx=5, pady=(0,5), sticky='NSEW')
 
         self.dSel[0].positionDisplays(0, 0)
-        self.numberGroup.grid(row=5, column=0, columnspan=3, padx=5, pady=5, sticky='NSEW')
+        self.numberGroup.grid(row=5, column=0, columnspan=4, padx=5, pady=5, sticky='NSEW')
 
-        self.selectionA.grid(row=0, column=0, padx=10, pady=5, sticky='W')
-        self.selectionB.grid(row=1, column=0, padx=10, pady=5, sticky='W')
-        self.selectionC.grid(row=2, column=0, padx=10, pady=5, sticky='W')
-        self.selectGroup.grid(row=5, column=3, columnspan=1, padx=5, pady=5, sticky='NSEW')
+        #self.selectionA.grid(row=0, column=0, padx=10, pady=5, sticky='W')
+        #self.selectionB.grid(row=1, column=0, padx=10, pady=5, sticky='W')
+        #self.selectionC.grid(row=2, column=0, padx=10, pady=5, sticky='W')
+        #self.selectGroup.grid(row=5, column=3, columnspan=1, padx=5, pady=5, sticky='NSEW')
 
         self.h_sep_sb.grid(row=7, column=0, columnspan=4, padx=5, pady=5, sticky='NSEW')
 
@@ -210,7 +210,7 @@ class Application(Frame):
 
         self.dataDisplay = LabelFrame(self.datTab, text=' Winner Matches ', style="O.TLabelframe")
         self.scroller = Scrollbar(self.dataDisplay, orient=VERTICAL)
-        self.dataSelect = Listbox(self.dataDisplay, yscrollcommand=self.scroller.set, width=68, height=8)
+        self.dataSelect = Listbox(self.dataDisplay, yscrollcommand=self.scroller.set, width=68, height=7)
 
         self.filter = Button(self.datTab, text="FILTER", style="B.TButton", command=self.startProcess)
         self.reset = Button(self.datTab, text="RESET", style="B.TButton", command=self.initReadProcess)
@@ -372,6 +372,11 @@ class Application(Frame):
 
         self.showProgress()
 
+        if self.type.get() == 1:
+            self.useCount.set(25)
+        else:
+            self.useCount.set(25)
+
         self.sGen = sg.getCombinations(self.numberSource.getSelectNumbers(), self.type.get(), self.useCount.get())
         selection = self.sGen.randomSelect(self.useCount.get())
 
@@ -424,6 +429,10 @@ class Application(Frame):
         '''
 
         self.dSel[0].changeStyle(self.numberSource.randomSequentialAdd())
+        #self.dSel[0].changeStyle(self.numberSource.generateAndCheck())
+
+        self.numberSource.analyzeData()
+        self.showStats()
 
     def checkSet(self):
 
@@ -1195,7 +1204,7 @@ root.title("SELECT AND GENERATE")
 
 # Set size
 
-wh = 555
+wh = 540
 ww = 480
 
 #root.resizable(height=False, width=False)
