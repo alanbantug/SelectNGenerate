@@ -921,7 +921,7 @@ class Application(Frame):
             self.dGen.append(dg.displayNumbers(self.popGen, self.type.get(), self.config))
 
         self.unused = Label(self.popGen, text="", style="B.TLabel" )
-        self.topLabel = Label(self.popGen, text="Super Lotto", style="B.TLabel" )
+        self.topLabel = Label(self.popGen, text="Mega Lotto", style="B.TLabel" )
 
         self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
         self.genOdd = Button(self.popGen, text="ALL ODD", style="B.TButton", command=self.genOddSet)
@@ -982,7 +982,7 @@ class Application(Frame):
             self.dGen.append(dg.displayNumbers(self.popGen, self.type.get(), self.config))
 
         self.unused = Label(self.popGen, text="", style="B.TLabel" )
-        self.topLabel = Label(self.popGen, text="Super Lotto", style="B.TLabel" )
+        self.topLabel = Label(self.popGen, text="Power Ball", style="B.TLabel" )
 
         self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
         self.genOdd = Button(self.popGen, text="ALL ODD", style="B.TButton", command=self.genOddSet)

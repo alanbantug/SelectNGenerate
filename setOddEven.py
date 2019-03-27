@@ -1,6 +1,6 @@
 #! python3
 
-import numpy as np
+#import numpy as np
 import pandas as pd
 from pandas import Series, DataFrame
 
@@ -20,8 +20,8 @@ import itertools
 from itertools import combinations
 
 # the next two lines are required to create the classifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
+# from sklearn.ensemble import RandomForestClassifier
+# from sklearn.model_selection import train_test_split
 
 
 class getCombinations(object):
@@ -40,6 +40,14 @@ class getCombinations(object):
 		elif self.ltype == 2:
 			self.limit = 47
 			self.extlimit = 27
+
+		elif self.ltype == 3:
+			self.limit = 70
+			self.extlimit = 25
+
+		elif self.ltype == 4:
+			self.limit = 69
+			self.extlimit = 26
 
 		if indicator == 1:
 			self.selectedNumbers = [n for n in range(1,self.limit + 1) if n % 2 != 0]
@@ -84,9 +92,10 @@ class getCombinations(object):
 				num_list = sorted(next(n_set))
 
 				# check if the generated combination satisfies the criteria
+
 				if self.checkQualified(num_list, selection):
 
-					if self.ltype == 2:
+					if self.ltype != 1:
 						num_list.append(self.extNumbers[random.randint(0, self.extlimit - 1)])
 
 					selection.append(num_list)
@@ -99,7 +108,7 @@ class getCombinations(object):
 				loop_count += 1
 
 				# limit the count to 100 loops
-				if loop_count < 200:
+				if loop_count < 5:
 					n_set = self.initIterator()
 					selection = []
 					comb_count = 0
@@ -113,7 +122,8 @@ class getCombinations(object):
 			n_count = 0
 
 			for sel in selection:
-				n_count += sel.count(n)
+				sub_sel = sel[:5]
+				n_count += sub_sel.count(n)
 
 			if n_count == 0:
 				unused.append(n)
@@ -127,6 +137,7 @@ class getCombinations(object):
 		'''
 
 		num_chk = copy.copy(self.selectedNumbers)
+
 		random.shuffle(num_chk)
 
 		n_set = itertools.combinations(num_chk, 5)
@@ -158,11 +169,15 @@ class getCombinations(object):
 
 		unique = True
 
-		# if there are less than 3 sets in the selection, set the limit to 0, else set to 1
-		# this will ensure that the first three combinations have unique numbers
+		# if there are less than 3 or 4 sets in the selection and the generation is Fantasy or Super, respectively,
+		# set the limit to 0, else set to 1. this will ensure that the first three combinations have unique numbers
 		limit = 0
-		if len(selection) > 2:
-			limit = 1
+		if self.ltype == 1:
+			if len(selection) > 2:
+				limit = 1
+		elif self.ltype == 2:
+			if len(selection) > 3:
+				limit = 1
 
 		for n in n_list:
 			n_count = 0
