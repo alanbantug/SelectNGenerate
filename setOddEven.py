@@ -95,9 +95,6 @@ class getCombinations(object):
 
 				if self.checkQualified(num_list, selection):
 
-					if self.ltype != 1:
-						num_list.append(self.extNumbers[random.randint(0, self.extlimit - 1)])
-
 					selection.append(num_list)
 					comb_count += 1
 
@@ -122,12 +119,15 @@ class getCombinations(object):
 			n_count = 0
 
 			for sel in selection:
-				sub_sel = sel[:5]
-				n_count += sub_sel.count(n)
+				n_count += sel.count(n)
 
 			if n_count == 0:
 				unused.append(n)
 
+		if self.ltype != 1:
+
+			for sel in selection:
+				sel.append(self.extNumbers[random.randint(0, self.extlimit - 1)])
 
 		return selection, len(unused)
 

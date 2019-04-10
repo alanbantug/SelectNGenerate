@@ -45,7 +45,7 @@ class numberSelect(object):
 			self.dataHash = {}
 			self.lastestDraw = 0
 		else:
-			self.dataHash, self.latestDraw = self.hashDataFile()
+			self.dataHash, self.latestDraw, self.latestWinner = self.hashDataFile()
 			self.reformatFile()
 
 		self.loadSelectNumbers(config)
@@ -70,6 +70,7 @@ class numberSelect(object):
 					# get the draw and store it in the last draw field
 					if latest_draw == 0:
 						latest_draw = int(fields[0])
+						latest_winner = [int(num) for num in fields[5:10]]
 
 					# create the hash key
 					hash_key = bytes([int(num) for num in fields[5:10]])
@@ -81,7 +82,7 @@ class numberSelect(object):
 					else:
 						hashTable[hash_key] = int(fields[0])
 
-		return hashTable, latest_draw
+		return hashTable, latest_draw, latest_winner
 
 	def createList(self,top_limit=39):
 
@@ -680,3 +681,7 @@ class numberSelect(object):
 	def getStats(self):
 
 		return self.last_match, self.last_compare, self.first_match, self.last_match_draws, self.max_gap, self.min_gap, self.exact_match
+
+	def getLastDraw(self):
+
+		return self.latestDraw, self.latestWinner

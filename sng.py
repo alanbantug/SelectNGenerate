@@ -42,6 +42,7 @@ class Application(Frame):
         self.getMatch3 = IntVar()
         self.getMatch4 = IntVar()
         self.getMatch5 = IntVar()
+        self.noLastWinner = IntVar()
         self.getMatchExtra = IntVar()
         self.numberA = StringVar()
         self.numberB = StringVar()
@@ -377,7 +378,15 @@ class Application(Frame):
         else:
             self.useCount.set(25)
 
-        self.sGen = sg.getCombinations(self.numberSource.getSelectNumbers(), self.type.get(), self.useCount.get())
+        last_draw, last_winner = self.numberSource.getLastDraw()
+
+        # check if the last winner is to be excluded 
+        if self.noLastWinner.get():
+            selected = [num for num in self.numberSource.getSelectNumbers() if num not in last_winner]
+        else:
+            selected = self.numberSource.getSelectNumbers()
+
+        self.sGen = sg.getCombinations(selected, self.type.get(), self.useCount.get())
         selection = self.sGen.randomSelect(self.useCount.get())
 
         self.hideProgress()
@@ -800,15 +809,16 @@ class Application(Frame):
         for i in range(5):
             self.dGen.append(dg.displayNumbers(self.popGen, self.type.get(), self.config))
 
+        self.noLastFantasy = Checkbutton(self.popGen, text="Avoid numbers from last winner", style="B.TCheckbutton", variable=self.noLastWinner)
         self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
         self.genOdd = Button(self.popGen, text="ALL ODD", style="B.TButton", command=self.genOddSet)
         self.genEven = Button(self.popGen, text="ALL EVEN", style="B.TButton", command=self.genEvenSet)
         self.unused = Label(self.popGen, text="", style="B.TLabel" )
-        self.topLabel = Label(self.popGen, text="Fantasy Five", style="B.TLabel" )
         self.exitGen = Button(self.popGen, text="EXIT", style="B.TButton", command=self.popGen.destroy)
 
-        self.topLabel.grid(row=0, column=0, columnspan=2, padx=5, pady=(5, 2), sticky='NSEW')
+        self.noLastFantasy.grid(row=0, column=0, columnspan=3, padx=5, pady=(5, 2), sticky='NSEW')
         self.unused.grid(row=0, column=4, columnspan=1, padx=5, pady=(5, 2), sticky='NSEW')
+
         self.h_sep_ga.grid(row=1, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
 
         for i in range(5):
@@ -860,14 +870,14 @@ class Application(Frame):
             self.dGen.append(dg.displayNumbers(self.popGen, self.type.get(), self.config))
 
         self.unused = Label(self.popGen, text="", style="B.TLabel" )
-        self.topLabel = Label(self.popGen, text="Super Lotto", style="B.TLabel" )
+        self.noLastSuper = Checkbutton(self.popGen, text="Avoid numbers from last winner", style="B.TCheckbutton", variable=self.noLastWinner)
 
         self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
         self.genOdd = Button(self.popGen, text="ALL ODD", style="B.TButton", command=self.genOddSet)
         self.genEven = Button(self.popGen, text="ALL EVEN", style="B.TButton", command=self.genEvenSet)
         self.exitGen = Button(self.popGen, text="EXIT", style="B.TButton", command=self.popGen.destroy)
 
-        self.topLabel.grid(row=0, column=0, columnspan=2, padx=5, pady=(5, 2), sticky='NSEW')
+        self.noLastSuper.grid(row=0, column=0, columnspan=3, padx=5, pady=(5, 2), sticky='NSEW')
         self.unused.grid(row=0, column=4, columnspan=1, padx=5, pady=(5, 2), sticky='NSEW')
 
         self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
@@ -921,14 +931,14 @@ class Application(Frame):
             self.dGen.append(dg.displayNumbers(self.popGen, self.type.get(), self.config))
 
         self.unused = Label(self.popGen, text="", style="B.TLabel" )
-        self.topLabel = Label(self.popGen, text="Mega Lotto", style="B.TLabel" )
+        self.noLastMega = Checkbutton(self.popGen, text="Avoid numbers from last winner", style="B.TCheckbutton", variable=self.noLastWinner)
 
         self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
         self.genOdd = Button(self.popGen, text="ALL ODD", style="B.TButton", command=self.genOddSet)
         self.genEven = Button(self.popGen, text="ALL EVEN", style="B.TButton", command=self.genEvenSet)
         self.exitGen = Button(self.popGen, text="EXIT", style="B.TButton", command=self.popGen.destroy)
 
-        self.topLabel.grid(row=0, column=0, columnspan=2, padx=5, pady=(5, 2), sticky='NSEW')
+        self.noLastMega.grid(row=0, column=0, columnspan=3, padx=5, pady=(5, 2), sticky='NSEW')
         self.unused.grid(row=0, column=4, columnspan=1, padx=5, pady=(5, 2), sticky='NSEW')
 
         self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
@@ -982,14 +992,14 @@ class Application(Frame):
             self.dGen.append(dg.displayNumbers(self.popGen, self.type.get(), self.config))
 
         self.unused = Label(self.popGen, text="", style="B.TLabel" )
-        self.topLabel = Label(self.popGen, text="Power Ball", style="B.TLabel" )
+        self.noLastPower = Checkbutton(self.popGen, text="Avoid numbers from last winner", style="B.TCheckbutton", variable=self.noLastWinner)
 
         self.genSet = Button(self.popGen, text="GENERATE", style="B.TButton", command=self.generateSet)
         self.genOdd = Button(self.popGen, text="ALL ODD", style="B.TButton", command=self.genOddSet)
         self.genEven = Button(self.popGen, text="ALL EVEN", style="B.TButton", command=self.genEvenSet)
         self.exitGen = Button(self.popGen, text="EXIT", style="B.TButton", command=self.popGen.destroy)
 
-        self.topLabel.grid(row=0, column=0, columnspan=2, padx=5, pady=(5, 2), sticky='NSEW')
+        self.noLastPower.grid(row=0, column=0, columnspan=3, padx=5, pady=(5, 2), sticky='NSEW')
         self.unused.grid(row=0, column=4, columnspan=1, padx=5, pady=(5, 2), sticky='NSEW')
 
         self.h_sep_ga.grid(row=4, column=0, columnspan=5, padx=5, pady=5, sticky='NSEW')
