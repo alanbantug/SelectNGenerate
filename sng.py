@@ -339,7 +339,9 @@ class Application(Frame):
 
         self.showProgress()
 
-        self.sOE = so.getCombinations(indicator, self.type.get())
+        last_draw, last_winner = self.numberSource.getLastDraw()
+
+        self.sOE = so.getCombinations(indicator, self.type.get(), last_winner, self.noLastWinner.get())
         selection, unused = self.sOE.randomSelect()
 
         self.hideProgress()
@@ -380,7 +382,7 @@ class Application(Frame):
 
         last_draw, last_winner = self.numberSource.getLastDraw()
 
-        # check if the last winner is to be excluded 
+        # check if the last winner is to be excluded
         if self.noLastWinner.get():
             selected = [num for num in self.numberSource.getSelectNumbers() if num not in last_winner]
         else:

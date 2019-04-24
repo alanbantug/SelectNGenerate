@@ -1,4 +1,4 @@
-#! python3
+ #! python3
 
 #import numpy as np
 import pandas as pd
@@ -26,7 +26,7 @@ from itertools import combinations
 
 class getCombinations(object):
 
-	def __init__(self, indicator, ltype):
+	def __init__(self, indicator, ltype, last_winner, noLastWinner):
 
 		self.ltype = ltype
 		self.othNumbers = []
@@ -53,6 +53,9 @@ class getCombinations(object):
 			self.selectedNumbers = [n for n in range(1,self.limit + 1) if n % 2 != 0]
 		else:
 			self.selectedNumbers = [n for n in range(1,self.limit + 1) if n % 2 == 0]
+
+		if noLastWinner == 1:
+			self.selectedNumbers = [n for n in self.selectedNumbers if n not in last_winner]
 
 		for i in range(self.extlimit):
 			self.extNumbers.append(i+1)
@@ -98,6 +101,10 @@ class getCombinations(object):
 					selection.append(num_list)
 					comb_count += 1
 
+					if self.numberCount < 25 and len(selection) == 4:
+						for i in range(200):
+							next(n_set)
+
 				if comb_count == 5:
 					break
 
@@ -105,7 +112,7 @@ class getCombinations(object):
 				loop_count += 1
 
 				# limit the count to 100 loops
-				if loop_count < 5:
+				if loop_count < 50:
 					n_set = self.initIterator()
 					selection = []
 					comb_count = 0
@@ -169,15 +176,27 @@ class getCombinations(object):
 
 		unique = True
 
-		# if there are less than 3 or 4 sets in the selection and the generation is Fantasy or Super, respectively,
-		# set the limit to 0, else set to 1. this will ensure that the first three combinations have unique numbers
-		limit = 0
-		if self.ltype == 1:
-			if len(selection) > 2:
-				limit = 1
-		elif self.ltype == 2:
-			if len(selection) > 3:
-				limit = 1
+		if len(self.selectedNumbers) >= 25:
+			limit = 0
+		else:
+			if len(self.selectedNumbers) > 20:
+
+				if len(selection) < 4:
+					limit = 0
+				else:
+					limit = 1
+
+			elif len(self.selectedNumbers) > 15:
+
+				if len(selection) < 3:
+					limit = 0
+				else:
+					limit = 1
+			else:
+				if len(selection) < 2:
+					limit = 0
+				else:
+					limit = 1
 
 		for n in n_list:
 			n_count = 0

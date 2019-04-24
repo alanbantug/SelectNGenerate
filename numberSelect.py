@@ -406,7 +406,7 @@ class numberSelect(object):
 
 		# Load the csv_data file into a dataframe
 
-		fantasy_file = pd.read_csv('data\\cf_data.csv', header=None)
+		fantasy_file = pd.read_csv('data\\cf_data.csv', nrows=3000, header=None)
 		fantasy_file.columns = ['Draw', 'Date', 'A', 'B', 'C', 'D', 'E']
 
 		fantasy_file['MS'] = fantasy_file[['Draw', 'A', 'B', 'C', 'D', 'E']].apply(self.matchSelect, axis=1)
@@ -451,7 +451,7 @@ class numberSelect(object):
 	def analyzeSuperFile(self):
 
 		# Load the csv_data file into a dataframe
-		superlotto_file = pd.read_csv('data\\cs_data.csv', header=None)
+		superlotto_file = pd.read_csv('data\\cs_data.csv', nrows=3000, header=None)
 		superlotto_file.columns = ['Draw', 'Date', 'A', 'B', 'C', 'D', 'E', 'S']
 
 		superlotto_file['MS'] = superlotto_file[['Draw', 'A', 'B', 'C', 'D', 'E']].apply(self.matchSelect, axis=1)
@@ -495,7 +495,7 @@ class numberSelect(object):
 	def analyzeMegaFile(self):
 
 		# Load the csv_data file into a dataframe
-		megalotto_file = pd.read_csv('data\\cm_data.csv', header=None)
+		megalotto_file = pd.read_csv('data\\cm_data.csv', nrows=3000, header=None)
 		megalotto_file.columns = ['Draw', 'Date', 'A', 'B', 'C', 'D', 'E', 'M']
 
 		megalotto_file['MS'] = megalotto_file[['Draw', 'A', 'B', 'C', 'D', 'E']].apply(self.matchSelect, axis=1)
@@ -540,7 +540,7 @@ class numberSelect(object):
 	def analyzePowerFile(self):
 
 		# Load the csv_data file into a dataframe
-		powerball_file = pd.read_csv('data\\cm_data.csv', header=None)
+		powerball_file = pd.read_csv('data\\cm_data.csv', nrows=3000, header=None)
 		powerball_file.columns = ['Draw', 'Date', 'A', 'B', 'C', 'D', 'E', 'M']
 
 		powerball_file['MS'] = powerball_file[['Draw', 'A', 'B', 'C', 'D', 'E']].apply(self.matchSelect, axis=1)
